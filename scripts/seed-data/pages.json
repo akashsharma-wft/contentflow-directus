@@ -1,0 +1,200 @@
+[
+  {
+    "title": "Home",
+    "slug": "home",
+    "language": "en",
+    "access": "guest",
+    "layout": "home",
+    "status": "published",
+    "seo_title": "ContentFlow — CMS-driven SaaS Dashboard",
+    "seo_description": "A modern CMS-driven SaaS dashboard built with Next.js and Directus.",
+    "sections": [
+      {
+        "_type": "heroSection",
+        "_key": "hero-en",
+        "heading": "Build faster with a CMS-driven dashboard",
+        "subheading": "ContentFlow is a production-ready SaaS starter with Directus CMS, Supabase Auth, and Stripe billing.",
+        "badge": "Now on Directus",
+        "layout": "split",
+        "primaryCta": { "label": "Get started free", "href": "/signup" },
+        "secondaryCta": { "label": "View posts", "href": "/posts" },
+        "communityText": "Trusted by developers worldwide"
+      },
+      {
+        "_type": "featuredPostsSection",
+        "_key": "featured-posts-en",
+        "heading": "Featured Posts",
+        "subheading": "Hand-picked articles from our team.",
+        "maxPosts": 3,
+        "layout": "featured",
+        "showExcerpt": true,
+        "showTags": true,
+        "viewAllLabel": "View all posts"
+      },
+      {
+        "_type": "ctaSection",
+        "_key": "cta-en",
+        "heading": "Ready to ship faster?",
+        "body": "Sign up today and have your CMS-driven dashboard running in minutes.",
+        "primaryButton": { "label": "Start for free", "href": "/signup" },
+        "theme": "indigo",
+        "centered": true
+      }
+    ]
+  },
+  {
+    "title": "Login",
+    "slug": "login",
+    "language": "en",
+    "access": "guest",
+    "layout": "auth",
+    "status": "published",
+    "seo_title": "Log in — ContentFlow",
+    "sections": [
+      {
+        "_type": "authHeroSection",
+        "_key": "auth-hero-en",
+        "badge": "Welcome back",
+        "headline": "The CMS-powered dashboard for modern teams",
+        "features": [
+          { "_key": "f1", "icon": "Zap",    "text": "Instant CMS updates" },
+          { "_key": "f2", "icon": "Shield", "text": "Supabase Auth baked in" },
+          { "_key": "f3", "icon": "Globe",  "text": "Multi-language content" }
+        ],
+        "footerNote": "No credit card required"
+      },
+      {
+        "_type": "authSection",
+        "_key": "auth-form-login-en",
+        "mode": "login",
+        "heading": "Sign in to your account",
+        "googleLabel": "Continue with Google",
+        "dividerLabel": "or",
+        "emailLabel": "Email",
+        "emailPlaceholder": "you@example.com",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "••••••••",
+        "submitLabel": "Sign in",
+        "footerText": "Don't have an account?",
+        "footerLinkLabel": "Sign up",
+        "footerLinkHref": "/signup",
+        "showGoogleOAuth": true,
+        "showEmailPassword": true
+      }
+    ]
+  },
+  {
+    "title": "Sign Up",
+    "slug": "signup",
+    "language": "en",
+    "access": "guest",
+    "layout": "auth",
+    "status": "published",
+    "seo_title": "Sign up — ContentFlow",
+    "sections": [
+      {
+        "_type": "authHeroSection",
+        "_key": "auth-hero-signup-en",
+        "badge": "Get started for free",
+        "headline": "Your CMS-powered dashboard awaits",
+        "features": [
+          { "_key": "f1", "icon": "Zap",       "text": "Set up in under 5 minutes" },
+          { "_key": "f2", "icon": "FileText",   "text": "Unlimited draft posts" },
+          { "_key": "f3", "icon": "CreditCard", "text": "Free tier always available" }
+        ],
+        "footerNote": "No credit card required"
+      },
+      {
+        "_type": "authSection",
+        "_key": "auth-form-signup-en",
+        "mode": "signup",
+        "heading": "Create your account",
+        "googleLabel": "Sign up with Google",
+        "dividerLabel": "or",
+        "nameLabel": "Display name",
+        "namePlaceholder": "Your name",
+        "emailLabel": "Email",
+        "emailPlaceholder": "you@example.com",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "8+ characters",
+        "submitLabel": "Create account",
+        "footerText": "Already have an account?",
+        "footerLinkLabel": "Log in",
+        "footerLinkHref": "/login",
+        "showGoogleOAuth": true,
+        "showEmailPassword": true
+      }
+    ]
+  },
+  {
+    "title": "Posts",
+    "slug": "posts",
+    "language": "en",
+    "access": "user",
+    "layout": "dashboard",
+    "status": "published",
+    "seo_title": "Posts — ContentFlow",
+    "sections": [
+      { "_type": "section", "_id": "posts-header",  "sectionType": "postsHeader",  "postsHeader":  { "heading": "Posts", "subheading": "Manage your content" } },
+      { "_type": "section", "_id": "posts-stats",   "sectionType": "postsStats",   "postsStats":   { "myPostsLabel": "My Posts", "publishedLabel": "Published", "draftsLabel": "Drafts" } },
+      { "_type": "section", "_id": "posts-actions", "sectionType": "postsActions", "postsActions": { "syncButtonLabel": "Sync", "newPostButtonLabel": "New Post" } },
+      { "_type": "section", "_id": "posts-search",  "sectionType": "postsSearch",  "postsSearch":  { "searchPlaceholder": "Search posts…" } },
+      { "_type": "section", "_id": "posts-table",   "sectionType": "postsTable",   "postsTable":   { "colTitle": "Title", "colStatus": "Status", "colImage": "Cover", "colTags": "Tags", "colLastModified": "Modified", "emptyTitle": "No posts yet", "emptyBody": "Create your first post to get started.", "emptyCtaLabel": "New post", "featuredLabel": "Featured", "viewPostLabel": "View", "editPostLabel": "Edit", "deletePostLabel": "Delete", "deleteDialogTitle": "Delete post?", "deleteDialogBody": "This cannot be undone.", "deleteDialogConfirmLabel": "Delete", "deleteDialogCancelLabel": "Cancel" } }
+    ]
+  },
+  {
+    "title": "Analytics",
+    "slug": "analytics",
+    "language": "en",
+    "access": "admin",
+    "layout": "dashboard",
+    "status": "published",
+    "seo_title": "Analytics — ContentFlow",
+    "sections": [
+      { "_type": "section", "_id": "analytics-section", "sectionType": "analytics", "analytics": { "heading": "Analytics", "subheading": "PostHog event stream", "eventsLabel": "Events", "usersLabel": "Live users", "avgSessionLabel": "Avg session", "liveStreamLabel": "Live stream", "refreshLabel": "Refresh", "emptyTitle": "No events yet", "emptyBody": "Events will appear here once users interact with your app.", "connectedLabel": "Connected", "ctaLabel": "Open PostHog", "showingLabel": "Showing", "prevLabel": "Prev", "nextLabel": "Next" } }
+    ]
+  },
+  {
+    "title": "Settings",
+    "slug": "settings",
+    "language": "en",
+    "access": "user",
+    "layout": "dashboard",
+    "status": "published",
+    "seo_title": "Settings — ContentFlow",
+    "sections": [
+      { "_type": "section", "_id": "settings-header", "sectionType": "settingsHeader", "settingsHeader": { "heading": "Settings", "subheading": "Manage your profile and preferences" } },
+      { "_type": "section", "_id": "settings-info",   "sectionType": "settingsInfo",   "settingsInfo":   { "uploadPhotoLabel": "Upload photo" } },
+      { "_type": "section", "_id": "settings-form",   "sectionType": "settingsForm",   "settingsForm":   { "displayNameLabel": "Display name", "emailLabel": "Email", "emailHelperText": "Email cannot be changed here.", "bioLabel": "Bio", "bioPlaceholder": "Tell us about yourself…", "bioMaxLength": 200, "websiteLabel": "Website", "websitePlaceholder": "https://yoursite.com", "saveLabel": "Save changes", "discardLabel": "Discard" } },
+      { "_type": "section", "_id": "settings-danger", "sectionType": "settingsDanger", "settingsDanger": { "heading": "Danger zone", "body": "Permanently delete your account and all data.", "warningText": "This action cannot be undone.", "deleteLabel": "Delete account" } }
+    ]
+  },
+  {
+    "title": "Billing",
+    "slug": "billing",
+    "language": "en",
+    "access": "user",
+    "layout": "dashboard",
+    "status": "published",
+    "seo_title": "Billing — ContentFlow",
+    "sections": [
+      { "_type": "section", "_id": "billing-header",  "sectionType": "billingHeader",  "billingHeader":  { "heading": "Billing", "subheading": "Manage your subscription" } },
+      { "_type": "section", "_id": "billing-plan",    "sectionType": "billingCurrentPlan", "billingCurrentPlan": { "currentPlanLabel": "Current plan", "activeBadgeLabel": "Active", "cancellingBadgeLabel": "Cancelling", "freeTierBadgeLabel": "Free", "manageLabel": "Manage", "cancelLabel": "Cancel", "reactivateLabel": "Reactivate", "upgradeLabel": "Upgrade", "cancellingNote": "Your plan will remain active until the end of the billing period." } },
+      { "_type": "section", "_id": "billing-usage",   "sectionType": "billingUsage",   "billingUsage":   { "usageHeading": "Usage", "postsUsageLabel": "Posts", "apiUsageLabel": "API calls", "storageUsageLabel": "Storage", "seatsUsageLabel": "Seats" } },
+      { "_type": "section", "_id": "billing-plans",   "sectionType": "billingPlansGrid", "billingPlansGrid": { "plansHeading": "Plans", "freePlanName": "Free", "freePlanTagline": "For individuals and hobby projects", "freePlanPrice": "$0/mo", "freePlanFeatures": ["Up to 5 published posts", "Basic analytics", "Community support"], "proPlanName": "Pro", "proPlanTagline": "For serious creators and teams", "proPlanBadge": "Popular", "proPlanFeatures": ["Unlimited published posts", "Advanced analytics", "Priority support", "Custom domain"], "upgradeLabel": "Upgrade to Pro", "downgradeLabel": "Downgrade", "currentPlanButtonLabel": "Current plan" } },
+      { "_type": "section", "_id": "billing-footer",  "sectionType": "billingFooter",  "billingFooter":  { "stripeNote": "Payments powered by Stripe.", "webhookNote": "Subscription changes may take a few minutes to reflect." } }
+    ]
+  },
+  {
+    "title": "Admin",
+    "slug": "admin",
+    "language": "en",
+    "access": "admin",
+    "layout": "dashboard",
+    "status": "published",
+    "seo_title": "Admin — ContentFlow",
+    "sections": [
+      { "_type": "section", "_id": "admin-section", "sectionType": "admin", "admin": { "heading": "Admin", "subheading": "Manage users and access", "totalUsersLabel": "Total users", "proLabel": "Pro", "freeLabel": "Free", "colUser": "User", "colPlan": "Plan", "colRole": "Role", "colJoined": "Joined", "emptyLabel": "No users yet", "inviteSectionHeading": "Studio Access", "inviteFormTitle": "Invite user", "inviteEmailLabel": "Email", "inviteEmailPlaceholder": "user@example.com", "inviteMessageLabel": "Message (optional)", "inviteSendLabel": "Send invite", "pendingInvitesHeading": "Pending invites", "inviteEmptyLabel": "No pending invites", "cancelInviteLabel": "Cancel", "pendingRequestsHeading": "Access requests", "requestEmptyLabel": "No pending requests", "approveLabel": "Approve", "rejectLabel": "Reject", "colEmail": "Email", "colType": "Type", "colSentAt": "Sent", "colActions": "Actions" } }
+    ]
+  }
+]

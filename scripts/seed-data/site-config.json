@@ -1,0 +1,67 @@
+{
+  "id": "site-config",
+  "site_name": "ContentFlow",
+  "navbar_config": {
+    "brandName": "ContentFlow",
+    "showLanguageSwitcher": true,
+    "ctaButton": { "label": "Get Started", "href": "/signup" },
+    "items": [
+      {
+        "_key": "nav-posts",
+        "label": { "en": "Blog", "hi": "ब्लॉग", "kn": "ಬ್ಲಾಗ್" },
+        "href": "/posts",
+        "visibleFor": ["guest", "user", "admin"]
+      }
+    ]
+  },
+  "footer_config": {
+    "brandName": "ContentFlow",
+    "showBrandLogo": true,
+    "tagline": "CMS-driven SaaS dashboard.",
+    "copyright": "© 2025 ContentFlow. All rights reserved.",
+    "socialLinks": [],
+    "columns": [
+      {
+        "_key": "col-product",
+        "heading": "Product",
+        "links": [
+          { "_key": "l1", "label": "Features", "href": "/#features" },
+          { "_key": "l2", "label": "Pricing",  "href": "/#pricing" }
+        ]
+      },
+      {
+        "_key": "col-account",
+        "heading": "Account",
+        "links": [
+          { "_key": "l3", "label": "Log in",   "href": "/login" },
+          { "_key": "l4", "label": "Sign up",  "href": "/signup" }
+        ]
+      }
+    ],
+    "bottomLinks": []
+  },
+  "sidebar_config": {
+    "brandName": "ContentFlow",
+    "brandSubtitle": "Dashboard",
+    "navItems": [
+      { "_key": "s1", "label": { "en": "Posts" },     "href": "/posts",     "icon": "FileText",  "visibleFor": ["user", "admin"] },
+      { "_key": "s2", "label": { "en": "Analytics" }, "href": "/analytics", "icon": "BarChart2", "visibleFor": ["admin"] },
+      { "_key": "s3", "label": { "en": "Settings" },  "href": "/settings",  "icon": "Settings",  "visibleFor": ["user", "admin"] },
+      { "_key": "s4", "label": { "en": "Billing" },   "href": "/billing",   "icon": "CreditCard","visibleFor": ["user", "admin"] },
+      { "_key": "s5", "label": { "en": "Admin" },     "href": "/admin",     "icon": "Shield",    "visibleFor": ["admin"] }
+    ],
+    "footerLinks": [],
+    "statusText": "All systems operational",
+    "statusBadge": "Live"
+  },
+  "mobile_nav_config": {
+    "showLabels": true,
+    "items": [
+      { "_key": "m1", "label": { "en": "Posts" },     "href": "/posts",     "icon": "FileText",  "visibleFor": ["user", "admin"] },
+      { "_key": "m2", "label": { "en": "Analytics" }, "href": "/analytics", "icon": "BarChart2", "visibleFor": ["admin"] },
+      { "_key": "m3", "label": { "en": "Settings" },  "href": "/settings",  "icon": "Settings",  "visibleFor": ["user", "admin"] },
+      { "_key": "m4", "label": { "en": "Billing" },   "href": "/billing",   "icon": "CreditCard","visibleFor": ["user", "admin"] },
+      { "_key": "m5", "label": { "en": "Admin" },     "href": "/admin",     "icon": "Shield",    "visibleFor": ["admin"] }
+    ]
+  }
+}

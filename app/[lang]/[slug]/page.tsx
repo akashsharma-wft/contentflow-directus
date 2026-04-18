@@ -9,34 +9,30 @@
 import { notFound, redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import { createClient as createSupabaseServer } from '@/lib/supabase/server'
-import { sanityClient } from '@/lib/sanity/client'
-import { getSanityClient } from '@/lib/sanity/server-client'
 import {
-  PAGE_BY_SLUG_AND_LANG_QUERY,
-  ALL_PAGE_SLUGS_QUERY,
-  POST_BY_SLUG_AND_LANG_QUERY,
-  ALL_POST_SLUGS_QUERY,
-  POST_LANG_VARIANTS_QUERY,
-  POST_DETAIL_SECTIONS_QUERY,
-  SITE_CONFIG_QUERY,
-  NAV_PAGES_QUERY,
-  IS_POST_DRAFT_QUERY,
-} from '@/lib/sanity/queries'
+  getPageBySlugAndLang,
+  getPostBySlugAndLang,
+  getAllPageSlugs,
+  getAllPostSlugs,
+  getSiteConfig,
+  getNavPages,
+  getPostLangVariants,
+  getPostSlugsByLang,
+} from '@/lib/directus/queries'
 import {
   SUPPORTED_LANGUAGES,
   LANG_LABELS,
   type SlugEntry,
   type SupportedLang,
-} from '@/lib/sanity/pageResolver'
+} from '@/lib/directus/pageResolver'
 import { buildMetadata } from '@/lib/seo'
 import { SectionRenderer } from '@/sections/SectionRenderer'
 import { DashboardLayout } from '@/features/dashboard/components/DashboardLayout'
 import { PostDetail } from '@/features/posts/components/PostDetail'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
+import type { DirectusPage } from '@/types/directus'
 import type {
-  SanityPage,
-  SanityPost,
   SanitySiteConfig,
   NavPage,
   SanityPageSection,
@@ -54,7 +50,7 @@ interface Props {
 }
 
 // ── Access control helper ──────────────────────────────────────────────────────
-function getPageAccess(page: SanityPage) {
+function getPageAccess(page: DirectusPage) {
   return {
     requireAuth:  page.access === 'user' || page.access === 'admin',
     requireAdmin: page.access === 'admin',
@@ -64,7 +60,9 @@ function getPageAccess(page: SanityPage) {
   }
 }
 
-// ── Assemble post detail section config from fetched section docs ──────────────
+// ── Post detail config assembler ──────────────────────────────────────────────
+// PostDetail.tsx has hardcoded fallbacks for all label props, so passing an
+// empty section list is safe — labels degrade gracefully.
 function assemblePostDetailConfig(sections: SanityPageSection[]) {
   const header:   SectionPostDetailHeaderContent   = {}
   const meta:     SectionPostDetailMetaContent     = {}
@@ -87,8 +85,8 @@ function assemblePostDetailConfig(sections: SanityPageSection[]) {
 
 export async function generateStaticParams() {
   const [pageSlugs, postSlugs] = await Promise.all([
-    sanityClient.fetch<SlugEntry[]>(ALL_PAGE_SLUGS_QUERY, {}, { next: { revalidate: 60 } }),
-    sanityClient.fetch<SlugEntry[]>(ALL_POST_SLUGS_QUERY, {}, { next: { revalidate: 60 } }),
+    getAllPageSlugs(),
+    getAllPostSlugs(),
   ])
 
   return [...pageSlugs, ...postSlugs]
@@ -103,8 +101,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (lang !== 'hi' && lang !== 'kn') return {}
 
   const [page, post] = await Promise.all([
-    sanityClient.fetch<SanityPage | null>(PAGE_BY_SLUG_AND_LANG_QUERY, { slug, lang }, { next: { revalidate: 60 } }),
-    sanityClient.fetch<SanityPost | null>(POST_BY_SLUG_AND_LANG_QUERY, { slug, lang }, { next: { revalidate: 60 } }),
+    getPageBySlugAndLang(slug, lang),
+    getPostBySlugAndLang(slug, lang),
   ])
 
   const doc = page ?? post
@@ -114,7 +112,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = ('seoDescription' in doc && doc.seoDescription)
     ? doc.seoDescription
     : ('excerpt' in doc ? doc.excerpt : undefined)
-  const ogImage = ('ogImage' in doc ? (doc.ogImage as { url?: string } | undefined)?.url : undefined)
+  const ogImage = 'ogImage' in doc ? doc.ogImage : undefined
 
   return buildMetadata({ slug, lang, title, description, ogImage })
 }
@@ -127,10 +125,8 @@ export default async function LocalizedPage({ params }: Props) {
   if (lang === 'en') redirect(`/${slug}`)
   if (lang !== 'hi' && lang !== 'kn') notFound()
 
-  const client = await getSanityClient()
-
   // 1. Try CMS page first
-  const page = await client.fetch<SanityPage | null>(PAGE_BY_SLUG_AND_LANG_QUERY, { slug, lang })
+  const page = await getPageBySlugAndLang(slug, lang)
 
   if (page) {
     const access = getPageAccess(page)
@@ -178,12 +174,12 @@ export default async function LocalizedPage({ params }: Props) {
     }
 
     const [siteConfig, navPages] = await Promise.all([
-      sanityClient.fetch<SanitySiteConfig | null>(SITE_CONFIG_QUERY, { lang }, { next: { revalidate: 60 } }),
-      sanityClient.fetch<NavPage[]>(NAV_PAGES_QUERY, { lang }, { next: { revalidate: 60 } }),
+      getSiteConfig(),
+      getNavPages(lang),
     ])
     return (
       <div className="min-h-screen bg-[#0d0e14]">
-        <Navbar siteConfig={siteConfig} navPages={navPages} lang={lang} />
+        <Navbar siteConfig={siteConfig as unknown as SanitySiteConfig} navPages={navPages as unknown as NavPage[]} lang={lang as SupportedLang} />
         {sections.length > 0 ? (
           <SectionRenderer sections={sections} lang={lang} />
         ) : (
@@ -191,60 +187,44 @@ export default async function LocalizedPage({ params }: Props) {
             <p className="text-white/30 text-sm">No sections configured for this page.</p>
           </div>
         )}
-        <Footer siteConfig={siteConfig} />
+        <Footer siteConfig={siteConfig as unknown as SanitySiteConfig} />
       </div>
     )
   }
 
   // 2. Try post — use DashboardLayout + PostDetail
-  const post = await client.fetch<SanityPost | null>(POST_BY_SLUG_AND_LANG_QUERY, { slug, lang })
+  const post = await getPostBySlugAndLang(slug, lang)
+  if (!post) notFound()
 
-  if (!post) {
-    // Distinguish "post not found" from "post is a draft" — show a helpful
-    // toast on the posts page rather than a hard 404 for draft posts.
-    const isDraft = await client.fetch<boolean>(IS_POST_DRAFT_QUERY, { slug, lang })
-    if (isDraft) redirect(`/${lang}/posts?draft=1`)
-    notFound()
-  }
-
-  // Fetch adjacent posts for prev/next navigation
-  const [variants, adjacentRaw, sectionDocs] = await Promise.all([
-    sanityClient.fetch<SlugEntry[]>(POST_LANG_VARIANTS_QUERY, { slug }, { next: { revalidate: 60 } }),
-    client.fetch<{ slug: string }[]>(
-      `*[_type == "post" && language == $lang && defined(publishedAt) && !(_id in path("drafts.**"))] | order(publishedAt desc) { "slug": slug.current }`,
-      { lang }
-    ),
-    client.fetch<SanityPageSection[]>(POST_DETAIL_SECTIONS_QUERY, { lang }),
+  // Adjacent posts for prev/next navigation
+  const [variants, orderedSlugs] = await Promise.all([
+    getPostLangVariants(slug),
+    getPostSlugsByLang(lang),
   ])
 
-  // Build prev/next slugs from ordered list
-  const orderedSlugs = adjacentRaw.map((p) => p.slug)
   const currentIndex = orderedSlugs.indexOf(slug)
   const prevSlug = currentIndex < orderedSlugs.length - 1 ? orderedSlugs[currentIndex + 1] : null
   const nextSlug = currentIndex > 0 ? orderedSlugs[currentIndex - 1] : null
 
-  // Build language-switcher variant map
   const variantMap = Object.fromEntries(variants.map((v) => [v.language, v.slug]))
 
-  // Assemble CMS label config from section docs
-  const { header, meta, body, tags, backLink } = assemblePostDetailConfig(sectionDocs ?? [])
-
-  // Build language-aware back href (lang is hi|kn here — no en prefix needed for /posts)
+  // Post-detail labels degrade to hardcoded fallbacks in PostDetail.tsx
+  const { header, meta, body, tags, backLink } = assemblePostDetailConfig([])
   const resolvedBackHref = backLink.backHref ?? `/${lang}/posts`
 
   const postData = {
-    _id:         post._id,
-    title:       post.title,
-    slug:        typeof post.slug === 'string' ? post.slug : (post.slug as { current: string }).current,
-    body:        (post.body ?? []) as unknown[],
-    tags:        post.tags ?? [],
-    featured:    post.featured ?? false,
-    publishedAt: post.publishedAt ?? null,
-    coverImage:  (post.coverImage as unknown as string | null | undefined) ?? null,
-    authorId:    post.authorId,
-    authorName:  post.authorName,
-    authorEmail: post.authorEmail,
-    authorAvatar: post.authorAvatar,
+    _id:          post._id,
+    title:        post.title,
+    slug:         post.slug,
+    body:         (post.body ?? []) as unknown[],
+    tags:         post.tags ?? [],
+    featured:     post.featured ?? false,
+    publishedAt:  post.publishedAt ?? null,
+    coverImage:   post.coverImage ?? null,
+    authorId:     post.authorId,
+    authorName:   post.authorName,
+    authorEmail:  post.authorEmail,
+    authorAvatar: post.authorAvatar ?? null,
   }
 
   return (

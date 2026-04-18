@@ -1,26 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createItem, aggregate } from '@directus/sdk'
 import { createClient } from '@/lib/supabase/server'
-
-const SANITY_PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
-const SANITY_DATASET    = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
-const SANITY_TOKEN      = process.env.SANITY_API_TOKEN!
-
-async function sanityMutation(mutations: unknown[]) {
-  const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/mutate/${SANITY_DATASET}`
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${SANITY_TOKEN}`,
-    },
-    body: JSON.stringify({ mutations }),
-  })
-  if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.error?.description ?? 'Sanity mutation failed')
-  }
-  return response.json()
-}
+import { directusAdminClient } from '@/lib/directus/client'
+import type { DirectusSchema } from '@/types/directus'
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,58 +18,50 @@ export async function POST(request: NextRequest) {
       .eq('id', user.id)
       .single()
 
-    const countUrl = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/query/${SANITY_DATASET}`
-    const countResponse = await fetch(countUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SANITY_TOKEN}` },
-          body: JSON.stringify({
-            query: 'count(*[_type=="post" && authorId==$authorId && defined(publishedAt)])',
-            params: { authorId: user.id },
-          }),
-    })
-
-    const countData = await countResponse.json()
-    const currentCount = countData?.result ?? 0
-
-    const postLimit = profile?.subscription_tier === 'pro' ? Number.MAX_SAFE_INTEGER : 5
-
-    
     const body = await request.json()
     const { title, excerpt, tags, featured, publishedAt, coverImageUrl, language } = body
 
-    if (currentCount >= postLimit && publishedAt) {
-      return NextResponse.json({
-        error: `Post limit reached. Free plan allows ${postLimit} posts. Upgrade to Pro for unlimited posts.`,
-        limitReached: true,
-      }, { status: 403 })
-    }
-    
     if (!title?.trim()) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 })
     }
 
-    const postId = `post-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
-    // Derive slug from title (same algorithm as CreatePostModal)
+    // Subscription limit check (free = 5 published posts)
+    if (publishedAt && profile?.subscription_tier !== 'pro') {
+      const result = (await directusAdminClient.request(
+        aggregate('posts' as keyof DirectusSchema, {
+          aggregate: { count: '*' },
+          query: { filter: { author_id: { _eq: user.id }, published_at: { _nnull: true } } },
+        } as never)
+      )) as unknown as { count: { '*': string } }[]
+      const currentCount = Number(result[0]?.count?.['*']) ?? 0
+      if (currentCount >= 5) {
+        return NextResponse.json({
+          error: 'Post limit reached. Free plan allows 5 posts. Upgrade to Pro for unlimited posts.',
+          limitReached: true,
+        }, { status: 403 })
+      }
+    }
+
+    // Derive slug from title
     const slug = title.trim()
       .toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
-      || postId
+      || `post-${Date.now()}`
 
-    const postDocument: Record<string, unknown> = {
-      _type: 'post',
-      _id: postId,
+    const postData: Record<string, unknown> = {
       title: title.trim(),
-      slug: { _type: 'slug', current: slug },
+      slug,
       language: language ?? 'en',
       excerpt: excerpt?.trim() ?? '',
       featured: featured ?? false,
       tags: (tags ?? []).filter(Boolean),
-      // Author data embedded directly from user profile
-      authorId: user.id,
-      authorName: profile?.display_name ?? user.email ?? 'Anonymous',
-      authorEmail: user.email ?? '',
+      author_id: user.id,
+      author_name: profile?.display_name ?? user.email ?? 'Anonymous',
+      author_email: user.email ?? '',
+      author_avatar: profile?.avatar_url ?? null,
+      // Initial body: single paragraph with excerpt text
       body: [{
         _type: 'block',
         _key: `block-${Date.now()}`,
@@ -103,69 +77,19 @@ export async function POST(request: NextRequest) {
     }
 
     if (publishedAt) {
-      postDocument.publishedAt = new Date(publishedAt).toISOString()
+      postData.published_at = new Date(publishedAt).toISOString()
     }
 
+    // Store Supabase Storage URL directly — no re-upload needed
     if (coverImageUrl) {
-      try {
-        const imageResponse = await fetch(coverImageUrl)
-        const imageBuffer = await imageResponse.arrayBuffer()
-        const contentType = imageResponse.headers.get('content-type') ?? 'image/png'
-
-        const uploadUrl = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/assets/images/${SANITY_DATASET}`
-        const uploadResponse = await fetch(uploadUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': contentType,
-            Authorization: `Bearer ${SANITY_TOKEN}`,
-          },
-          body: imageBuffer,
-        })
-
-        if (uploadResponse.ok) {
-          const imageAsset = await uploadResponse.json()
-          postDocument.coverImage = {
-            _type: 'image',
-            asset: { _type: 'reference', _ref: imageAsset.document._id },
-          }
-        }
-      } catch {
-        console.warn('Image upload failed, continuing without image')
-      }
+      postData.cover_image = coverImageUrl
     }
 
-    const avatarUrl = profile?.avatar_url
-    if (avatarUrl) {
-      try {
-        const avatarResponse = await fetch(avatarUrl)
-        const avatarBuffer = await avatarResponse.arrayBuffer()
-        const avatarContentType = avatarResponse.headers.get('content-type') ?? 'image/png'
+    const created = (await directusAdminClient.request(
+      createItem('posts' as keyof DirectusSchema, postData as never)
+    )) as unknown as { id: string }
 
-        const uploadUrl = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/assets/images/${SANITY_DATASET}`
-        const uploadResponse = await fetch(uploadUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': avatarContentType,
-            Authorization: `Bearer ${SANITY_TOKEN}`,
-          },
-          body: avatarBuffer,
-        })
-
-        if (uploadResponse.ok) {
-          const avatarAsset = await uploadResponse.json()
-          postDocument.authorAvatar = {
-            _type: 'image',
-            asset: { _type: 'reference', _ref: avatarAsset.document._id },
-          }
-        }
-      } catch {
-        console.warn('Author avatar upload failed, continuing without avatar')
-      }
-    }
-
-    await sanityMutation([{ createOrReplace: postDocument }])
-
-    return NextResponse.json({ success: true, postId, slug })
+    return NextResponse.json({ success: true, postId: created.id, slug })
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Failed to create post'
     console.error('Post creation error:', message)

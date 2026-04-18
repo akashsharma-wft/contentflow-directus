@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { readItems, updateItem } from '@directus/sdk'
 import { stripe } from '@/lib/stripe'
 import { createClient } from '@supabase/supabase-js'
+import { directusAdminClient } from '@/lib/directus/client'
+import type { DirectusSchema } from '@/types/directus'
 
 export async function POST(request: NextRequest) {
   if (!stripe) {
@@ -77,40 +80,28 @@ export async function POST(request: NextRequest) {
         .update({ subscription_tier: 'free', subscription_id: null })
         .eq('id', profile.id)
 
-      // Find all published posts by this user, keep 5 newest published, draft the rest
-      const SANITY_PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
-      const SANITY_DATASET    = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
-      const SANITY_TOKEN      = process.env.SANITY_API_TOKEN!
+      // Fetch all published posts for this user, ordered newest first
+      const publishedPosts = (await directusAdminClient.request(
+        readItems('posts' as keyof DirectusSchema, {
+          filter: {
+            author_id: { _eq: profile.id },
+            published_at: { _nnull: true },
+          },
+          sort: ['-published_at'],
+          fields: ['id'] as never,
+        } as never)
+      )) as unknown as { id: string }[]
 
-      const postsUrl = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/query/${SANITY_DATASET}`
-      const postsResponse = await fetch(postsUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SANITY_TOKEN}` },
-        body: JSON.stringify({
-          query: '*[_type=="post" && authorId==$userId && defined(publishedAt)] | order(publishedAt desc) {_id}',
-          params: { userId: profile.id },
-        }),
-      })
-      const postsData = await postsResponse.json()
-      const publishedPosts: { _id: string }[] = postsData?.result ?? []
-
-      // Posts beyond the 5 most recent get unpublished (publishedAt removed = draft)
+      // Posts beyond the 5 most recent get unpublished (published_at = null → draft)
       const postsToUnpublish = publishedPosts.slice(5)
 
-      if (postsToUnpublish.length > 0) {
-        const mutations = postsToUnpublish.map((p) => ({
-          patch: { id: p._id, unset: ['publishedAt'] }
-        }))
-
-        await fetch(
-          `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/mutate/${SANITY_DATASET}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SANITY_TOKEN}` },
-            body: JSON.stringify({ mutations }),
-          }
+      for (const post of postsToUnpublish) {
+        await directusAdminClient.request(
+          updateItem('posts' as keyof DirectusSchema, post.id, { published_at: null } as never)
         )
+      }
 
+      if (postsToUnpublish.length > 0) {
         console.log(`Downgraded user ${profile.id}: unpublished ${postsToUnpublish.length} posts`)
       }
     }

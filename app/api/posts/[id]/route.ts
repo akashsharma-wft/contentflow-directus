@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { readItem, updateItem, deleteItem } from '@directus/sdk'
 import { createClient } from '@/lib/supabase/server'
-
-const SANITY_PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
-const SANITY_DATASET    = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
-const SANITY_TOKEN      = process.env.SANITY_API_TOKEN!
+import { directusAdminClient } from '@/lib/directus/client'
+import type { DirectusSchema } from '@/types/directus'
 
 export async function PATCH(
   request: NextRequest,
@@ -17,79 +16,36 @@ export async function PATCH(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const checkUrl = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/query/${SANITY_DATASET}`
-    const checkResponse = await fetch(checkUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SANITY_TOKEN}` },
-      body: JSON.stringify({
-        query: '*[_id==$id && authorId==$authorId][0]{_id}',
-        params: { id, authorId: user.id },
-      }),
-    })
-    const checkData = await checkResponse.json()
-    if (!checkData?.result?._id) {
+    // Ownership check
+    const existing = (await directusAdminClient.request(
+      readItem('posts' as keyof DirectusSchema, id)
+    )) as unknown as { author_id: string } | null
+
+    if (!existing || existing.author_id !== user.id) {
       return NextResponse.json({ error: 'You can only edit your own posts' }, { status: 403 })
     }
 
     const body = await request.json()
     const { title, excerpt, tags, featured, publishedAt, coverImageUrl, removeCoverImage } = body
 
-    // Build set object with only provided fields — supports partial updates
-    // This allows the featured toggle to send ONLY {featured: true/false}
-    const setFields: Record<string, unknown> = {}
-    const unsetFields: string[] = []
+    const updateData: Record<string, unknown> = {}
 
-    if (title !== undefined)      setFields.title      = title
-    if (excerpt !== undefined)    setFields.excerpt    = excerpt
-    if (tags !== undefined)       setFields.tags       = tags
-    if (featured !== undefined)   setFields.featured   = featured
-    if (publishedAt !== undefined) setFields.publishedAt = publishedAt
+    if (title !== undefined)      updateData.title       = title
+    if (excerpt !== undefined)    updateData.excerpt     = excerpt
+    if (tags !== undefined)       updateData.tags        = tags
+    if (featured !== undefined)   updateData.featured    = featured
+    if (publishedAt !== undefined) updateData.published_at = publishedAt
 
-    // Handle cover image update
+    // Store Supabase Storage URL directly — no re-upload needed
     if (coverImageUrl) {
-      try {
-        const imageResponse = await fetch(coverImageUrl)
-        const imageBuffer = await imageResponse.arrayBuffer()
-        const contentType = imageResponse.headers.get('content-type') ?? 'image/jpeg'
-
-        const uploadUrl = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/assets/images/${SANITY_DATASET}`
-        const uploadResponse = await fetch(uploadUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': contentType, Authorization: `Bearer ${SANITY_TOKEN}` },
-          body: imageBuffer,
-        })
-
-        if (uploadResponse.ok) {
-          const imageAsset = await uploadResponse.json()
-          setFields.coverImage = {
-            _type: 'image',
-            asset: { _type: 'reference', _ref: imageAsset.document._id },
-          }
-        }
-      } catch {
-        console.warn('Cover image upload failed, skipping image update')
-      }
+      updateData.cover_image = coverImageUrl
     } else if (removeCoverImage) {
-      unsetFields.push('coverImage')
+      updateData.cover_image = null
     }
 
-    const patch: Record<string, unknown> = { id }
-    if (Object.keys(setFields).length > 0)  patch.set   = setFields
-    if (unsetFields.length > 0)             patch.unset = unsetFields
-
-    const mutations = [{ patch }]
-
-    const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/mutate/${SANITY_DATASET}`
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${SANITY_TOKEN}` },
-      body: JSON.stringify({ mutations }),
-    })
-
-    if (!response.ok) {
-      const err = await response.json()
-      throw new Error(err.error?.description ?? 'Sanity update failed')
-    }
+    await directusAdminClient.request(
+      updateItem('posts' as keyof DirectusSchema, id, updateData as never)
+    )
 
     return NextResponse.json({ success: true })
   } catch (err: unknown) {
@@ -112,39 +68,18 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Verify ownership
-    const checkUrl = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/query/${SANITY_DATASET}`;
-    const checkQuery = '*[_id==$id && authorId==$authorId][0]{_id}';
-    const checkResponse = await fetch(checkUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${SANITY_TOKEN}`,
-      },
-      body: JSON.stringify({
-        query: checkQuery,
-        params: { id, authorId: user.id },
-      }),
-    });
-    const checkData = await checkResponse.json()
+    // Ownership check
+    const existing = (await directusAdminClient.request(
+      readItem('posts' as keyof DirectusSchema, id)
+    )) as unknown as { author_id: string } | null
 
-    if (!checkData?.result?._id) {
+    if (!existing || existing.author_id !== user.id) {
       return NextResponse.json({ error: 'You can only delete your own posts' }, { status: 403 })
     }
 
-    const url = `https://${SANITY_PROJECT_ID}.api.sanity.io/v2024-01-01/data/mutate/${SANITY_DATASET}`
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${SANITY_TOKEN}`,
-      },
-      body: JSON.stringify({ mutations: [{ delete: { id } }] }),
-    })
-
-    if (!response.ok) {
-      throw new Error('Sanity delete failed')
-    }
+    await directusAdminClient.request(
+      deleteItem('posts' as keyof DirectusSchema, id)
+    )
 
     return NextResponse.json({ success: true })
   } catch (err: unknown) {

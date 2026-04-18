@@ -1,36 +1,31 @@
 // app/page.tsx — English homepage at /
 //
-// Uses getSanityClient() (draft-mode-aware) so that when the Presentation Tool
-// is active, it fetches draft documents and live-updates the preview.
-//
 // ROUTING LOGIC:
-//   - Reads the 'home' page document from Sanity for language='en'
+//   - Reads the 'home' page document from Directus for language='en'
 //   - Checks page.access: guest (public) / user (auth required) / admin
 //   - Renders with page.layout: home (Navbar+Footer) / dashboard (Sidebar) / auth (no chrome)
-//   - Passes the page's sections[] to SectionRenderer which maps _type → React component
+//   - Passes the page's sections[] to SectionRenderer which maps sectionType → React component
 //
 // MULTILINGUAL:
-//   - This file handles English only. Hindi is at /hi, Kannada at /kn
-//   - Each language has its own 'home' page document in Sanity with translated content
+//   - This file handles English only. Hindi is at /hi, Kannada at /kn.
 
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { createClient as createSupabaseServer } from '@/lib/supabase/server'
-import { getSanityClient } from '@/lib/sanity/server-client'
-import { sanityClient } from '@/lib/sanity/client'
-import { PAGE_BY_SLUG_AND_LANG_QUERY, SITE_CONFIG_QUERY, NAV_PAGES_QUERY } from '@/lib/sanity/queries'
+import { getPageBySlugAndLang, getSiteConfig, getNavPages } from '@/lib/directus/queries'
 import { buildMetadata } from '@/lib/seo'
 import { SectionRenderer } from '@/sections/SectionRenderer'
 import { DashboardLayout } from '@/features/dashboard/components/DashboardLayout'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
-import type { SanityPage, SanitySiteConfig, NavPage } from '@/types/sanity'
+import type { DirectusPage } from '@/types/directus'
+import type { SanitySiteConfig, NavPage } from '@/types/sanity'
 
 export const revalidate = 60
 
 // ── Access control helper ──────────────────────────────────────────────────────
 
-function getPageAccess(page: SanityPage) {
+function getPageAccess(page: DirectusPage) {
   return {
     requireAuth:  page.access === 'user' || page.access === 'admin',
     requireAdmin: page.access === 'admin',
@@ -43,37 +38,28 @@ function getPageAccess(page: SanityPage) {
 // ── Metadata ──────────────────────────────────────────────────────────────────
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await sanityClient.fetch<SanityPage | null>(
-    PAGE_BY_SLUG_AND_LANG_QUERY,
-    { slug: 'home', lang: 'en' },
-    { next: { revalidate: 60 } }
-  )
+  const page = await getPageBySlugAndLang('home', 'en')
 
   return buildMetadata({
     slug: 'home',
     lang: 'en',
     title: page?.seoTitle ?? page?.title,
     description: page?.seoDescription,
-    ogImage: (page?.ogImage as { url?: string } | undefined)?.url,
+    ogImage: page?.ogImage,
   })
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  // Use draft-mode aware client so Presentation tool gets live updates
-  const client = await getSanityClient()
-  const page = await client.fetch<SanityPage | null>(
-    PAGE_BY_SLUG_AND_LANG_QUERY,
-    { slug: 'home', lang: 'en' }
-  )
+  const page = await getPageBySlugAndLang('home', 'en')
 
   if (!page) {
     return (
       <div className="min-h-screen bg-[#0d0e14] flex items-center justify-center">
         <div className="text-center space-y-3">
-          <p className="text-white/30 text-sm">Home page not found in Sanity.</p>
-          <p className="text-white/20 text-xs">Run <code className="bg-white/5 px-2 py-0.5 rounded">npm run seed</code> to create it.</p>
+          <p className="text-white/30 text-sm">Home page not found in Directus.</p>
+          <p className="text-white/20 text-xs">Run <code className="bg-white/5 px-2 py-0.5 rounded">npm run directus:seed</code> to create it.</p>
         </div>
       </div>
     )
@@ -116,7 +102,6 @@ export default async function HomePage() {
   }
 
   // ── Auth layout (no chrome) ────────────────────────────────────────────────
-  // lg:flex: authHeroSection (lg:w-[45%]) + authSection (right flex-1)
   if (access.isAuth) {
     return sections.length > 0 ? (
       <div className="min-h-screen bg-[#0d0e14] lg:flex lg:flex-wrap">
@@ -129,17 +114,13 @@ export default async function HomePage() {
 
   // ── Public layout (Navbar + Footer) ───────────────────────────────────────
   const [siteConfig, navPages] = await Promise.all([
-    sanityClient.fetch<SanitySiteConfig | null>(
-      SITE_CONFIG_QUERY, { lang: 'en' }, { next: { revalidate: 60 } }
-    ),
-    sanityClient.fetch<NavPage[]>(
-      NAV_PAGES_QUERY, { lang: 'en' }, { next: { revalidate: 60 } }
-    ),
+    getSiteConfig(),
+    getNavPages('en'),
   ])
 
   return (
     <div className="min-h-screen bg-[#0d0e14]">
-      <Navbar siteConfig={siteConfig} navPages={navPages} lang="en" />
+      <Navbar siteConfig={siteConfig as unknown as SanitySiteConfig} navPages={navPages as unknown as NavPage[]} lang="en" />
       {sections.length > 0 ? (
         <SectionRenderer sections={sections} lang="en" />
       ) : (
@@ -147,7 +128,7 @@ export default async function HomePage() {
           <p className="text-white/30 text-sm">No sections configured for this page.</p>
         </div>
       )}
-      <Footer siteConfig={siteConfig} lang="en" />
+      <Footer siteConfig={siteConfig as unknown as SanitySiteConfig} lang="en" />
     </div>
   )
 }

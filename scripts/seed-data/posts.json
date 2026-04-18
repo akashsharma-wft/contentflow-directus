@@ -1,0 +1,198 @@
+[
+  {
+    "title": "Getting Started with ContentFlow",
+    "slug": "getting-started-with-contentflow",
+    "language": "en",
+    "excerpt": "Learn how to set up ContentFlow and start managing your content with Directus and Next.js.",
+    "featured": true,
+    "tags": ["tutorial", "getting-started", "directus"],
+    "published_at": "2025-04-01T10:00:00.000Z",
+    "cover_image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
+    "author_name": "ContentFlow Team",
+    "author_email": "team@contentflow.app",
+    "body": [
+      {
+        "_type": "block",
+        "_key": "b1",
+        "style": "h2",
+        "children": [{ "_type": "span", "_key": "s1", "text": "Welcome to ContentFlow", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b2",
+        "style": "normal",
+        "children": [{ "_type": "span", "_key": "s2", "text": "ContentFlow is a production-ready SaaS dashboard starter that combines the power of Directus CMS with Next.js App Router, Supabase authentication, and Stripe billing.", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b3",
+        "style": "h3",
+        "children": [{ "_type": "span", "_key": "s3", "text": "Key Features", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b4",
+        "style": "normal",
+        "children": [{ "_type": "span", "_key": "s4", "text": "The platform ships with everything you need to build a modern content-driven application: CMS-powered pages, a posts management dashboard, role-based access control, and Stripe billing integration.", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b5",
+        "style": "h3",
+        "children": [{ "_type": "span", "_key": "s5", "text": "Getting Started", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b6",
+        "style": "normal",
+        "children": [{ "_type": "span", "_key": "s6", "text": "Clone the repository, copy .env.example to .env.local, fill in your Directus URL and tokens, then run npm run dev. Your dashboard will be live at localhost:3000.", "marks": [] }],
+        "markDefs": []
+      }
+    ]
+  },
+  {
+    "title": "Building with the App Router",
+    "slug": "building-with-app-router",
+    "language": "en",
+    "excerpt": "A deep dive into Next.js App Router patterns used in ContentFlow, including server components and streaming.",
+    "featured": true,
+    "tags": ["nextjs", "app-router", "react"],
+    "published_at": "2025-04-05T10:00:00.000Z",
+    "cover_image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
+    "author_name": "ContentFlow Team",
+    "author_email": "team@contentflow.app",
+    "body": [
+      {
+        "_type": "block",
+        "_key": "b1",
+        "style": "h2",
+        "children": [{ "_type": "span", "_key": "s1", "text": "App Router Architecture", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b2",
+        "style": "normal",
+        "children": [{ "_type": "span", "_key": "s2", "text": "ContentFlow is built on the Next.js 15 App Router, taking full advantage of React Server Components for fast initial page loads and seamless data fetching.", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b3",
+        "style": "h3",
+        "children": [{ "_type": "span", "_key": "s3", "text": "Server Components", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b4",
+        "style": "normal",
+        "children": [{ "_type": "span", "_key": "s4", "text": "All page-level components are server components by default. They fetch data from Directus at render time, keeping API keys server-side and reducing client bundle size.", "marks": [] }],
+        "markDefs": []
+      }
+    ]
+  },
+  {
+    "title": "Directus as a Headless CMS",
+    "slug": "directus-as-headless-cms",
+    "language": "en",
+    "excerpt": "Why we chose Directus for ContentFlow and how its REST API powers the entire content layer.",
+    "featured": false,
+    "tags": ["directus", "headless-cms", "api"],
+    "published_at": "2025-04-10T10:00:00.000Z",
+    "cover_image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800&q=80",
+    "author_name": "ContentFlow Team",
+    "author_email": "team@contentflow.app",
+    "body": [
+      {
+        "_type": "block",
+        "_key": "b1",
+        "style": "h2",
+        "children": [{ "_type": "span", "_key": "s1", "text": "Why Directus?", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b2",
+        "style": "normal",
+        "children": [{ "_type": "span", "_key": "s2", "text": "Directus wraps any SQL database with a powerful REST and GraphQL API, a beautiful admin UI, and granular role-based permissions — making it the ideal backend for content-driven applications.", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b3",
+        "style": "h3",
+        "children": [{ "_type": "span", "_key": "s3", "text": "Self-hosted or Cloud", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b4",
+        "style": "normal",
+        "children": [{ "_type": "span", "_key": "s4", "text": "Directus can run locally with Docker, on your own server, or via Directus Cloud. ContentFlow is compatible with all deployment modes — just point NEXT_PUBLIC_DIRECTUS_URL at your instance.", "marks": [] }],
+        "markDefs": []
+      }
+    ]
+  },
+  {
+    "title": "Supabase Auth Integration",
+    "slug": "supabase-auth-integration",
+    "language": "en",
+    "excerpt": "How ContentFlow integrates Supabase for user authentication, profiles, and row-level security.",
+    "featured": false,
+    "tags": ["supabase", "authentication", "security"],
+    "published_at": "2025-04-12T10:00:00.000Z",
+    "cover_image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    "author_name": "ContentFlow Team",
+    "author_email": "team@contentflow.app",
+    "body": [
+      {
+        "_type": "block",
+        "_key": "b1",
+        "style": "h2",
+        "children": [{ "_type": "span", "_key": "s1", "text": "Authentication Architecture", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b2",
+        "style": "normal",
+        "children": [{ "_type": "span", "_key": "s2", "text": "ContentFlow uses Supabase for user authentication, supporting both email/password and Google OAuth. User profiles, roles, and subscription tiers are stored in a Supabase Postgres database.", "marks": [] }],
+        "markDefs": []
+      }
+    ]
+  },
+  {
+    "title": "Stripe Billing Integration",
+    "slug": "stripe-billing-integration",
+    "language": "en",
+    "excerpt": "A walkthrough of the Stripe checkout, webhook, and portal integration in ContentFlow.",
+    "featured": false,
+    "tags": ["stripe", "billing", "payments"],
+    "published_at": "2025-04-15T10:00:00.000Z",
+    "cover_image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80",
+    "author_name": "ContentFlow Team",
+    "author_email": "team@contentflow.app",
+    "body": [
+      {
+        "_type": "block",
+        "_key": "b1",
+        "style": "h2",
+        "children": [{ "_type": "span", "_key": "s1", "text": "Stripe Integration Overview", "marks": [] }],
+        "markDefs": []
+      },
+      {
+        "_type": "block",
+        "_key": "b2",
+        "style": "normal",
+        "children": [{ "_type": "span", "_key": "s2", "text": "ContentFlow includes a complete Stripe billing implementation: checkout sessions, customer portal, webhook handling, and subscription tier enforcement for the free/pro post limits.", "marks": [] }],
+        "markDefs": []
+      }
+    ]
+  }
+]
