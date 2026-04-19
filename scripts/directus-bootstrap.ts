@@ -381,7 +381,7 @@ async function bootstrapPages() {
           interface: 'input-code',
           options: { language: 'json' },
           width: 'full',
-          note: 'SectionRenderer section config array — see types/sanity.ts for shape',
+          note: 'SectionRenderer section config array — see types/cms.ts for shape',
         },
         schema: { is_nullable: true },
       },

@@ -2,10 +2,10 @@
 
 ## Project Overview
 
-ContentFlow is a **CMS-driven SaaS dashboard** built as an internship assignment. It combines a public marketing/blog site with a protected user dashboard, all powered by Sanity CMS for content management.
+ContentFlow is a **CMS-driven SaaS dashboard** built as an internship assignment. It combines a public marketing/blog site with a protected user dashboard, all powered by Directus for content management.
 
 - **Live demo**: https://contentflow--akash-sharma-weframetech.vercel.app
-- **Stack**: Next.js 16.2.1 (App Router), React 19, Sanity v4.22, Supabase Auth, Stripe, PostHog
+- **Stack**: Next.js 16.2.1 (App Router), React 19, @directus/sdk 21, Supabase Auth, Stripe, PostHog
 - **Languages**: TypeScript strict mode throughout
 - **Path alias**: `@/` maps to project root
 
@@ -16,8 +16,8 @@ ContentFlow is a **CMS-driven SaaS dashboard** built as an internship assignment
 ```
 contentflow/
 ├── app/
-│   ├── layout.tsx                        # Root layout — Providers, Toaster, DraftModeVisualEditing. No Navbar/Footer (each page controls its own)
-│   ├── page.tsx                          # English homepage (/). Fetches 'home' Sanity page, renders with Navbar+Footer
+│   ├── layout.tsx                        # Root layout — Providers, Toaster. No Navbar/Footer (each page controls its own)
+│   ├── page.tsx                          # English homepage (/). Fetches 'home' page from Directus, renders with Navbar+Footer
 │   ├── [lang]/
 │   │   ├── page.tsx                      # Polymorphic: lang homepages (/hi, /kn), EN slug pages (/login, /signup, /posts, etc.), EN post detail
 │   │   └── [slug]/
@@ -25,15 +25,10 @@ contentflow/
 │   ├── auth/
 │   │   └── callback/
 │   │       └── route.ts                  # OAuth (Google) + email OTP callback. Handles `code` (OAuth) and `token_hash` (email verify)
-│   ├── studio/
-│   │   └── [[...index]]/
-│   │       ├── page.tsx                  # Sanity Studio at /studio. Checks auth+role, renders StudioClient or StudioAccessRequest
-│   │       ├── _StudioClient.tsx         # Client wrapper for Sanity <Studio>. Pre-seeds localStorage with token
-│   │       └── _StudioAccessRequest.tsx  # UI for non-admins: shows pending invite status or access request form
 │   └── api/
 │       ├── posts/
-│       │   ├── route.ts                  # POST: Create post. Checks subscription limit (free=5, pro=unlimited). Uploads image+avatar to Sanity
-│       │   └── [id]/route.ts             # GET/PUT/DELETE: Single post CRUD
+│       │   ├── route.ts                  # POST: Create post. Checks subscription limit (free=5, pro=unlimited). Stores image URL
+│       │   └── [id]/route.ts             # PATCH/DELETE: Single post update or delete
 │       ├── create-checkout-session/
 │       │   └── route.ts                  # POST: Creates Stripe checkout session. Requires auth + valid plan
 │       ├── stripe/
@@ -50,11 +45,8 @@ contentflow/
 │       │   │   ├── route.ts              # GET: Lists all admin invites/requests. Joins with profiles for display names
 │       │   │   └── [id]/route.ts         # PUT: Admin approves/rejects invites. Updates status + sets role in profiles
 │       ├── studio/
-│       │   └── request-access/route.ts   # POST: Non-admin requests studio access → inserts admin_invites (type='request')
-│       ├── preview/
-│       │   ├── enable/route.ts           # GET: Enables Next.js Draft Mode for Presentation Tool
-│       │   └── disable/route.ts          # POST: Disables Draft Mode
-│       └── delete-account/route.ts       # POST: Deletes user from Supabase auth + cascades to Sanity posts
+│       │   └── request-access/route.ts   # POST: Non-admin requests CMS access → inserts admin_invites (type='request')
+│       └── delete-account/route.ts       # POST: Deletes user from Supabase auth + cascades to posts
 
 ├── features/
 │   ├── admin/
@@ -89,7 +81,7 @@ contentflow/
 │   │   ├── GraphQLNodeCard.tsx           # Design system showcase (demo only)
 │   │   └── InteractionLibraryCard.tsx    # Design system showcase (demo only)
 │   ├── posts/
-│   │   ├── PostsPageClient.tsx           # Main posts management page (client). Search (debounced), sync from Sanity, create/edit/delete modals
+│   │   ├── PostsPageClient.tsx           # Main posts management page (client). Search (debounced), create/edit/delete modals
 │   │   ├── PostsTable.tsx                # Posts table. Columns: title, status, image, tags, last modified. Row actions: view, edit, delete
 │   │   ├── PostsHeader.tsx               # Page title + description
 │   │   ├── PostsStatsBar.tsx             # Stats: my posts count, published, drafts
@@ -106,23 +98,23 @@ contentflow/
 │       ├── ProfileAvatar.tsx             # Avatar uploader → Supabase storage → profiles.avatar_url
 │       └── DeleteAccountDialog.tsx       # Confirmation + final warning. Calls /api/delete-account
 
-├── sections/                             # CMS Section Renderers — Sanity block type → React component
-│   ├── SectionRenderer.tsx               # Main dispatcher: sectionType → component. Handles new doc refs + legacy inline objects
+├── sections/                             # CMS Section Renderers — sectionType discriminator → React component
+│   ├── SectionRenderer.tsx               # Main dispatcher: sectionType → component
 │   ├── _groupedExports.ts                # Barrel export for all sections
 │   │
 │   │   # PUBLIC / MARKETING SECTIONS
 │   ├── HeroSection.tsx                   # Banner: heading, subheading, badge, CTAs. Layouts: centered or split
 │   ├── CtaSection.tsx                    # CTA block: primary/secondary buttons. Themes: dark, indigo, subtle
-│   ├── FeaturedPostsSection.tsx          # N featured posts in grid/list/featured layout. Fetches from Sanity
+│   ├── FeaturedPostsSection.tsx          # N featured posts in grid/list/featured layout. Fetches from Directus
 │   ├── RecentPostsSection.tsx            # Latest posts feed. Limit configurable
-│   ├── RichTextSection.tsx               # PortableText content renderer
+│   ├── RichTextSection.tsx               # Rich text content renderer
 │   ├── StatsSection.tsx                  # Stats cards. Optional live post count
-│   ├── FormSection.tsx                   # Generic form builder. Fields from Sanity. Actions: POST/GET
+│   ├── FormSection.tsx                   # Generic form builder. Fields from CMS config. Actions: POST/GET
 │   ├── GridSection.tsx                   # Grid of items (2/3/4 columns). Each: heading, body, icon, image, link
 │   ├── ImageSection.tsx                  # Single image + caption. Max width: narrow/medium/wide/full
 │   ├── GallerySection.tsx                # Image gallery. Layouts: masonry/grid/carousel. Lightbox toggle
 │   ├── VideoSection.tsx                  # Embedded video. Poster image. Max width configurable
-│   ├── TabsSection.tsx                   # Tabbed interface. Each tab: label, icon, content (PortableText), image
+│   ├── TabsSection.tsx                   # Tabbed interface. Each tab: label, icon, content, image
 │   ├── CarouselSection.tsx               # Image carousel. Autoplay, dots, arrows toggleable
 │   ├── TableSection.tsx                  # Striped/bordered table from CMS data
 │   ├── TimelineTeamLogoBar.tsx           # Timeline events, team members, logo bar components
@@ -151,7 +143,7 @@ contentflow/
 │   │
 │   │   # POSTS MANAGEMENT SECTIONS (/posts page)
 │   ├── PostsPageSection.tsx              # Master container for /posts page
-│   ├── PostsHeaderSection.tsx            # Page title + subheading + GROQ badge
+│   ├── PostsHeaderSection.tsx            # Page title + subheading + API badge
 │   ├── PostsStatsSection.tsx             # Stats bar: my posts, published, drafts
 │   ├── PostsActionsSection.tsx           # Action buttons: Sync, New Post
 │   ├── PostsSearchSection.tsx            # Search bar. Integrates with useUIStore.postsSearchQuery
@@ -183,7 +175,7 @@ contentflow/
 │   │   ├── dialog.tsx, alert-dialog.tsx, dropdown-menu.tsx, sheet.tsx
 │   │   ├── avatar.tsx, badge.tsx, separator.tsx, skeleton.tsx
 │   │   ├── table.tsx, sonner.tsx
-│   ├── custom/                           # Sanity component document renderers
+│   ├── custom/                           # CMS component document renderers
 │   │   ├── ComponentRenderer.tsx         # Dispatches componentType → layout/ or content/ sub-renderer
 │   │   ├── layout/
 │   │   │   ├── NavbarComponent.tsx       # Navbar from component doc. Links, CTA, auth toggle
@@ -204,17 +196,14 @@ contentflow/
 │   ├── LanguageSwitcher.tsx              # Language dropdown (EN/HI/KN). Sets ?lang= or route
 │   ├── PostsListing.tsx                  # Public post list. Card layout with images
 │   ├── PostFilterGrid.tsx                # Post filtering + grid. Tag filters, sorting
-│   ├── DraftModeVisualEditing.tsx        # Mounts VisualEditing. Only renders inside Sanity Presentation iframe
 │   ├── providers.tsx                     # Root providers: QueryClientProvider, PostHogProvider, AuthProvider
 │   └── posthog-provider.tsx              # PostHog client setup
 
 ├── lib/
-│   ├── sanity/
-│   │   ├── client.ts                     # 3 clients: sanityClient (public CDN), sanityFreshClient (no CDN), sanityAdminClient (write, token)
-│   │   ├── server-client.ts              # Draft-mode aware server client. Draft ON → previewDrafts + stega. Draft OFF → CDN
-│   │   ├── queries.ts                    # All GROQ queries. POST_CARD_FIELDS, POST_FULL_FIELDS, SECTIONS_PROJECTION,
-│   │   │                                 #   PAGE_BY_SLUG_AND_LANG_QUERY, POST_BY_SLUG_AND_LANG_QUERY,
-│   │   │                                 #   ALL_POSTS_QUERY, MY_POSTS_QUERY, ALL_PAGE_SLUGS_QUERY, ALL_POST_SLUGS_QUERY + more
+│   ├── directus/
+│   │   ├── client.ts                     # directusClient (public read), directusAdminClient (write, admin token)
+│   │   ├── queries.ts                    # All CMS read functions: getPostBySlugAndLang, getPageBySlugAndLang,
+│   │   │                                 #   getFeaturedPosts, getMyPosts, getSiteConfig, getAllPostSlugs + more
 │   │   └── pageResolver.ts               # resolveContent(slug, lang) → discriminated union (page|post)
 │   │                                     #   Constants: SUPPORTED_LANGUAGES ['en','hi','kn'], LANG_LABELS, isSupportedLang()
 │   ├── supabase/
@@ -222,7 +211,7 @@ contentflow/
 │   │   ├── server.ts                     # Server-only client. Server cookies. For route handlers + server components
 │   │   └── middleware.ts                 # updateSession(). Route config:
 │   │                                     #   Public: /api/*, /login, /signup, /auth/*
-│   │                                     #   Protected: /posts, /analytics, /settings, /billing, /admin, /studio
+│   │                                     #   Protected: /posts, /analytics, /settings, /billing, /admin
 │   │                                     #   Admin-only: /admin, /analytics
 │   ├── utils.ts                          # cn() — clsx + tailwind-merge
 │   ├── seo.ts                            # buildCanonicalPath(), buildCanonicalUrl(), buildHreflangPaths(), buildMetadata()
@@ -239,54 +228,22 @@ contentflow/
 │                                         #   toggleSidebar(), setSidebarOpen(), setPostsSearchQuery()
 
 ├── types/
-│   ├── sanity.ts                         # All Sanity TypeScript types. Add new block types here
-│   │                                     #   SanityPost, SanityPage, SanitySection, SanityComponent,
-│   │                                     #   all section sub-types, all component sub-types
+│   ├── cms.ts                            # All CMS TypeScript types. Add new section/component types here
+│   │                                     #   PostRecord, PostCard, PageRecord, CmsSection, ComponentDoc,
+│   │                                     #   SiteConfig, all section sub-types, all component sub-types
+│   ├── directus.ts                       # Directus row types (DirectusPostRow, DirectusPageRow, DirectusSiteConfigRow)
+│   │                                     #   Normalised shapes + toPost()/toPage()/toSiteConfig() converters
+│   │                                     #   DirectusSchema for type-safe SDK client
 │   ├── supabase.ts                       # Auto-generated DB types. DO NOT EDIT MANUALLY
 │   │                                     #   profiles table, user_role_enum (member|admin), subscription_tier_enum (free|pro)
 │   └── admin.ts                          # AdminInviteType, AdminInviteStatus, AdminInvite, AdminInviteRow, AdminDatabase
 
-├── sanity/
-│   ├── schemaTypes/
-│   │   ├── documents/
-│   │   │   ├── page.ts                   # Page builder. Fields: title, slug, language, access (guest/user/admin),
-│   │   │   │                             #   layout (home/dashboard/auth), sections[], seoTitle, seoDescription, ogImage
-│   │   │   ├── post.ts                   # Blog post. Fields: title, slug, language, excerpt, body (PortableText),
-│   │   │   │                             #   coverImage, publishedAt (null=draft), featured, tags[],
-│   │   │   │                             #   authorId, authorName, authorEmail, authorAvatar (auto-populated)
-│   │   │   ├── section.ts                # Reusable section doc. Discriminator: sectionType. One named sub-object per type
-│   │   │   └── component.ts              # Reusable component doc. Discriminator: componentType
-│   │   ├── sections/
-│   │   │   └── systemSections/
-│   │   │       ├── adminPageSections.ts
-│   │   │       ├── analyticsPageSections.ts
-│   │   │       ├── authPageSections.ts           # loginSection, signupSection, authFormSection, authHeroSection
-│   │   │       ├── billingPageSections.ts        # billingHeader, billingCurrentPlan, billingUsage, billingPlansGrid, billingFooter
-│   │   │       ├── homePageSections.ts
-│   │   │       ├── postDetailPageSections.ts     # postDetailHeader, postDetailMeta, postDetailBody, postDetailTags, postDetailBackLink
-│   │   │       ├── postsPageSections.ts          # postsHeader, postsStats, postsActions, postsSearch, postsTable
-│   │   │       └── settingsPageSections.ts       # settingsHeader, settingsInfo, settingsForm, settingsDanger
-│   │   ├── components/
-│   │   │   ├── contentComponents/
-│   │   │   │   ├── gridComponent.ts, cardsComponent.ts, formComponent.ts
-│   │   │   │   ├── dataTableComponent.ts, pricingComponent.ts, listComponent.ts, flexComponent.ts
-│   │   │   └── layoutComponents/
-│   │   │       ├── navbarComponent.ts, footerComponent.ts, sidebarComponent.ts, mobileNavComponent.ts
-│   │   ├── singletons/
-│   │   │   └── siteConfig.ts             # Site-wide config: siteName, siteDescription, links[], languages[], branding
-│   │   └── index.ts                      # Schema registry
-│   ├── components/                       # Studio UI components (StudioNavbar, PreviewIframe, etc.)
-│   ├── lib/                              # Studio utilities (languageStore, translations)
-│   └── structure.ts                      # Custom Sanity Studio structure
-
 ├── scripts/
-│   ├── seed.ts                           # Database seeding
-│   └── cleanup.ts                        # Database cleanup
+│   ├── directus-bootstrap.ts             # Creates Directus collections + fields
+│   └── directus-seed.ts                  # Seeds initial pages, posts, site config data
 
 ├── proxy.ts                              # Next.js middleware. ALWAYS_PUBLIC, ALWAYS_AUTH, ALWAYS_ADMIN path checks
-├── sanity.config.tsx                     # Studio config. Plugins: structureTool, visionTool, presentationTool, documentInternationalization
-│                                         #   Languages: en, hi, kn. i18n types: page, post
-├── next.config.ts                        # Remote image patterns: cdn.sanity.io, supabase CDN, picsum.photos, unsplash
+├── next.config.ts                        # Remote image patterns: supabase CDN, picsum.photos, unsplash
 ├── tailwind.config.ts                    # Tailwind v4 config
 ├── tsconfig.json                         # ES2017, ESNext, strict mode, @/* → root
 └── package.json
@@ -300,8 +257,8 @@ contentflow/
 ```
 Request → proxy.ts (auth check)
        → app/[lang]/page.tsx
-       → lib/sanity/pageResolver.ts (resolveContent(slug, lang))
-       → Sanity GROQ fetch (lib/sanity/queries.ts)
+       → lib/directus/pageResolver.ts (resolveContent(slug, lang))
+       → Directus REST fetch (lib/directus/queries.ts)
        → SectionRenderer.tsx (maps sectionType → React component)
        → Section component renders (may fetch more data or use CMS config)
 ```
@@ -318,24 +275,15 @@ LoginForm / SignupForm → Supabase auth
 ### 3. Posts Management Flow
 ```
 PostsPageClient.tsx
-    → GET /api/posts → Sanity MY_POSTS_QUERY (user's posts, published + drafts)
-    → CreatePostModal → POST /api/posts (upload image to Sanity, create post doc, check subscription limit)
-    → EditPostModal → PUT /api/posts/[id]
+    → GET /api/posts → Directus items/posts filtered by author_id
+    → CreatePostModal → POST /api/posts (create post via directusAdminClient, check subscription limit)
+    → EditPostModal → PATCH /api/posts/[id]
     → DeletePostDialog → DELETE /api/posts/[id]
     → PostsTable renders via @tanstack/react-table
     → useUIStore.postsSearchQuery shared between PostsSearchSection (input) and PostsTable (filter)
 ```
 
-### 4. CMS Draft Mode / Visual Editing
-```
-/api/preview/enable → draftMode().enable()
-       → lib/sanity/server-client.ts switches to perspective='previewDrafts' + stega encoding
-       → DraftModeVisualEditing.tsx mounts VisualEditing overlay
-         (gates itself: only renders when window.self !== window.top — inside Sanity Presentation iframe)
-/api/preview/disable → draftMode().disable()
-```
-
-### 5. Billing Flow
+### 4. Billing Flow
 ```
 BillingPageClient.tsx
     → GET /api/stripe/prices → Stripe active prices
@@ -345,14 +293,11 @@ BillingPageClient.tsx
     → Stripe webhook → POST /api/webhooks/stripe → updates profiles.subscription_tier in Supabase
 ```
 
-### 6. Admin / Studio Access Flow
+### 5. Admin Access Flow
 ```
-/studio → studio/[[...index]]/page.tsx
-    → Checks Supabase auth + profile.role
-    → admin → _StudioClient.tsx (full Sanity Studio, pre-seeds localStorage with token)
-    → non-admin → _StudioAccessRequest.tsx
-        → POST /api/studio/request-access → admin_invites (type='request', status='pending')
+/api/studio/request-access → admin_invites (type='request', status='pending')
     → Admin approves via GET /api/admin/invites → PUT /api/admin/invites/[id] → sets profile.role='admin'
+    → Admin panel at /admin — uses Directus admin UI at :8055 for CMS management
 ```
 
 ---
@@ -360,32 +305,29 @@ BillingPageClient.tsx
 ## Key Architectural Patterns
 
 ### Section Renderer Pattern
-- Sanity sections are **documents** (referenced in `page.sections[]`), not inline objects
-- Discriminator: `sectionType` field on the section document
+- Page sections are stored as a **JSON blob** in `pages.sections` in Directus
+- Discriminator: `sectionType` field on each section object
 - Each section type has one named sub-object (e.g., `hero`, `featuredPosts`, `authForm`)
 - `SectionRenderer.tsx` maps `sectionType` → React component
-- Legacy inline objects still supported for backward compat via `_type` fallback
 
 ### Component Document Pattern
-- Reusable UI blocks (navbar, footer, sidebar, grid, cards, etc.) stored as Sanity documents
+- Reusable UI blocks (navbar, footer, sidebar, grid, cards, etc.) stored as JSON in `site_config`
 - Discriminator: `componentType`
 - `ComponentRenderer.tsx` dispatches to `components/custom/layout/` or `components/custom/content/`
-- Embedded in pages via section references
 
 ### Access Control (Layered)
 | Layer | Mechanism |
 |-------|-----------|
 | Middleware | `proxy.ts` — ALWAYS_PUBLIC, ALWAYS_AUTH, ALWAYS_ADMIN path matching |
-| Page | `page.access` field in Sanity (guest/user/admin) |
+| Page | `page.access` field in Directus (guest/user/admin) |
 | API | Supabase auth check + role validation in every route handler |
 | UI | `useUser()` hook for client-side conditional rendering |
 
 ### Multi-Language Support
 - **Languages**: `en` (default, no prefix), `hi`, `kn` → `/hi/slug`, `/kn/slug`
 - **Uniqueness**: (slug, language) pair — same slug allowed across languages
-- **Sanity**: `@sanity/document-internationalization` plugin manages language tabs + translations UI
-- **GROQ**: All queries filter by `language` field
-- **Resolver**: `lib/sanity/pageResolver.ts` — `SUPPORTED_LANGUAGES`, `isSupportedLang()`
+- **Directus**: `language` field on every `posts` and `pages` record
+- **Resolver**: `lib/directus/pageResolver.ts` — `SUPPORTED_LANGUAGES`, `isSupportedLang()`
 - **Nav helpers**: `lib/navigation.ts` — `localizeHref()`, `getLocalizedLabel()`
 
 ### Global State (Zustand — `stores/uiStore.ts`)
@@ -399,39 +341,37 @@ BillingPageClient.tsx
 
 ---
 
-## Adding a New Content Block (Step-by-Step)
+## Adding a New Content Section (Step-by-Step)
 
-1. Schema → `sanity/schemaTypes/blocks/mySection.ts`
-2. Register in `sanity/schemaTypes/index.ts`
-3. Add to sections array in `sanity/schemaTypes/documents/page.ts`
-4. Renderer → `sections/MySection.tsx`
-5. Add case in `sections/SectionRenderer.tsx`
-6. Add TypeScript type in `types/sanity.ts`
+1. Renderer → `sections/MySection.tsx`
+2. Add case in `sections/SectionRenderer.tsx`
+3. Add TypeScript type in `types/cms.ts`
+4. Add the section JSON to relevant pages in Directus admin (`http://localhost:8055`)
 
 ---
 
-## Sanity CMS
+## Directus CMS
 
-- **Project ID**: `h2zl7fu3` — Dataset: `production`
-- **Studio URL**: `/studio` (embedded in Next.js app)
-- **API version**: `2024-01-01`
-- **Draft mode**: enabled via `/api/preview/enable`
+- **Admin UI**: `http://localhost:8055` (separate process, not embedded)
+- **SDK**: `@directus/sdk` v21 — `readItems`, `createItem`, `updateItem`, `deleteItem`, `aggregate`
+- **Bootstrap**: `npm run directus:bootstrap` — creates collections + fields
+- **Seed**: `npm run directus:seed` — seeds pages, posts, site config
 
-### GROQ Query Rules
-- **Always** import from `lib/sanity/queries.ts` — never write inline GROQ in components
-- All queries are language-aware, filtering by `language` field
-- `SECTIONS_PROJECTION` fully expands section/component docs with all nested fields
+### Collections
+
+| Collection | Description |
+|------------|-------------|
+| `posts` | Blog posts — title, slug, language, excerpt, body (JSON), cover_image, published_at, featured, tags, author_* |
+| `pages` | Page builder — title, slug, language, access, layout, sections (JSON blob), seo_* |
+| `site_config` | Singleton — navbar_config, footer_config, sidebar_config, mobile_nav_config (all JSON) |
+
+### CMS Data Fetch (Server Components)
 
 ```ts
-// Language-aware post query pattern
-*[_type == "post" && language == $lang && !(_id in path("drafts.**"))] {
-  title, slug, excerpt, coverImage, publishedAt, ...
-}
+import { getPageBySlugAndLang, getSiteConfig } from '@/lib/directus/queries'
 
-// Page by slug + language
-*[_type == "page" && slug.current == $slug && language == $lang][0] {
-  title, sections[], access, layout, ...
-}
+const page = await getPageBySlugAndLang('home', 'en')
+const config = await getSiteConfig()
 ```
 
 ---
@@ -446,7 +386,7 @@ BillingPageClient.tsx
 
 ### User Roles
 - `member` — default, access to posts/settings/billing
-- `admin` — additionally access analytics, admin panel, Sanity Studio
+- `admin` — additionally access analytics, admin panel
 
 ### Subscription Tiers
 - `free` — limited to 5 posts
@@ -486,8 +426,9 @@ BillingPageClient.tsx
 
 | Route | Method | Auth | Description |
 |-------|--------|------|-------------|
+| `/api/posts` | GET | user | List authenticated user's posts |
 | `/api/posts` | POST | user | Create post. Checks subscription limit (free=5) |
-| `/api/posts/[id]` | GET/PUT/DELETE | user | Single post CRUD |
+| `/api/posts/[id]` | PATCH, DELETE | user | Update or delete a post |
 | `/api/create-checkout-session` | POST | user | Start Stripe checkout |
 | `/api/stripe/prices` | GET | — | Fetch active Stripe prices |
 | `/api/stripe/portal` | POST | user | Open billing portal |
@@ -497,10 +438,8 @@ BillingPageClient.tsx
 | `/api/admin/invite` | POST | admin | Invite user by email |
 | `/api/admin/invites` | GET | admin | List all invites/requests |
 | `/api/admin/invites/[id]` | PUT | admin | Approve/reject invite |
-| `/api/studio/request-access` | POST | user | Request Studio access |
+| `/api/studio/request-access` | POST | user | Request CMS access |
 | `/api/delete-account` | POST | user | Delete user account |
-| `/api/preview/enable` | GET | — | Enable Draft Mode |
-| `/api/preview/disable` | POST | — | Disable Draft Mode |
 | `/auth/callback` | GET | — | Supabase OAuth/email callback |
 
 ---
@@ -513,16 +452,10 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 
-# Sanity
-NEXT_PUBLIC_SANITY_PROJECT_ID=h2zl7fu3
-NEXT_PUBLIC_SANITY_DATASET=production
-SANITY_API_TOKEN=
-NEXT_PUBLIC_SANITY_TOKEN=
-SANITY_API_READ_TOKEN=
-SANITY_PREVIEW_SECRET=
-SANITY_STUDIO_PROJECT_ID=h2zl7fu3
-SANITY_STUDIO_DATASET=production
-NEXT_PUBLIC_SANITY_STUDIO_URL=http://localhost:3333
+# Directus
+NEXT_PUBLIC_DIRECTUS_URL=http://localhost:8055
+DIRECTUS_ADMIN_TOKEN=               # Full-access static token
+NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN=  # Read-only token (safe for browser)
 
 # Stripe
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
@@ -536,6 +469,10 @@ NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
 POSTHOG_PERSONAL_API_KEY=
 POSTHOG_PROJECT_ID=
 
+# Resend
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
+
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
@@ -545,11 +482,11 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ## Dev Commands
 
 ```bash
-npm run dev      # Start Next.js dev server (port 3000)
-npm run build    # Production build
-npm run lint     # ESLint
-npm run seed     # Seed database (requires .env.local)
-npm run cleanup  # Clean database (requires .env.local)
+npm run dev                  # Start Next.js dev server (port 3000)
+npm run build                # Production build
+npm run lint                 # ESLint
+npm run directus:bootstrap   # Create Directus collections + fields
+npm run directus:seed        # Seed initial pages, posts, site config
 ```
 
 ---
@@ -573,9 +510,10 @@ npm run cleanup  # Clean database (requires .env.local)
 ## TypeScript Conventions
 
 - Path alias `@/` → project root
-- All Sanity types in `types/sanity.ts` — add new block types there
-- Supabase types in `types/supabase.ts` — auto-generated, **do not edit manually**
-- Admin types in `types/admin.ts`
+- CMS types → `types/cms.ts` (sections, pages, site config) — add new block types here
+- Directus row types → `types/directus.ts`
+- Supabase types → `types/supabase.ts` — auto-generated, **do not edit manually**
+- Admin types → `types/admin.ts`
 - `cn()` from `lib/utils.ts` for conditional classnames
 - Client components: `'use client'` at top of file
 - Server components: async functions, no `'use client'`
@@ -587,15 +525,15 @@ npm run cleanup  # Clean database (requires .env.local)
 
 ### Server Component Data Fetch
 ```ts
-import { client } from "@/lib/sanity/client"
-import { MY_QUERY } from "@/lib/sanity/queries"
+import { getPageBySlugAndLang, getSiteConfig } from '@/lib/directus/queries'
 
-const data = await client.fetch(MY_QUERY, { lang: "en" })
+const page = await getPageBySlugAndLang('home', 'en')
+const config = await getSiteConfig()
 ```
 
 ### Auth Check in Server Component
 ```ts
-import { createClient } from "@/lib/supabase/server"
+import { createClient } from '@/lib/supabase/server'
 
 const supabase = await createClient()
 const { data: { user } } = await supabase.auth.getUser()
@@ -603,14 +541,14 @@ const { data: { user } } = await supabase.auth.getUser()
 
 ### Client Component Auth State
 ```ts
-import { useUser } from "@/hooks/useUser"
+import { useUser } from '@/hooks/useUser'
 
 const { user, profile, isLoading } = useUser()
 ```
 
 ### Conditional Classnames
 ```ts
-import { cn } from "@/lib/utils"
+import { cn } from '@/lib/utils'
 
-className={cn("base-class", condition && "conditional-class")}
+className={cn('base-class', condition && 'conditional-class')}
 ```
