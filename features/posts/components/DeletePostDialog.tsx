@@ -29,7 +29,7 @@ export function DeletePostDialog({
   postTitle,
   onConfirm,
   dialogTitle    = 'Delete Post',
-  dialogBody     = 'Are you sure you want to delete "{title}"? This will permanently remove it from Sanity. This cannot be undone.',
+  dialogBody     = 'Are you sure you want to delete "{title}"? This action cannot be undone.',
   confirmLabel   = 'Delete Post',
   cancelLabel    = 'Cancel',
 }: DeletePostDialogProps) {

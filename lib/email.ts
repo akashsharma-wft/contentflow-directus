@@ -85,7 +85,7 @@ function buildInviteHtml({ toEmail, invitedByName, message, loginUrl }: Template
     <p style="color:rgba(255,255,255,0.5);font-size:15px;line-height:1.7;margin:0 0 28px;">
       <strong style="color:rgba(255,255,255,0.75);">${escHtml(invitedByName)}</strong>
       has invited you to become an admin on ContentFlow. Once approved, you'll have
-      full access to Sanity Studio and the admin panel.
+      full access to the admin panel and CMS.
     </p>
 
     ${noteBlock}

@@ -12,9 +12,9 @@ import {
   Zap, LayoutGrid, GitBranch, Globe, Eye,
   type LucideIcon,
 } from 'lucide-react'
-import type { AuthHeroSection as AuthHeroSectionType } from '@/types/sanity'
+import type { AuthHeroSection as AuthHeroSectionType } from '@/types/cms'
 
-// Map Sanity icon field values → Lucide components.
+// Map CMS icon field values → Lucide components.
 // Only icons actually used by auth hero features need to be here.
 const ICON_MAP: Record<string, LucideIcon> = {
   Zap, LayoutGrid, GitBranch, Globe, Eye,

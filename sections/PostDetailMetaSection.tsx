@@ -1,9 +1,9 @@
-// sections/PostDetailMetaSection.tsx
+﻿// sections/PostDetailMetaSection.tsx
 //
 // Configuration section for the post detail meta row (author, date).
 // Config consumed by app/[lang]/[slug]/page.tsx → PostDetail component.
 
-import type { SectionPostDetailMetaContent } from '@/types/sanity'
+import type { SectionPostDetailMetaContent } from '@/types/cms'
 
 interface Props {
   content: SectionPostDetailMetaContent

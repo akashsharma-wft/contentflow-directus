@@ -1,7 +1,7 @@
 // sections/BillingUsageSection.tsx
 //
 // Client component — renders the usage metrics card for /billing.
-// Receives CMS labels from the `billingUsage` Sanity section document.
+// Receives CMS labels from the `billingUsage` CMS section config.
 
 'use client'
 
@@ -10,7 +10,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useUser } from '@/hooks/useUser'
 import { UsageCard } from '@/features/billing/components/UsageCard'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { SectionBillingUsageContent } from '@/types/sanity'
+import type { SectionBillingUsageContent } from '@/types/cms'
 
 interface Props {
   content: SectionBillingUsageContent
@@ -39,11 +39,13 @@ export function BillingUsageSection({ content }: Props) {
     queryKey: ['my-post-stats', user?.id],
     queryFn: async () => {
       if (!user?.id) return { total: 0, published: 0 }
-      const { sanityClient } = await import('@/lib/sanity/client')
-      return sanityClient.fetch(`{
-        "total": count(*[_type == "post" && authorId == $userId]),
-        "published": count(*[_type == "post" && authorId == $userId && defined(publishedAt)])
-      }`, { userId: user.id }) as Promise<{ total: number; published: number }>
+      const res = await fetch('/api/posts')
+      if (!res.ok) return { total: 0, published: 0 }
+      const posts = (await res.json()) as { publishedAt: string | null }[]
+      return {
+        total:     posts.length,
+        published: posts.filter(p => !!p.publishedAt).length,
+      }
     },
     enabled: !!user?.id,
   })

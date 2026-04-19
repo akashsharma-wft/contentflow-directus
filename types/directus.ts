@@ -4,10 +4,10 @@
  * TypeScript types for the Directus CMS layer.
  *
  * Strategy:
- *  - DirectusPost / DirectusPage / DirectusSiteConfig mirror their Sanity
- *    counterparts field-for-field so consumers only need trivial updates.
- *  - All section/component content sub-types are RE-EXPORTED unchanged from
- *    types/sanity.ts — they describe JSON blob shapes and are CMS-agnostic.
+ *  - DirectusPost / DirectusPage / DirectusSiteConfig are the normalised shapes
+ *    returned by lib/directus/queries.ts — same field names consumers expect.
+ *  - All section/component content sub-types are RE-EXPORTED from types/cms.ts —
+ *    they describe JSON blob shapes stored in pages.sections and are CMS-agnostic.
  *  - DirectusSchema powers the @directus/sdk generic so the client is typed.
  */
 
@@ -65,9 +65,9 @@ export type {
   LoginPageSection,
   SignupPageSection,
   PostDetailPageSection,
-  SanityPageSection,
-  SanityComponentDoc,
-  SanitySection,
+  PageSection,
+  ComponentDoc,
+  CmsSection,
   SectionHeroContent,
   SectionFeaturedPostsContent,
   SectionRecentPostsContent,
@@ -114,16 +114,16 @@ export type {
   SiteMobileNavConfig,
   NavLink,
   SidebarNavLink,
-} from '@/types/sanity'
+} from '@/types/cms'
 
 // ─── Directus-native types ────────────────────────────────────────────────────
 
-import type { SanitySection, SiteNavbarConfig, SiteFooterConfig, SiteSidebarConfig, SiteMobileNavConfig } from '@/types/sanity'
+import type { CmsSection, SiteNavbarConfig, SiteFooterConfig, SiteSidebarConfig, SiteMobileNavConfig } from '@/types/cms'
 
 /**
  * Row returned by Directus `posts` collection.
  * Field names match Directus (snake_case). A toPost() helper normalises to
- * the shape consumers expect (identical to SanityPostCard).
+ * the camelCase shape consumers expect.
  */
 export type DirectusPostRow = {
   id:           string
@@ -145,8 +145,7 @@ export type DirectusPostRow = {
 }
 
 /**
- * Normalised post shape — identical to what Sanity queries returned so
- * all consumers (PostsTable, PostDetail, PostsListing …) need zero changes.
+ * Normalised post shape consumed by PostsTable, PostDetail, PostsListing, etc.
  */
 export type DirectusPost = {
   _id:          string          // ← id
@@ -154,11 +153,11 @@ export type DirectusPost = {
   _createdAt:   string          // ← date_created
   _updatedAt:   string          // ← date_updated
   title:        string
-  slug:         string          // flat string (Sanity used slug.current)
+  slug:         string          // flat string
   language?:    string
   excerpt?:     string
   body?:        unknown[]
-  coverImage?:  string          // direct URL (Sanity had an asset reference)
+  coverImage?:  string          // direct URL
   publishedAt?: string
   featured?:    boolean
   tags?:        string[]
@@ -202,7 +201,7 @@ export type DirectusPageRow = {
   language:        string
   access:          'guest' | 'user' | 'admin'
   layout:          'home' | 'dashboard' | 'auth'
-  sections:        SanitySection[] | null
+  sections:        CmsSection[] | null
   seo_title:       string | null
   seo_description: string | null
   og_image:        string | null
@@ -210,7 +209,7 @@ export type DirectusPageRow = {
 }
 
 /**
- * Normalised page shape — identical to SanityPage so all consumers need zero changes.
+ * Normalised page shape consumed by page routes and SectionRenderer.
  */
 export type DirectusPage = {
   _id:            string
@@ -220,7 +219,7 @@ export type DirectusPage = {
   language?:      string
   access?:        'guest' | 'user' | 'admin'
   layout?:        'home' | 'dashboard' | 'auth'
-  sections?:      SanitySection[]
+  sections?:      CmsSection[]
   seoTitle?:      string
   seoDescription?:string
   ogImage?:       string
@@ -236,7 +235,7 @@ export function toPage(row: DirectusPageRow): DirectusPage {
     language:        row.language ?? undefined,
     access:          row.access,
     layout:          row.layout,
-    sections:        row.sections ?? undefined,
+    sections:        (row.sections ?? undefined) as CmsSection[] | undefined,
     seoTitle:        row.seo_title ?? undefined,
     seoDescription:  row.seo_description ?? undefined,
     ogImage:         row.og_image ?? undefined,
@@ -265,8 +264,7 @@ export type DirectusSiteConfigRow = {
 }
 
 /**
- * Normalised site config — identical to SanitySiteConfig so Navbar/Footer/Sidebar
- * components need zero changes.
+ * Normalised site config consumed by Navbar, Footer, and Sidebar components.
  */
 export type DirectusSiteConfig = {
   _id:              string

@@ -7,7 +7,7 @@ import { CreatePostModal } from './CreatePostModal'
 interface PostsHeaderProps {
   heading?: string
   subheading?: string
-  groqBadgeLabel?: string
+  apiBadgeLabel?: string
   syncButtonLabel?: string
   newPostButtonLabel?: string
   onSync: () => Promise<unknown>
@@ -17,7 +17,7 @@ interface PostsHeaderProps {
 export function PostsHeader({
   heading = 'Blog Posts',
   subheading = 'Manage your technical documentation and editorial content.',
-  groqBadgeLabel = 'via Sanity GROQ',
+  apiBadgeLabel = 'via Directus',
   syncButtonLabel = 'Sync',
   newPostButtonLabel = '+ New Post',
   onSync,
@@ -32,7 +32,7 @@ export function PostsHeader({
           <div className="flex items-center gap-3 mb-1 flex-wrap">
             <h1 className="text-white text-2xl font-bold tracking-tight">{heading}</h1>
             <span className="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">
-              {groqBadgeLabel}
+              {apiBadgeLabel}
             </span>
           </div>
           <p className="text-white/35 text-sm">

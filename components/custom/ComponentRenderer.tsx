@@ -1,6 +1,6 @@
 // components/custom/ComponentRenderer.tsx
 //
-// Registry pattern: maps Sanity component documents → React components.
+// Registry pattern: maps CMS component types → React components.
 // Called by SectionRenderer when a dereferenced sections[] item has _type === 'component'.
 //
 // Only CONTENT BLOCK component types are handled here.
@@ -9,14 +9,9 @@
 // and is rendered by the built-in Next.js layout components.
 //
 // HOW TO ADD A NEW CONTENT COMPONENT TYPE:
-//   1. Add componentType option to sanity/schemaTypes/documents/component.ts
-//   2. Add content sub-object field file in sanity/schemaTypes/components/contentComponents/
-//   3. Add field to SECTIONS_PROJECTION in lib/sanity/queries.ts
-//   4. Create renderer: components/custom/content/MyComponent.tsx
-//   5. Add case below
-//   6. Add TypeScript type to types/sanity.ts
+//   1. Create renderer: components/custom/content/MyComponent.tsx\n//   2. Add case below\n//   3. Add TypeScript type to types/cms.ts
 
-import type { SanityComponentDoc } from '@/types/sanity'
+import type { ComponentDoc } from '@/types/cms'
 
 import { FormComponent }         from './content/FormComponent'
 import { GridComponent }         from './content/GridComponent'
@@ -29,7 +24,7 @@ import { FlexComponent }         from './content/FlexComponent'
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface ComponentRendererProps {
-  component: SanityComponentDoc
+  component: ComponentDoc
   lang?: string
 }
 

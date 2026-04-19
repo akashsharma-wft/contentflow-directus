@@ -1,9 +1,9 @@
-// sections/PostDetailBackLinkSection.tsx
+﻿// sections/PostDetailBackLinkSection.tsx
 //
 // Configuration section for the post detail back/navigation links.
 // Config consumed by app/[lang]/[slug]/page.tsx → PostDetail component.
 
-import type { SectionPostDetailBackLinkContent } from '@/types/sanity'
+import type { SectionPostDetailBackLinkContent } from '@/types/cms'
 
 interface Props {
   content: SectionPostDetailBackLinkContent

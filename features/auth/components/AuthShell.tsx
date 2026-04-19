@@ -4,8 +4,7 @@
 // Split layout: left panel (branding/features) + right panel (form).
 //
 // All text comes from props — no hardcoded English strings.
-// LoginSection and SignupSection fetch authConfig from Sanity in the right language
-// and pass it all down here as props.
+// LoginSection and SignupSection provide all display text as props.
 
 import type { ReactNode } from 'react'
 
@@ -64,7 +63,7 @@ export function AuthShell({
           <span className="text-white font-semibold text-lg tracking-tight">ContentFlow</span>
         </div>
 
-        {/* Hero content — fully from Sanity */}
+        {/* Hero content */}
         <div className="space-y-10">
           {/* Badge */}
           {badge && (

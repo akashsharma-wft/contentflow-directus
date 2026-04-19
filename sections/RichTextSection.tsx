@@ -1,6 +1,6 @@
-import { PortableText } from '@portabletext/react'
+﻿import { PortableText } from '@portabletext/react'
 import { cn } from '@/lib/utils'
-import type { RichTextSection as RichTextSectionType } from '@/types/sanity'
+import type { RichTextSection as RichTextSectionType } from '@/types/cms'
 
 interface Props {
   section: RichTextSectionType

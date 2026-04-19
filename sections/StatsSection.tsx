@@ -1,6 +1,5 @@
-import { getSanityClient } from '@/lib/sanity/server-client'
-import { PUBLISHED_POST_COUNT_QUERY } from '@/lib/sanity/queries'
-import type { StatsSection as StatsSectionType } from '@/types/sanity'
+﻿import { getPostsCountByLang } from '@/lib/directus/queries'
+import type { StatsSection as StatsSectionType } from '@/types/cms'
 
 interface Props {
   section: StatsSectionType
@@ -13,8 +12,7 @@ export async function StatsSection({ section }: Props) {
   let livePostCount: number | null = null
   const needsLiveCount = stats.some((s) => s.useLivePostCount)
   if (needsLiveCount) {
-    const client = await getSanityClient()
-    livePostCount = await client.fetch<number>(PUBLISHED_POST_COUNT_QUERY)
+    livePostCount = await getPostsCountByLang('en')
   }
 
   const resolvedStats = stats.map((stat) => ({

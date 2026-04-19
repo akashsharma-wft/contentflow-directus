@@ -101,11 +101,13 @@ function BillingContent({ config }: BillingPageClientProps) {
     queryKey: ['my-post-stats', user?.id],
     queryFn: async () => {
       if (!user?.id) return { total: 0, published: 0 }
-      const { sanityClient } = await import('@/lib/sanity/client')
-      return sanityClient.fetch(`{
-        "total": count(*[_type == "post" && authorId == $userId]),
-        "published": count(*[_type == "post" && authorId == $userId && defined(publishedAt)])
-      }`, { userId: user.id }) as Promise<{ total: number; published: number }>
+      const res = await fetch('/api/posts')
+      if (!res.ok) return { total: 0, published: 0 }
+      const posts = (await res.json()) as { publishedAt: string | null }[]
+      return {
+        total:     posts.length,
+        published: posts.filter(p => !!p.publishedAt).length,
+      }
     },
     enabled: !!user?.id,
   })

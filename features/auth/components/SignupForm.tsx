@@ -1,7 +1,7 @@
 // features/auth/components/SignupForm.tsx
 // 'use client' — runs in the browser (handles form state, Supabase calls)
 //
-// Receives ALL display text as props from SignupSection (which fetches from Sanity).
+// Receives all display text as props from SignupSection.
 // No hardcoded English strings anywhere in this component.
 'use client'
 

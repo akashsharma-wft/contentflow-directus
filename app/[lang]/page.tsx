@@ -48,15 +48,15 @@ import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import type { DirectusPage, DirectusPost } from '@/types/directus'
 import type {
-  SanitySiteConfig,
+  SiteConfig,
   NavPage,
-  SanityPageSection,
+  PageSection,
   SectionPostDetailHeaderContent,
   SectionPostDetailMetaContent,
   SectionPostDetailBodyContent,
   SectionPostDetailTagsContent,
   SectionPostDetailBackLinkContent,
-} from '@/types/sanity'
+} from '@/types/cms'
 
 export const revalidate = 60
 
@@ -166,7 +166,7 @@ async function LanguageHomePage({ lang }: { lang: SupportedLang }) {
 // If the postDetail page isn't seeded, all labels fall back to hardcoded defaults
 // inside PostDetail.tsx — no query failure, safe for demo.
 
-function assemblePostDetailConfig(sections: SanityPageSection[]) {
+function assemblePostDetailConfig(sections: PageSection[]) {
   const header:   SectionPostDetailHeaderContent   = {}
   const meta:     SectionPostDetailMetaContent     = {}
   const body:     SectionPostDetailBodyContent     = {}
@@ -330,7 +330,7 @@ async function RenderPage({ page, lang }: { page: DirectusPage; lang: string }) 
 
   return (
     <div className="min-h-screen bg-[#0d0e14]">
-      <Navbar siteConfig={siteConfig as unknown as SanitySiteConfig} navPages={navPages as unknown as NavPage[]} lang={typedLang} />
+      <Navbar siteConfig={siteConfig as unknown as SiteConfig} navPages={navPages as unknown as NavPage[]} lang={typedLang} />
       {sections.length > 0 ? (
         <SectionRenderer sections={sections} lang={typedLang} />
       ) : (
@@ -338,7 +338,7 @@ async function RenderPage({ page, lang }: { page: DirectusPage; lang: string }) 
           <p className="text-white/30 text-sm">No sections configured for this page.</p>
         </div>
       )}
-      <Footer siteConfig={siteConfig as unknown as SanitySiteConfig} lang={typedLang} />
+      <Footer siteConfig={siteConfig as unknown as SiteConfig} lang={typedLang} />
     </div>
   )
 }

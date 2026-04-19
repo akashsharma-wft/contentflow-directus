@@ -1,8 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createItem, aggregate } from '@directus/sdk'
+import { createItem, readItems, aggregate } from '@directus/sdk'
 import { createClient } from '@/lib/supabase/server'
 import { directusAdminClient } from '@/lib/directus/client'
-import type { DirectusSchema } from '@/types/directus'
+import type { DirectusSchema, DirectusPostRow } from '@/types/directus'
+
+export async function GET() {
+  try {
+    const supabase = await createClient()
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const rows = (await directusAdminClient.request(
+      readItems('posts' as keyof DirectusSchema, {
+        filter: { author_id: { _eq: user.id } } as never,
+        sort: ['-date_updated'] as never,
+      } as never)
+    )) as unknown as DirectusPostRow[]
+
+    const posts = rows.map(r => ({
+      _id:         r.id,
+      title:       r.title,
+      slug:        r.slug,
+      excerpt:     r.excerpt ?? null,
+      publishedAt: r.published_at ?? null,
+      featured:    r.featured ?? false,
+      tags:        Array.isArray(r.tags) ? r.tags : [],
+      authorId:    r.author_id ?? null,
+      authorName:  r.author_name ?? null,
+      authorEmail: r.author_email ?? null,
+      authorAvatar:r.author_avatar ?? null,
+      coverImage:  r.cover_image ?? null,
+      language:    r.language ?? 'en',
+      status:      r.published_at ? 'published' : 'draft',
+    }))
+
+    return NextResponse.json(posts)
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to fetch posts'
+    console.error('Posts fetch error:', message)
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {

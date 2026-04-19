@@ -1,4 +1,4 @@
-// features/admin/components/AdminUsersTable.tsx
+﻿// features/admin/components/AdminUsersTable.tsx
 'use client'
 
 import { format } from 'date-fns'
@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { Shield, Crown, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Database } from '@/types/supabase'
-import type { SectionAdminContent } from '@/types/sanity'
+import type { SectionAdminContent } from '@/types/cms'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 

@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils'
-import type { ComponentListContent } from '@/types/sanity'
+﻿import { cn } from '@/lib/utils'
+import type { ComponentListContent } from '@/types/cms'
 
 interface Props {
   component: ComponentListContent

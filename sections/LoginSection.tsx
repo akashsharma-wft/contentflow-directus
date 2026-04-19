@@ -1,26 +1,7 @@
 // sections/LoginSection.tsx
-//
-// Renders the full login page UI.
-// Called by SectionRenderer when it encounters a 'loginSection' block.
-//
-// HOW IT WORKS:
-//   1. Fetches authConfig singleton from Sanity (server-side)
-//   2. Picks the right language variant of each text field using the lang prop
-//   3. Passes all translated copy to AuthShell + LoginForm
-//
-// MULTILINGUAL:
-//   - authConfig has per-language fields: loginHeading.en / loginHeading.hi / loginHeading.kn
-//   - Every single string — heading, subheading, button label, placeholder, footer link — is translated
-//   - The left panel features are also translated (features[].en / features[].hi / features[].kn)
-//
-// LIVE PREVIEW:
-//   - Uses sanityClient (not getSanityClient) because this is called inside SectionRenderer
-//     which is already fetching with the draft-aware client from the parent page.
-//   - The stega-encoded text from the parent fetch is what drives click-to-edit overlays.
+// Renders the full login page UI with hardcoded copy (CMS-independent).
 
 import { Suspense } from 'react'
-import { sanityClient } from '@/lib/sanity/client'
-import { AUTH_CONFIG_QUERY } from '@/lib/sanity/queries'
 import { AuthShell } from '@/features/auth/components/AuthShell'
 import { LoginForm } from '@/features/auth/components/LoginForm'
 
@@ -73,28 +54,25 @@ interface LoginSectionProps {
 }
 
 export async function LoginSection({ lang = 'en' }: LoginSectionProps) {
-  const config = await sanityClient.fetch<AuthConfig | null>(AUTH_CONFIG_QUERY)
   const l = (lang as Lang) ?? 'en'
+  void l
 
   const copy = {
-    headline:            t(config?.leftPanelHeadline,        l) || 'CMS-driven publishing for engineering teams.',
-    subheadline:         t(config?.loginHeading,             l) || 'Welcome back',
-    badge:               t(config?.leftPanelBadge,           l) || null,
-    formSubheading:      t(config?.loginSubheading,          l) || 'Sign in to your workspace',
-    submitLabel:         t(config?.loginSubmitLabel,         l) || 'Sign in',
-    emailPlaceholder:    t(config?.loginEmailPlaceholder,    l) || 'you@example.com',
-    passwordPlaceholder: t(config?.loginPasswordPlaceholder, l) || 'Your password',
-    footerText:          t(config?.loginFooterText,          l) || "Don't have an account?",
-    footerLinkLabel:     t(config?.loginFooterLinkLabel,     l) || 'Request access',
-    footerLinkHref:      config?.loginFooterLinkHref ?? '/signup',
-    googleLabel:         t(config?.loginGoogleLabel,         l) || 'Continue with Google',
-    footerNote:          t(config?.leftPanelFooterNote,      l) || 'Powered by Supabase Auth',
-    showGoogleOAuth:     config?.showGoogleOAuth ?? true,
-    showEmailPassword:   config?.showEmailPassword ?? true,
-    features: (config?.leftPanelFeatures ?? []).map((f) => ({
-      text: f[l] ?? f.en ?? '',
-      icon: f.icon,
-    })),
+    headline:            'CMS-driven publishing for engineering teams.',
+    subheadline:         'Welcome back',
+    badge:               null as string | null,
+    formSubheading:      'Sign in to your workspace',
+    submitLabel:         'Sign in',
+    emailPlaceholder:    'you@example.com',
+    passwordPlaceholder: 'Your password',
+    footerText:          "Don't have an account?",
+    footerLinkLabel:     'Request access',
+    footerLinkHref:      '/signup',
+    googleLabel:         'Continue with Google',
+    footerNote:          'Powered by Supabase Auth',
+    showGoogleOAuth:     true,
+    showEmailPassword:   true,
+    features:            [] as { text: string; icon?: string }[],
   }
 
   return (

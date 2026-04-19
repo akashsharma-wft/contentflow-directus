@@ -2,8 +2,6 @@
 //
 // FIX: SectionRenderer calls <SettingsSection lang={lang} /> but the component
 // accepted no arguments. Added lang prop to the signature.
-import { sanityClient } from '@/lib/sanity/client'
-import { SETTINGS_PAGE_CONFIG_QUERY } from '@/lib/sanity/queries'
 import { ProfileForm } from '@/features/settings/components/ProfileForm'
 
 export type SettingsConfig = {
@@ -30,17 +28,13 @@ interface Props {
 }
 
 export async function SettingsSection({ lang: _lang = 'en' }: Props) {
-  const config = await sanityClient.fetch<SettingsConfig | null>(SETTINGS_PAGE_CONFIG_QUERY)
-
   return (
     <div className="space-y-1">
-      <h1 className="text-white text-2xl font-bold tracking-tight">
-        {config?.heading ?? 'Account Settings'}
-      </h1>
+      <h1 className="text-white text-2xl font-bold tracking-tight">Account Settings</h1>
       <p className="text-white/35 text-sm mb-5">
-        {config?.subheading ?? 'Manage your architectural preferences and profile identity.'}
+        Manage your architectural preferences and profile identity.
       </p>
-      <ProfileForm config={config ?? {}} />
+      <ProfileForm config={{}} />
     </div>
   )
 }

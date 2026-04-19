@@ -2,23 +2,14 @@
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import imageUrlBuilder from '@sanity/image-url'
-import { createClient } from 'next-sanity'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: '2024-01-01',
-  useCdn: true,
-})
-const builder = imageUrlBuilder(client)
-type SanityImg = { asset: { _ref: string } }
-function urlFor(src: SanityImg) { return builder.image(src) }
+type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
+function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
 
 interface Slide {
   _key?: string
-  image?: SanityImg
+  image?: ImgSrc
   heading?: string
   body?: string
   ctaLabel?: string
@@ -59,9 +50,9 @@ export function CarouselSection({ section }: CarouselSectionProps) {
         <div className="relative rounded-2xl overflow-hidden border border-white/8 bg-white/2">
           {/* Slide */}
           <div className="relative aspect-[16/7] w-full">
-            {slide.image?.asset && (
+            {resolveImg(slide.image) && (
               <Image
-                src={urlFor(slide.image).width(1200).url()}
+                src={resolveImg(slide.image)}
                 alt={slide.heading ?? ''}
                 fill
                 className="object-cover"

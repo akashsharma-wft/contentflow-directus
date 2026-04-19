@@ -1,4 +1,4 @@
-// sections/PostDetailHeaderSection.tsx
+﻿// sections/PostDetailHeaderSection.tsx
 //
 // Configuration section for the post detail page header.
 // Configures: page heading label, featured badge label, language badge label,
@@ -9,7 +9,7 @@
 // passes to the PostDetail component. In the Studio page builder, it shows a
 // small config summary.
 
-import type { SectionPostDetailHeaderContent } from '@/types/sanity'
+import type { SectionPostDetailHeaderContent } from '@/types/cms'
 
 interface Props {
   content: SectionPostDetailHeaderContent

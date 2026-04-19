@@ -4,7 +4,7 @@
 //
 // Auth-aware right side:
 //   isLoading  → brand + language switcher (no flash of wrong UI)
-//   guest      → Login (text) + Sign Up (CTA button from Sanity config)
+//   guest      → Login (text) + Sign Up (CTA button from site config)
 //   logged-in  → app nav links (Posts/Settings/Billing, + Analytics/Admin if admin)
 //               + profile icon → /settings  + logout button
 //
@@ -19,7 +19,7 @@ import { LanguageSwitcher } from './LanguageSwitcher'
 import { localizeHref, filterByVisibility, getNavItemLabel, getNavRole } from '@/lib/navigation'
 import { useUser } from '@/hooks/useUser'
 import { createClient } from '@/lib/supabase/client'
-import type { SanitySiteConfig, NavPage } from '@/types/sanity'
+import type { SiteConfig, NavPage } from '@/types/cms'
 // NavPage kept for prop backward compat — not used in center nav
 
 const LANG_CODES = ['en', 'hi', 'kn'] as const
@@ -37,7 +37,7 @@ function parseCurrentLang(pathname: string): LangCode {
 
 
 interface Props {
-  siteConfig: SanitySiteConfig | null
+  siteConfig: SiteConfig | null
   navPages?:  NavPage[]
   lang?: string
 }

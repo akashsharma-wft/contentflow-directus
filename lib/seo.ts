@@ -49,13 +49,13 @@ export function buildHreflangPaths(slug: string): Record<string, string> {
 // ─── Main builder ──────────────────────────────────────────────────────────────
 
 export interface SeoInput {
-  /** Raw slug as stored in Sanity (e.g. 'home', 'about', 'my-post') */
+  /** Page slug (e.g. 'home', 'about', 'my-post') */
   slug: string
   /** Active language code: 'en' | 'hi' | 'kn' */
   lang: string
-  /** Page/post title from Sanity — falls back to SITE_NAME */
+  /** Page/post title — falls back to SITE_NAME */
   title?: string | null
-  /** Page/post description from Sanity — falls back to DEFAULT_DESCRIPTION */
+  /** Page/post description — falls back to DEFAULT_DESCRIPTION */
   description?: string | null
   /** Resolved OG image URL */
   ogImage?: string | null

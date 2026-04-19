@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils'
-import type { ComponentFlexContent } from '@/types/sanity'
+﻿import { cn } from '@/lib/utils'
+import type { ComponentFlexContent } from '@/types/cms'
 
 interface Props {
   component: ComponentFlexContent

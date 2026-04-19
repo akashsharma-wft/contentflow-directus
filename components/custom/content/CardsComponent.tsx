@@ -1,6 +1,6 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import type { ComponentCardsContent } from '@/types/sanity'
+import type { ComponentCardsContent } from '@/types/cms'
 
 interface Props {
   component: ComponentCardsContent

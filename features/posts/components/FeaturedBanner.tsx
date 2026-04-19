@@ -10,7 +10,7 @@ import {
 import type { LucideProps } from 'lucide-react'
 
 // ── Icon map ──────────────────────────────────────────────────────────────────
-// Resolved by the `bannerIcon` Sanity field; falls back to Star.
+// Icon from CMS config; falls back to Star.
 
 type IconFC = React.FC<LucideProps>
 

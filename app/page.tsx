@@ -19,7 +19,7 @@ import { DashboardLayout } from '@/features/dashboard/components/DashboardLayout
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import type { DirectusPage } from '@/types/directus'
-import type { SanitySiteConfig, NavPage } from '@/types/sanity'
+import type { SiteConfig, NavPage } from '@/types/cms'
 
 export const revalidate = 60
 
@@ -120,7 +120,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#0d0e14]">
-      <Navbar siteConfig={siteConfig as unknown as SanitySiteConfig} navPages={navPages as unknown as NavPage[]} lang="en" />
+      <Navbar siteConfig={siteConfig as unknown as SiteConfig} navPages={navPages as unknown as NavPage[]} lang="en" />
       {sections.length > 0 ? (
         <SectionRenderer sections={sections} lang="en" />
       ) : (
@@ -128,7 +128,7 @@ export default async function HomePage() {
           <p className="text-white/30 text-sm">No sections configured for this page.</p>
         </div>
       )}
-      <Footer siteConfig={siteConfig as unknown as SanitySiteConfig} lang="en" />
+      <Footer siteConfig={siteConfig as unknown as SiteConfig} lang="en" />
     </div>
   )
 }

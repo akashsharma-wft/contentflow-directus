@@ -3,24 +3,25 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { useUser } from '@/hooks/useUser'
-import { createClient } from '@/lib/supabase/client'
-import { sanityClient } from '@/lib/sanity/client'
-import { ALL_POSTS_QUERY } from '@/lib/sanity/queries'
 import { FileText, Users, CreditCard, Activity, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
 export function DashboardStats() {
-  const { profile } = useUser()
+  const { user, profile } = useUser()
 
-  // Real post count from Sanity
   const { data: posts, isLoading: postsLoading } = useQuery({
-    queryKey: ['posts'],
-    queryFn: () => sanityClient.fetch(ALL_POSTS_QUERY),
+    queryKey: ['posts', 'all', 'en'],
+    queryFn: async () => {
+      const res = await fetch('/api/posts')
+      if (!res.ok) throw new Error('Failed')
+      return res.json() as Promise<{ publishedAt: string | null }[]>
+    },
+    enabled: !!user?.id,
     staleTime: 60000,
   })
 
-  const postCount     = posts?.length ?? 0
-  const publishedCount = posts?.filter((p: { publishedAt: string | null }) => p.publishedAt).length ?? 0
+  const postCount      = posts?.length ?? 0
+  const publishedCount = posts?.filter((p) => p.publishedAt).length ?? 0
 
   const stats = [
     {

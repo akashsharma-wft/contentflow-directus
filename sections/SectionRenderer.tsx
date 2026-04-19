@@ -1,6 +1,6 @@
 // sections/SectionRenderer.tsx
 //
-// Registry pattern: maps Sanity section documents → React components.
+// Registry pattern: maps CMS section types → React components.
 // This is an ASYNC SERVER COMPONENT — all section components can be async too.
 //
 // Architecture:
@@ -10,17 +10,13 @@
 //   sectionType, extracts the sub-object, and passes it to the component.
 //
 // HOW TO ADD A NEW SECTION:
-//   1. Add sectionType option to sanity/schemaTypes/documents/section.ts
-//   2. Add content sub-object field to section.ts
-//   3. Add field to SECTIONS_PROJECTION in lib/sanity/queries.ts
-//   4. Create component: sections/MySection.tsx
-//   5. Add case below under the `section` _type block
+//   1. Create component: sections/MySection.tsx\n//   2. Add case below under the \section\ _type block\n//   3. Add TypeScript type to types/cms.ts
 //
 // NOTE:
 //   navbarSection and footerSection are structural — controlled by page
 //   layout in app/page.tsx, NOT rendered here.
 
-import type { SanitySection } from '@/types/sanity'
+import type { CmsSection } from '@/types/cms'
 import { ComponentRenderer }  from '@/components/custom/ComponentRenderer'
 
 // ── Public sections ────────────────────────────────────────────────────────────
@@ -96,7 +92,7 @@ import { SettingsDangerSection }     from './SettingsDangerSection'
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface SectionRendererProps {
-  sections: SanitySection[]
+  sections: CmsSection[]
   lang?: string
 }
 

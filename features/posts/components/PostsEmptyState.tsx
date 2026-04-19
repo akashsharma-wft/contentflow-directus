@@ -11,8 +11,8 @@ interface PostsEmptyStateProps {
 
 export function PostsEmptyState({
   title = 'No posts found',
-  body = 'Try adjusting your search or sync from Sanity to populate your workspace.',
-  ctaLabel = 'Sync from Sanity',
+  body = 'Try adjusting your search or refresh to populate your workspace.',
+  ctaLabel = 'Refresh',
   onSync,
   isSyncing = false,
 }: PostsEmptyStateProps) {
@@ -40,7 +40,7 @@ export function PostsEmptyState({
 
       <div className="flex items-center justify-between pt-4 border-t border-white/5">
         <span className="text-white/20 text-[9px] font-mono uppercase tracking-widest">
-          Sanity API Connected
+          Directus API Connected
         </span>
         <span className="text-white/20 text-[9px] font-mono uppercase tracking-widest bg-white/5 px-2 py-0.5 rounded">
           IDLE_WORKSPACE

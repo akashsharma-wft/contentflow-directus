@@ -3,13 +3,11 @@
 // built-in Sidebar, MobileTopBar, and MobileBottomNav components.
 //
 // Data flow:
-//   Sanity siteConfig.sidebarConfig.navItems  → Sidebar + MobileBottomNav
+//   siteConfig.sidebarConfig.navItems  → Sidebar + MobileBottomNav
 //   Falls back to siteConfig.sidebarNav (legacy) → same components
-//   No Sanity data → hardcoded fallback inside SidebarNav / MobileBottomNav
+//   No CMS data → hardcoded fallback inside SidebarNav / MobileBottomNav
 import { Suspense } from 'react'
-import { sanityClient } from '@/lib/sanity/client'
-import { SITE_CONFIG_QUERY } from '@/lib/sanity/queries'
-import type { SanitySiteConfig } from '@/types/sanity'
+import { getSiteConfig } from '@/lib/directus/queries'
 import { Sidebar } from './Sidebar'
 import { MobileTopBar } from './MobileTopBar'
 import { MobileBottomNav } from './MobileBottomNav'
@@ -21,7 +19,7 @@ interface DashboardLayoutProps {
 }
 
 export async function DashboardLayout({ children, lang = 'en' }: DashboardLayoutProps) {
-  const siteConfig = await sanityClient.fetch<SanitySiteConfig | null>(SITE_CONFIG_QUERY)
+  const siteConfig = await getSiteConfig()
 
   const sidebarConfig   = siteConfig?.sidebarConfig ?? null
   const navItems        = sidebarConfig?.navItems ?? []

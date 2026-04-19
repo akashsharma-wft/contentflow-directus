@@ -1,9 +1,9 @@
-// sections/PostDetailBodySection.tsx
+﻿// sections/PostDetailBodySection.tsx
 //
 // Configuration section for the post detail body area.
 // Config consumed by app/[lang]/[slug]/page.tsx → PostDetail component.
 
-import type { SectionPostDetailBodyContent } from '@/types/sanity'
+import type { SectionPostDetailBodyContent } from '@/types/cms'
 
 interface Props {
   content: SectionPostDetailBodyContent

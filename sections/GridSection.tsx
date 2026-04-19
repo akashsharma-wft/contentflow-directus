@@ -2,25 +2,15 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-import imageUrlBuilder from '@sanity/image-url'
-import { createClient } from 'next-sanity'
 
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: '2024-01-01',
-  useCdn: true,
-})
-const builder = imageUrlBuilder(client)
-function urlFor(source: SanityImageSource) { return builder.image(source) }
-
-type SanityImageSource = { asset: { _ref: string } }
+type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
+function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
 
 interface GridItem {
   _key?: string
   heading: string
   body?: string
-  image?: SanityImageSource
+  image?: ImgSrc
   icon?: string
   linkLabel?: string
   linkHref?: string
@@ -60,32 +50,35 @@ export function GridSection({ section }: GridSectionProps) {
           </div>
         )}
         <div className={`grid gap-6 ${colClass[columns]}`}>
-          {items.map((item, i) => (
-            <div key={item._key ?? i} className={cardClass[cardStyle]}>
-              {item.image && (
-                <div className="mb-4 rounded-xl overflow-hidden aspect-video relative">
-                  <Image
-                    src={urlFor(item.image).width(600).url()}
-                    alt={item.heading}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              )}
-              {item.icon && (
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/15 flex items-center justify-center mb-4">
-                  <span className="text-indigo-400 text-sm font-mono">{item.icon}</span>
-                </div>
-              )}
-              <h3 className="text-white font-semibold text-lg mb-2">{item.heading}</h3>
-              {item.body && <p className="text-white/50 text-sm leading-relaxed mb-4">{item.body}</p>}
-              {item.linkHref && item.linkLabel && (
-                <Link href={item.linkHref} className="text-indigo-400 text-sm hover:text-indigo-300 transition-colors">
-                  {item.linkLabel} →
-                </Link>
-              )}
-            </div>
-          ))}
+          {items.map((item, i) => {
+            const imgUrl = resolveImg(item.image)
+            return (
+              <div key={item._key ?? i} className={cardClass[cardStyle]}>
+                {imgUrl && (
+                  <div className="mb-4 rounded-xl overflow-hidden aspect-video relative">
+                    <Image
+                      src={imgUrl}
+                      alt={item.heading}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                {item.icon && (
+                  <div className="w-10 h-10 rounded-lg bg-indigo-500/15 flex items-center justify-center mb-4">
+                    <span className="text-indigo-400 text-sm font-mono">{item.icon}</span>
+                  </div>
+                )}
+                <h3 className="text-white font-semibold text-lg mb-2">{item.heading}</h3>
+                {item.body && <p className="text-white/50 text-sm leading-relaxed mb-4">{item.body}</p>}
+                {item.linkHref && item.linkLabel && (
+                  <Link href={item.linkHref} className="text-indigo-400 text-sm hover:text-indigo-300 transition-colors">
+                    {item.linkLabel} →
+                  </Link>
+                )}
+              </div>
+            )
+          })}
         </div>
       </div>
     </section>

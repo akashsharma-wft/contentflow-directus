@@ -2,13 +2,13 @@
 //
 // Server component — renders the hero block for /billing-success.
 // Displays an icon badge, heading, subheading, and body text.
-// Content is fully configurable from the `billingSuccessHero` Sanity section document.
+// Content is fully configurable from the `billingSuccessHero` CMS section config.
 
 import {
   CheckCircle, Sparkles, Trophy, Crown, Star, Zap, Award, Flame,
 } from 'lucide-react'
 import type { LucideProps } from 'lucide-react'
-import type { SectionBillingSuccessHeroContent } from '@/types/sanity'
+import type { SectionBillingSuccessHeroContent } from '@/types/cms'
 
 type IconFC = React.FC<LucideProps>
 

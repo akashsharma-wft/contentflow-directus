@@ -33,15 +33,15 @@ import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import type { DirectusPage } from '@/types/directus'
 import type {
-  SanitySiteConfig,
+  SiteConfig,
   NavPage,
-  SanityPageSection,
+  PageSection,
   SectionPostDetailHeaderContent,
   SectionPostDetailMetaContent,
   SectionPostDetailBodyContent,
   SectionPostDetailTagsContent,
   SectionPostDetailBackLinkContent,
-} from '@/types/sanity'
+} from '@/types/cms'
 
 export const revalidate = 60
 
@@ -63,7 +63,7 @@ function getPageAccess(page: DirectusPage) {
 // ── Post detail config assembler ──────────────────────────────────────────────
 // PostDetail.tsx has hardcoded fallbacks for all label props, so passing an
 // empty section list is safe — labels degrade gracefully.
-function assemblePostDetailConfig(sections: SanityPageSection[]) {
+function assemblePostDetailConfig(sections: PageSection[]) {
   const header:   SectionPostDetailHeaderContent   = {}
   const meta:     SectionPostDetailMetaContent     = {}
   const body:     SectionPostDetailBodyContent     = {}
@@ -179,7 +179,7 @@ export default async function LocalizedPage({ params }: Props) {
     ])
     return (
       <div className="min-h-screen bg-[#0d0e14]">
-        <Navbar siteConfig={siteConfig as unknown as SanitySiteConfig} navPages={navPages as unknown as NavPage[]} lang={lang as SupportedLang} />
+        <Navbar siteConfig={siteConfig as unknown as SiteConfig} navPages={navPages as unknown as NavPage[]} lang={lang as SupportedLang} />
         {sections.length > 0 ? (
           <SectionRenderer sections={sections} lang={lang} />
         ) : (
@@ -187,7 +187,7 @@ export default async function LocalizedPage({ params }: Props) {
             <p className="text-white/30 text-sm">No sections configured for this page.</p>
           </div>
         )}
-        <Footer siteConfig={siteConfig as unknown as SanitySiteConfig} />
+        <Footer siteConfig={siteConfig as unknown as SiteConfig} />
       </div>
     )
   }

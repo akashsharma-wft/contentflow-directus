@@ -1,4 +1,4 @@
-// sections/PostsSearchSection.tsx
+﻿// sections/PostsSearchSection.tsx
 //
 // Client component — renders the search input for the posts table.
 // Writes to Zustand `postsSearchQuery` so PostsTableSection can read and filter.
@@ -10,7 +10,7 @@ import { useEffect } from 'react'
 import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/uiStore'
-import type { SectionPostsSearchContent } from '@/types/sanity'
+import type { SectionPostsSearchContent } from '@/types/cms'
 
 interface Props {
   content: SectionPostsSearchContent

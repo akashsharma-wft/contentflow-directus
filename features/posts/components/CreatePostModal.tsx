@@ -130,7 +130,7 @@ export function CreatePostModal({ open, onClose, lang = 'en' }: CreatePostModalP
       let coverImageUrl: string | undefined
 
       // If cover image selected, upload to Supabase first to get a URL
-      // The API route will then fetch it and upload to Sanity
+      // The API route handles the upload to Directus files
       if (coverFile) {
         const { createClient } = await import('@/lib/supabase/client')
         const supabase = createClient()
@@ -406,7 +406,7 @@ export function CreatePostModal({ open, onClose, lang = 'en' }: CreatePostModalP
         <div className="flex items-center justify-between px-5 py-4 border-t border-white/5 shrink-0">
           <p className="text-white/20 text-[10px] flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-            Changes saved to Sanity on publish
+            Changes saved to Directus on publish
           </p>
           <div className="flex items-center gap-2">
             <button

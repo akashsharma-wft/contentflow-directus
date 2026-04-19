@@ -1,9 +1,9 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import type { ComponentSidebarContent } from '@/types/sanity'
+import type { ComponentSidebarContent } from '@/types/cms'
 
 interface Props {
   component: ComponentSidebarContent

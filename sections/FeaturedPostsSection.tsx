@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import { format } from 'date-fns'
-import { getSanityClient } from '@/lib/sanity/server-client'
-import { FEATURED_POSTS_QUERY } from '@/lib/sanity/queries'
-import type { FeaturedPostsSection as FeaturedPostsSectionType, SanityPostCard } from '@/types/sanity'
+import { getFeaturedPosts } from '@/lib/directus/queries'
+import type { FeaturedPostsSection as FeaturedPostsSectionType, PostCard } from '@/types/cms'
 
 interface Props {
   section: FeaturedPostsSectionType
@@ -21,12 +20,11 @@ export async function FeaturedPostsSection({ section, lang = 'en' }: Props) {
     viewAllLabel,
   } = section
 
-  const client = await getSanityClient()
-  const posts: SanityPostCard[] = await client.fetch(FEATURED_POSTS_QUERY, { lang, limit: maxPosts })
+  const posts = (await getFeaturedPosts(lang, maxPosts)) as unknown as PostCard[]
 
   if (posts.length === 0) return null
 
-  const postUrl = (post: SanityPostCard) =>
+  const postUrl = (post: PostCard) =>
     lang === 'en' ? `/${post.slug}` : `/${lang}/${post.slug}`
 
   const viewAllUrl = lang === 'en' ? '/' : `/${lang}`

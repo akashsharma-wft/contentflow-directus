@@ -1,9 +1,9 @@
-// sections/PostsHeaderSection.tsx
+﻿// sections/PostsHeaderSection.tsx
 //
-// Server component — renders the heading, GROQ badge, and subheading for /posts.
-// Receives CMS labels from the `postsHeader` Sanity section document.
+// Server component — renders the heading, badge, and subheading for /posts.
+// Receives CMS labels from the postsHeader section config.
 
-import type { SectionPostsHeaderContent } from '@/types/sanity'
+import type { SectionPostsHeaderContent } from '@/types/cms'
 
 interface Props {
   content: SectionPostsHeaderContent
@@ -17,7 +17,7 @@ export function PostsHeaderSection({ content }: Props) {
           {content.heading ?? 'Blog Posts'}
         </h1>
         <span className="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">
-          {content.groqBadgeLabel ?? 'via Sanity GROQ'}
+          {content.apiBadgeLabel ?? 'via Directus'}
         </span>
       </div>
       <p className="text-white/35 text-sm">

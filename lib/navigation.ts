@@ -1,10 +1,10 @@
-// Shared navigation structure used across Navbar, Footer, and Sidebar
+﻿// Shared navigation structure used across Navbar, Footer, and Sidebar
 import {
   FileText, BarChart3, Settings, CreditCard, Shield,
   LayoutDashboard, HelpCircle, LogOut, BookOpen, LifeBuoy,
   Plus, Home, type LucideIcon,
 } from 'lucide-react'
-import type { NavRole, SiteNavItem, SiteNavItemLabel, SidebarNavLink } from '@/types/sanity'
+import type { NavRole, SiteNavItem, SiteNavItemLabel, SidebarNavLink } from '@/types/cms'
 
 export const ICON_MAP: Record<string, LucideIcon> = {
   // Dashboard app nav

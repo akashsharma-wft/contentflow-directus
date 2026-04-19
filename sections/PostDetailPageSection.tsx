@@ -1,4 +1,4 @@
-// sections/PostDetailPageSection.tsx
+﻿// sections/PostDetailPageSection.tsx
 //
 // Marker section that signals a page should render post detail content.
 // Receives configuration from the `postDetail` content sub-object in the
@@ -12,7 +12,7 @@
 // On pages that DON'T have a dedicated route (e.g. a page-builder page that
 // embeds a postDetail section), this renders a placeholder.
 
-import type { SectionPostDetailContent } from '@/types/sanity'
+import type { SectionPostDetailContent } from '@/types/cms'
 
 interface Props {
   // New schema shape (sectionType === 'postDetail')

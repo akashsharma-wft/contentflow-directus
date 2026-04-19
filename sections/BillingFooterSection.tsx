@@ -1,10 +1,10 @@
 // sections/BillingFooterSection.tsx
 //
 // Server component — renders the Stripe/webhook note row at the bottom of /billing.
-// Receives CMS content from the `billingFooter` Sanity section document.
+// Receives CMS content from the `billingFooter` CMS section config.
 
 import { Shield } from 'lucide-react'
-import type { SectionBillingFooterContent } from '@/types/sanity'
+import type { SectionBillingFooterContent } from '@/types/cms'
 
 interface Props {
   content: SectionBillingFooterContent

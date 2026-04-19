@@ -3,7 +3,7 @@
 // Client component — renders the profile editing form for /settings.
 // Handles: display name, email (read-only), bio, website, save/discard.
 // Avatar and danger zone are handled by their own section components.
-// Receives CMS labels from the `settingsForm` Sanity section document.
+// Receives CMS labels from the `settingsForm` CMS section config.
 
 'use client'
 
@@ -29,7 +29,7 @@ import { toast } from 'sonner'
 import { CheckCircle2, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePostHog } from 'posthog-js/react'
-import type { SectionSettingsFormContent } from '@/types/sanity'
+import type { SectionSettingsFormContent } from '@/types/cms'
 
 interface Props {
   content: SectionSettingsFormContent

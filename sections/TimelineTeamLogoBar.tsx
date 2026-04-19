@@ -1,19 +1,10 @@
 'use client'
 import Image from 'next/image'
-import imageUrlBuilder from '@sanity/image-url'
-import { createClient } from 'next-sanity'
 import { Globe, Share2 } from 'lucide-react'
 import Link from 'next/link'
 
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: '2024-01-01',
-  useCdn: true,
-})
-const builder = imageUrlBuilder(client)
-type SanityImg = { asset: { _ref: string } }
-function urlFor(src: SanityImg) { return builder.image(src) }
+type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
+function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
 
 // ─── TIMELINE SECTION ─────────────────────────────────────────────────────────
 interface TimelineEvent {
@@ -40,12 +31,10 @@ export function TimelineSection({ section }: TimelineSectionProps) {
       <div className="max-w-3xl mx-auto">
         {heading && <h2 className="text-3xl font-bold text-white text-center mb-12">{heading}</h2>}
         <div className="relative">
-          {/* Center line */}
           <div className="absolute left-6 top-0 bottom-0 w-px bg-white/8" />
           <div className="space-y-8">
             {events.map((ev, i) => (
               <div key={ev._key ?? i} className="flex gap-6 pl-0">
-                {/* Dot */}
                 <div className={`relative z-10 w-12 h-12 shrink-0 rounded-full flex items-center justify-center border ${
                   ev.highlight
                     ? 'bg-indigo-500/20 border-indigo-500/50'
@@ -76,7 +65,7 @@ interface TeamMember {
   name: string
   role?: string
   bio?: string
-  avatar?: SanityImg
+  avatar?: ImgSrc
   linkedIn?: string
   twitter?: string
 }
@@ -108,39 +97,42 @@ export function TeamSection({ section }: TeamSectionProps) {
           </div>
         )}
         <div className={`grid gap-8 ${teamColClass[columns]}`}>
-          {members.map((m, i) => (
-            <div key={m._key ?? i} className="text-center">
-              <div className="relative w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 bg-white/5">
-                {m.avatar?.asset ? (
-                  <Image
-                    src={urlFor(m.avatar).width(160).height(160).url()}
-                    alt={m.name}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-white/30 text-2xl font-bold">
-                    {m.name[0]}
-                  </div>
-                )}
+          {members.map((m, i) => {
+            const avatarUrl = resolveImg(m.avatar)
+            return (
+              <div key={m._key ?? i} className="text-center">
+                <div className="relative w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 bg-white/5">
+                  {avatarUrl ? (
+                    <Image
+                      src={avatarUrl}
+                      alt={m.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-white/30 text-2xl font-bold">
+                      {m.name[0]}
+                    </div>
+                  )}
+                </div>
+                <h3 className="text-white font-semibold">{m.name}</h3>
+                {m.role && <p className="text-indigo-400 text-sm mt-0.5">{m.role}</p>}
+                {m.bio && <p className="text-white/40 text-xs mt-2 leading-relaxed max-w-xs mx-auto">{m.bio}</p>}
+                <div className="flex justify-center gap-3 mt-3">
+                  {m.linkedIn && (
+                    <Link href={m.linkedIn} target="_blank" className="text-white/25 hover:text-white/60 transition-colors">
+                      <Globe size={14} />
+                    </Link>
+                  )}
+                  {m.twitter && (
+                    <Link href={m.twitter} target="_blank" className="text-white/25 hover:text-white/60 transition-colors">
+                      <Share2 size={14} />
+                    </Link>
+                  )}
+                </div>
               </div>
-              <h3 className="text-white font-semibold">{m.name}</h3>
-              {m.role && <p className="text-indigo-400 text-sm mt-0.5">{m.role}</p>}
-              {m.bio && <p className="text-white/40 text-xs mt-2 leading-relaxed max-w-xs mx-auto">{m.bio}</p>}
-              <div className="flex justify-center gap-3 mt-3">
-                {m.linkedIn && (
-                  <Link href={m.linkedIn} target="_blank" className="text-white/25 hover:text-white/60 transition-colors">
-                    <Globe size={14} />
-                  </Link>
-                )}
-                {m.twitter && (
-                  <Link href={m.twitter} target="_blank" className="text-white/25 hover:text-white/60 transition-colors">
-                    <Share2 size={14} />
-                  </Link>
-                )}
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
@@ -148,7 +140,7 @@ export function TeamSection({ section }: TeamSectionProps) {
 }
 
 // ─── LOGO BAR SECTION ─────────────────────────────────────────────────────────
-interface Logo { _key?: string; image: SanityImg; alt: string; href?: string }
+interface Logo { _key?: string; image: ImgSrc; alt: string; href?: string }
 
 interface LogoBarSectionProps {
   section: {
@@ -168,10 +160,12 @@ export function LogoBarSection({ section }: LogoBarSectionProps) {
         )}
         <div className="flex flex-wrap justify-center items-center gap-8 opacity-40 grayscale">
           {logos.map((logo, i) => {
+            const imgUrl = resolveImg(logo.image)
+            if (!imgUrl) return null
             const img = (
               <div key={logo._key ?? i} className="relative h-8 w-24">
                 <Image
-                  src={urlFor(logo.image).height(64).url()}
+                  src={imgUrl}
                   alt={logo.alt}
                   fill
                   className="object-contain"

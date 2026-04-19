@@ -4,7 +4,7 @@
 // Contains:
 //   - Mobile-only top bar  (logo)
 //   - Mobile-only heading  (authSection.heading)
-//   - Centered form card   (LoginForm or SignupForm, all copy from Sanity)
+//   - Centered form card   (LoginForm or SignupForm, all copy from CMS config)
 //
 // On desktop this is a flex-1 column that sits next to AuthHeroSection.
 // On mobile this is full-width (AuthHeroSection is hidden on mobile).
@@ -13,7 +13,7 @@
 // Only the COPY (labels, placeholders, button text) is CMS-driven via section props.
 
 import { Suspense } from 'react'
-import type { AuthSection as AuthSectionType } from '@/types/sanity'
+import type { AuthSection as AuthSectionType } from '@/types/cms'
 import { LoginForm }  from '@/features/auth/components/LoginForm'
 import { SignupForm } from '@/features/auth/components/SignupForm'
 

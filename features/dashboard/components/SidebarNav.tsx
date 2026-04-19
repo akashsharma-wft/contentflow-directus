@@ -1,4 +1,4 @@
-// features/dashboard/components/SidebarNav.tsx
+﻿// features/dashboard/components/SidebarNav.tsx
 // Client component — receives nav items as props from server component.
 // Builds language-aware hrefs so /hi/posts, /kn/billing etc work correctly.
 'use client'
@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useUser } from '@/hooks/useUser'
 import { ICON_MAP, filterByVisibility, getNavItemLabel, getNavRole, localizeHref } from '@/lib/navigation'
-import type { SiteNavItem } from '@/types/sanity'
+import type { SiteNavItem } from '@/types/cms'
 
 interface SidebarNavProps {
   collapsed: boolean

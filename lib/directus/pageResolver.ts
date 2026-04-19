@@ -1,7 +1,7 @@
 /**
  * lib/directus/pageResolver.ts
  *
- * Drop-in replacement for lib/sanity/pageResolver.ts.
+ * Page resolver for Directus CMS.
  * Exports the same API so route files only need to update their import path.
  */
 import 'server-only'
@@ -40,7 +40,7 @@ export type PageResolution =
 
 /**
  * Resolves a CMS page or post by slug + language.
- * Mirrors resolveContent() from lib/sanity/pageResolver.ts exactly.
+ * resolveContent() returns a discriminated union (page|post|notFound).
  */
 export async function resolveContent(
   slug: string,

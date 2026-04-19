@@ -1,4 +1,4 @@
-// ─── features/dashboard/components/SidebarFooter.tsx ─────────────────────────
+﻿// ─── features/dashboard/components/SidebarFooter.tsx ─────────────────────────
 'use client'
 
 import Link from 'next/link'
@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useUser } from '@/hooks/useUser'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { toast } from 'sonner'
-import type { SiteCtaButton, SiteSidebarFooterLink } from '@/types/sanity'
+import type { SiteCtaButton, SiteSidebarFooterLink } from '@/types/cms'
 
 interface SidebarFooterProps {
   ctaButton?: SiteCtaButton

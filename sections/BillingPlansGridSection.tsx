@@ -1,7 +1,7 @@
 // sections/BillingPlansGridSection.tsx
 //
 // Client component — renders the plans comparison grid for /billing.
-// Receives CMS labels from the `billingPlansGrid` Sanity section document.
+// Receives CMS labels from the `billingPlansGrid` CMS section config.
 
 'use client'
 
@@ -14,7 +14,7 @@ import { PlansGrid } from '@/features/billing/components/PlansGrid'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 import { usePostHog } from 'posthog-js/react'
-import type { SectionBillingPlansGridContent } from '@/types/sanity'
+import type { SectionBillingPlansGridContent } from '@/types/cms'
 
 const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!
 

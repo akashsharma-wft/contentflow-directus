@@ -1,7 +1,7 @@
 // sections/BillingCurrentPlanSection.tsx
 //
 // Client component — renders the current plan card for /billing.
-// Receives CMS labels from the `billingCurrentPlan` Sanity section document
+// Receives CMS labels from the `billingCurrentPlan` CMS section config
 // and manages its own profile query + upgrade/manage handlers.
 
 'use client'
@@ -15,7 +15,7 @@ import { CurrentPlanCard } from '@/features/billing/components/CurrentPlanCard'
 import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 import { usePostHog } from 'posthog-js/react'
-import type { SectionBillingCurrentPlanContent } from '@/types/sanity'
+import type { SectionBillingCurrentPlanContent } from '@/types/cms'
 
 const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!
 

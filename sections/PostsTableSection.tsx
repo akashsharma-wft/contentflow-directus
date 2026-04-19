@@ -15,8 +15,6 @@
 'use client'
 
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
-import { sanityFreshClient } from '@/lib/sanity/client'
-import { groq } from 'next-sanity'
 import { useUser } from '@/hooks/useUser'
 import { useUIStore } from '@/stores/uiStore'
 import { useDebounce } from '@/hooks/useDebounce'
@@ -24,14 +22,14 @@ import { PostsTable } from '@/features/posts/components/PostsTable'
 import { PostsEmptyState } from '@/features/posts/components/PostsEmptyState'
 import { PostsTableSkeleton } from '@/features/posts/components/PostsTableSkeleton'
 import { FeaturedBanner } from '@/features/posts/components/FeaturedBanner'
-import type { SectionPostsTableContent } from '@/types/sanity'
+import type { SectionPostsTableContent } from '@/types/cms'
 
 interface Props {
   content: SectionPostsTableContent
   lang?: string
 }
 
-export interface SanityPost {
+export interface PostItem {
   _id: string
   title: string
   slug: string
@@ -45,25 +43,6 @@ export interface SanityPost {
   language?: string
 }
 
-const TABLE_QUERY = groq`
-  *[_type == "post"
-    && !(_id in path("drafts.**"))
-    && (language == $lang || (!defined(language) && $lang == "en"))]
-  | order(publishedAt desc, _createdAt desc) {
-    _id,
-    title,
-    "slug": slug.current,
-    excerpt,
-    publishedAt,
-    featured,
-    tags,
-    authorId,
-    authorName,
-    language,
-    "coverImage": coverImage.asset->url
-  }
-`
-
 // Stable query key for this section. Exported so PostsTable can receive it as a prop.
 export function postsTableQueryKey(lang: string) {
   return ['posts', 'all', lang] as const
@@ -76,9 +55,14 @@ export function PostsTableSection({ content, lang = 'en' }: Props) {
 
   const queryKey = postsTableQueryKey(lang)
 
-  const { data: allPosts, isLoading, isError, refetch } = useQuery<SanityPost[]>({
+  const { data: allPosts, isLoading, isError, refetch } = useQuery<PostItem[]>({
     queryKey,
-    queryFn: () => sanityFreshClient.fetch<SanityPost[]>(TABLE_QUERY, { lang }),
+    queryFn: async () => {
+      const res = await fetch('/api/posts')
+      if (!res.ok) throw new Error('Failed to load posts')
+      const data = (await res.json()) as PostItem[]
+      return data.filter(p => !lang || p.language === lang || (!p.language && lang === 'en'))
+    },
     enabled: !!user?.id,
     staleTime: 60_000,
     refetchOnWindowFocus: false,

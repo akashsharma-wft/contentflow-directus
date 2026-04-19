@@ -1,9 +1,9 @@
 // sections/BillingHeaderSection.tsx
 //
 // Server component — renders the heading + subheading for /billing.
-// Receives content from the `billingHeader` Sanity section document.
+// Receives content from the `billingHeader` CMS section config.
 
-import type { SectionBillingHeaderContent } from '@/types/sanity'
+import type { SectionBillingHeaderContent } from '@/types/cms'
 
 interface Props {
   content: SectionBillingHeaderContent

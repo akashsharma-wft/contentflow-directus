@@ -75,8 +75,8 @@ export function PostsTable({
   colTags         = 'Tags',
   colLastModified = 'Last Modified',
   showingLabel    = 'Showing',
-  loadMoreLabel:  _loadMoreLabel,   // retained in interface for Sanity compat, unused
-  connectedLabel  = 'Sanity API Connected',
+  loadMoreLabel:  _loadMoreLabel,   // reserved in interface, unused
+  connectedLabel  = 'Directus API Connected',
   viewPostLabel   = 'View post',
   editPostLabel   = 'Edit post',
   deletePostLabel = 'Delete post',
@@ -262,7 +262,7 @@ export function PostsTable({
               {/* Title — drafts show a toast instead of navigating to post detail */}
               {post.status === 'draft' ? (
                 <button
-                  onClick={() => toast.info('This post is a draft — publish it in Sanity Studio to view it here.', { duration: 5000 })}
+                  onClick={() => toast.info('This post is a draft — publish it to make it publicly visible.', { duration: 5000 })}
                   className="text-white/45 text-sm font-medium truncate text-left cursor-pointer hover:text-white/65 transition-colors"
                 >
                   {post.title}
@@ -320,7 +320,7 @@ export function PostsTable({
                   {post.slug && (
                     post.status === 'draft' ? (
                       <DropdownMenuItem
-                        onClick={() => toast.info('This post is a draft — publish it in Sanity Studio to view it here.', { duration: 5000 })}
+                        onClick={() => toast.info('This post is a draft — publish it to make it publicly visible.', { duration: 5000 })}
                         className="flex items-center gap-2 cursor-pointer text-sm px-3 py-2 text-white/40"
                       >
                         <Eye size={13} /> {viewPostLabel}

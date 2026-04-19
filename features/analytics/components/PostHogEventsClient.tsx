@@ -1,4 +1,4 @@
-// features/analytics/components/PostHogEventsClient.tsx
+﻿// features/analytics/components/PostHogEventsClient.tsx
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
@@ -6,7 +6,7 @@ import { usePostHog } from 'posthog-js/react'
 import { useUser } from '@/hooks/useUser'
 import { ToggleRight, Loader2, Activity, ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { SectionAnalyticsContent } from '@/types/sanity'
+import type { SectionAnalyticsContent } from '@/types/cms'
 
 interface ServerFlags {
   showFeaturedBanner: boolean

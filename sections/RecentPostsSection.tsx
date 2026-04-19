@@ -1,7 +1,6 @@
-import { getSanityClient } from '@/lib/sanity/server-client'
-import { RECENT_POSTS_QUERY } from '@/lib/sanity/queries'
+import { getRecentPosts } from '@/lib/directus/queries'
 import { PostFilterGrid } from '@/components/PostFilterGrid'
-import type { RecentPostsSection as RecentPostsSectionType, SanityPostCard } from '@/types/sanity'
+import type { RecentPostsSection as RecentPostsSectionType, PostCard } from '@/types/cms'
 
 interface Props {
   section: RecentPostsSectionType
@@ -16,9 +15,7 @@ export async function RecentPostsSection({ section, lang = 'en' }: Props) {
     viewAllLabel = 'View all posts',
   } = section
 
-  const client = await getSanityClient()
-  // Fetch more posts than initially shown so filter tabs + load more work without a refetch
-  const posts: SanityPostCard[] = await client.fetch(RECENT_POSTS_QUERY, { lang, limit: Math.max(count, 24) })
+  const posts = (await getRecentPosts(lang, Math.max(count, 24))) as unknown as PostCard[]
 
   if (posts.length === 0) return null
 

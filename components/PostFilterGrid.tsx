@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { format } from 'date-fns'
-import type { SanityPostCard } from '@/types/sanity'
+import type { PostCard } from '@/types/cms'
 
 const LANG_LABELS: Record<string, string> = { en: 'EN', hi: 'HI', kn: 'KN' }
 const PAGE_SIZE = 6
@@ -15,7 +15,7 @@ const UI_STRINGS: Record<string, { allPosts: string; noResults: string; loadMore
 }
 
 interface Props {
-  posts: SanityPostCard[]
+  posts: PostCard[]
   lang: string
   viewAllLabel?: string
 }
@@ -40,7 +40,7 @@ export function PostFilterGrid({ posts, lang, viewAllLabel }: Props) {
   const shown = filtered.slice(0, visible)
   const hasMore = visible < filtered.length
 
-  const postUrl = (post: SanityPostCard) =>
+  const postUrl = (post: PostCard) =>
     lang === 'en' ? `/${post.slug}` : `/${lang}/${post.slug}`
 
   return (

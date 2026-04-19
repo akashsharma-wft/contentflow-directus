@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { useUIStore } from '@/stores/uiStore'
@@ -8,7 +8,7 @@ import { SidebarFooter } from './SidebarFooter'
 import { CollapsedSignOut } from './CollapsedSignOut'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 import { cn } from '@/lib/utils'
-import type { SiteNavItem, SiteSidebarConfig } from '@/types/sanity'
+import type { SiteNavItem, SiteSidebarConfig } from '@/types/cms'
 
 interface StatusBarProps {
   statusText?: string

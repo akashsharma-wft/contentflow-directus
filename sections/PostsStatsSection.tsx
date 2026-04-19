@@ -1,4 +1,4 @@
-// sections/PostsStatsSection.tsx
+﻿// sections/PostsStatsSection.tsx
 //
 // Derives stats (My Posts / Published / Drafts) from its own dedicated cache entry.
 //
@@ -12,14 +12,11 @@
 
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
-import { keepPreviousData } from '@tanstack/react-query'
-import { sanityFreshClient } from '@/lib/sanity/client'
-import { groq } from 'next-sanity'
+import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { useUser } from '@/hooks/useUser'
 import { PostsStatsBar } from '@/features/posts/components/PostsStatsBar'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { SectionPostsStatsContent } from '@/types/sanity'
+import type { SectionPostsStatsContent } from '@/types/cms'
 
 interface Props {
   content: SectionPostsStatsContent
@@ -30,23 +27,20 @@ interface PostMeta {
   _id: string
   authorId?: string
   publishedAt: string | null
+  language?: string
 }
-
-const STATS_QUERY = groq`
-  *[_type == "post"
-    && !(_id in path("drafts.**"))
-    && (language == $lang || (!defined(language) && $lang == "en"))]
-  | order(publishedAt desc, _createdAt desc) {
-    _id, authorId, publishedAt
-  }
-`
 
 export function PostsStatsSection({ content, lang = 'en' }: Props) {
   const { user, isLoading: authLoading } = useUser()
 
   const { data: posts = [], isLoading } = useQuery<PostMeta[]>({
     queryKey: ['posts', 'stats', lang],
-    queryFn: () => sanityFreshClient.fetch<PostMeta[]>(STATS_QUERY, { lang }),
+    queryFn: async () => {
+      const res = await fetch('/api/posts')
+      if (!res.ok) throw new Error('Failed')
+      const data = (await res.json()) as PostMeta[]
+      return data.filter(p => !lang || p.language === lang || (!p.language && lang === 'en'))
+    },
     enabled: !!user?.id,
     staleTime: 60_000,
     refetchOnWindowFocus: false,

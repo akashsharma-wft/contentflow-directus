@@ -1,4 +1,4 @@
-// features/dashboard/components/MobileBottomNav.tsx
+﻿// features/dashboard/components/MobileBottomNav.tsx
 //
 // Dashboard mobile bottom tab bar.
 // Shows up to PRIMARY_LIMIT items directly in the bar.
@@ -12,7 +12,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { ICON_MAP, filterByVisibility, getNavItemLabel, getNavRole, localizeHref } from '@/lib/navigation'
 import { useUser } from '@/hooks/useUser'
-import type { SiteNavItem } from '@/types/sanity'
+import type { SiteNavItem } from '@/types/cms'
 
 // Maximum items shown inline before overflow kicks in
 const PRIMARY_LIMIT = 4

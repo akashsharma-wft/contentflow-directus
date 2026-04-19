@@ -1,14 +1,14 @@
 // sections/SettingsDangerSection.tsx
 //
 // Client component — renders the danger zone card for /settings.
-// Receives CMS labels from the `settingsDanger` Sanity section document.
+// Receives CMS labels from the `settingsDanger` CMS section config.
 
 'use client'
 
 import { useState } from 'react'
 import { useUser } from '@/hooks/useUser'
 import { DeleteAccountDialog } from '@/features/settings/components/DeleteAccountDialog'
-import type { SectionSettingsDangerContent } from '@/types/sanity'
+import type { SectionSettingsDangerContent } from '@/types/cms'
 
 interface Props {
   content: SectionSettingsDangerContent

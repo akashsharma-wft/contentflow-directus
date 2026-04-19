@@ -1,9 +1,9 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import type { ComponentPricingTableContent } from '@/types/sanity'
+import type { ComponentPricingTableContent } from '@/types/cms'
 
 interface Props {
   component: ComponentPricingTableContent

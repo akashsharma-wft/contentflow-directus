@@ -10,10 +10,10 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { APP_NAV_ITEMS, ICON_MAP, filterNavItems, localizeHref, getLocalizedLabel } from '@/lib/navigation'
 import { useUser } from '@/hooks/useUser'
-import type { SanitySiteConfig } from '@/types/sanity'
+import type { SiteConfig } from '@/types/cms'
 
 interface Props {
-  siteConfig: SanitySiteConfig | null
+  siteConfig: SiteConfig | null
   /** Optional — accepted for backwards compat but not used (lang is derived from pathname). */
   lang?: string
 }
@@ -89,7 +89,7 @@ export function Footer({ siteConfig }: Props) {
             )}
           </div>
 
-          {/* Link columns — Sanity-driven if configured, else fallback nav */}
+          {/* Link columns — CMS-driven if configured, else fallback nav */}
           <div className="sm:col-span-3">
             {footerColumns.length > 0 ? (
               <div className={`grid grid-cols-2 sm:grid-cols-${Math.min(footerColumns.length, 4)} gap-8`}>

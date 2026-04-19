@@ -4,8 +4,6 @@
 // Called by SectionRenderer when it encounters a 'signupSection' block.
 
 import { Suspense } from 'react'
-import { sanityClient } from '@/lib/sanity/client'
-import { AUTH_CONFIG_QUERY } from '@/lib/sanity/queries'
 import { AuthShell } from '@/features/auth/components/AuthShell'
 import { SignupForm } from '@/features/auth/components/SignupForm'
 
@@ -47,29 +45,25 @@ interface SignupSectionProps {
 }
 
 export async function SignupSection({ lang = 'en' }: SignupSectionProps) {
-  const config = await sanityClient.fetch<AuthConfig | null>(AUTH_CONFIG_QUERY)
-  const l = (lang as Lang) ?? 'en'
+  void lang
 
   const copy = {
-    headline:            t(config?.leftPanelHeadline,          l) || 'CMS-driven publishing for engineering teams.',
-    subheadline:         t(config?.signupHeading,              l) || 'Create your account',
-    badge:               t(config?.leftPanelBadge,             l) || null,
-    formSubheading:      t(config?.signupSubheading,           l) || 'Join the ContentFlow workspace',
-    submitLabel:         t(config?.signupSubmitLabel,          l) || 'Create account',
-    namePlaceholder:     t(config?.signupNamePlaceholder,      l) || 'Your full name',
-    emailPlaceholder:    t(config?.signupEmailPlaceholder,     l) || 'you@example.com',
-    passwordPlaceholder: t(config?.signupPasswordPlaceholder,  l) || 'Min 8 characters',
-    footerText:          t(config?.signupFooterText,           l) || 'Already have an account?',
-    footerLinkLabel:     t(config?.signupFooterLinkLabel,      l) || 'Sign in',
-    footerLinkHref:      config?.signupFooterLinkHref ?? '/login',
-    googleLabel:         t(config?.signupGoogleLabel,          l) || 'Continue with Google',
-    footerNote:          t(config?.leftPanelFooterNote,        l) || 'Powered by Supabase Auth',
-    showGoogleOAuth:     config?.showGoogleOAuth ?? true,
-    showEmailPassword:   config?.showEmailPassword ?? true,
-    features: (config?.leftPanelFeatures ?? []).map((f) => ({
-      text: f[l] ?? f.en ?? '',
-      icon: f.icon,
-    })),
+    headline:            'CMS-driven publishing for engineering teams.',
+    subheadline:         'Create your account',
+    badge:               null as string | null,
+    formSubheading:      'Join the ContentFlow workspace',
+    submitLabel:         'Create account',
+    namePlaceholder:     'Your full name',
+    emailPlaceholder:    'you@example.com',
+    passwordPlaceholder: 'Min 8 characters',
+    footerText:          'Already have an account?',
+    footerLinkLabel:     'Sign in',
+    footerLinkHref:      '/login',
+    googleLabel:         'Continue with Google',
+    footerNote:          'Powered by Supabase Auth',
+    showGoogleOAuth:     true,
+    showEmailPassword:   true,
+    features:            [] as { text: string; icon?: string }[],
   }
 
   return (

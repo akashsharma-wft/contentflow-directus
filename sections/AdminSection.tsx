@@ -1,4 +1,4 @@
-// sections/AdminSection.tsx
+﻿// sections/AdminSection.tsx
 //
 // Server component that:
 //   1. Fetches all users (service role, bypasses RLS)
@@ -7,7 +7,7 @@
 import 'server-only'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import type { AdminDatabase } from '@/types/admin'
-import type { SectionAdminContent } from '@/types/sanity'
+import type { SectionAdminContent } from '@/types/cms'
 import type { AdminInviteRow } from '@/types/admin'
 import { AdminUsersTable } from '@/features/admin/components/AdminUsersTable'
 import { AdminInvitePanel } from '@/features/admin/components/AdminInvitePanel'

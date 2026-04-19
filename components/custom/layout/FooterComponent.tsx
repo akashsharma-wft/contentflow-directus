@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import type { ComponentFooterContent } from '@/types/sanity'
+﻿import Link from 'next/link'
+import type { ComponentFooterContent } from '@/types/cms'
 
 interface Props {
   component: ComponentFooterContent

@@ -1,9 +1,9 @@
 // sections/SettingsHeaderSection.tsx
 //
 // Server component — renders the heading + subheading for /settings.
-// Receives content from the `settingsHeader` Sanity section document.
+// Receives content from the `settingsHeader` CMS section config.
 
-import type { SectionSettingsHeaderContent } from '@/types/sanity'
+import type { SectionSettingsHeaderContent } from '@/types/cms'
 
 interface Props {
   content: SectionSettingsHeaderContent

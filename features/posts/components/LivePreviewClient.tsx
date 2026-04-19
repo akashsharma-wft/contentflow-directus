@@ -75,7 +75,7 @@ export function LivePreviewClient({ posts, isPreview }: LivePreviewClientProps) 
             <code className="text-amber-400 bg-amber-500/10 px-1 py-0.5 rounded text-xs">
               perspective: &apos;previewDrafts&apos;
             </code>
-            {' '}via Sanity Node SDK.
+            {' '}via Directus API.
           </p>
         </div>
       )}
@@ -140,7 +140,7 @@ export function LivePreviewClient({ posts, isPreview }: LivePreviewClientProps) 
 
       <div className="flex items-center justify-between flex-wrap gap-3 pt-2">
         <p className="text-white/20 text-[10px] font-mono uppercase tracking-widest">
-          {posts.length} posts · Sanity {isPreview ? 'previewDrafts' : 'published'} perspective
+          {posts.length} posts · {isPreview ? 'draft' : 'published'} perspective
         </p>
         <Link
           href="/posts"

@@ -1,4 +1,4 @@
-// features/admin/components/AdminInvitePanel.tsx
+﻿// features/admin/components/AdminInvitePanel.tsx
 'use client'
 
 import { useState, useCallback } from 'react'
@@ -6,7 +6,7 @@ import { format } from 'date-fns'
 import { UserPlus, Send, Check, X, Loader2, Mail, Clock, ChevronDown, ChevronUp } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
-import type { SectionAdminContent } from '@/types/sanity'
+import type { SectionAdminContent } from '@/types/cms'
 import type { AdminInviteRow } from '@/types/admin'
 
 interface AdminInvitePanelProps {

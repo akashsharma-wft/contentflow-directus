@@ -1,7 +1,7 @@
 // features/auth/components/LoginForm.tsx
 // 'use client' — runs in the browser (handles form state, Supabase calls)
 //
-// Receives ALL display text as props from LoginSection (which fetches from Sanity).
+// Receives all display text as props from LoginSection.
 // No hardcoded English strings anywhere in this component.
 // The Supabase auth calls themselves don't need translation.
 'use client'
@@ -16,7 +16,7 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
 interface LoginFormProps {
-  // All strings from Sanity in the correct language
+  // All strings from CMS in the correct language
   subheading?: string
   submitLabel?: string
   emailLabel?: string

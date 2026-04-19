@@ -1,4 +1,4 @@
-// sections/PostsActionsSection.tsx
+﻿// sections/PostsActionsSection.tsx
 //
 // Client component — renders the Sync and New Post action buttons for /posts.
 // Sync invalidates the shared ['posts-all'] React Query key so all sections refresh.
@@ -11,7 +11,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { RefreshCw, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { CreatePostModal } from '@/features/posts/components/CreatePostModal'
-import type { SectionPostsActionsContent } from '@/types/sanity'
+import type { SectionPostsActionsContent } from '@/types/cms'
 
 interface Props {
   content: SectionPostsActionsContent
@@ -28,7 +28,7 @@ export function PostsActionsSection({ content, lang = 'en' }: Props) {
     try {
       // ['posts'] prefix matches both ['posts','all',lang] and ['posts','stats',lang].
       await queryClient.invalidateQueries({ queryKey: ['posts'] })
-      toast.success('Synced from Sanity')
+      toast.success('Posts refreshed')
     } catch {
       toast.error('Sync failed')
     } finally {

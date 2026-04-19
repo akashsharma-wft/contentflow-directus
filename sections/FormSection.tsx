@@ -1,7 +1,7 @@
 /**
  * FormSection — CMS-driven form presentation layer.
  *
- * This component renders the form UI as configured in Sanity.
+ * This component renders the form UI as configured in the CMS.
  * The actual auth logic (Supabase sign-in, sign-up) lives in the existing
  * features/auth/components/ components — this just wires the visual config.
  *
@@ -9,7 +9,7 @@
  * For profile formId, renders the existing ProfileForm.
  */
 import Link from 'next/link'
-import type { FormSection as FormSectionType } from '@/types/sanity'
+import type { FormSection as FormSectionType } from '@/types/cms'
 
 interface Props {
   section: FormSectionType

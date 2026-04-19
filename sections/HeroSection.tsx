@@ -1,6 +1,6 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import type { HeroSection as HeroSectionType } from '@/types/sanity'
+import type { HeroSection as HeroSectionType } from '@/types/cms'
 import { HeroPrimaryCta } from './_HeroPrimaryCta'
 
 interface Props {

@@ -1,26 +1,17 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
-import imageUrlBuilder from '@sanity/image-url'
-import { createClient } from 'next-sanity'
 import { Play } from 'lucide-react'
 
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: '2024-01-01',
-  useCdn: true,
-})
-const builder = imageUrlBuilder(client)
-type SanityImg = { asset: { _ref: string } }
-function urlFor(src: SanityImg) { return builder.image(src) }
+type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
+function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
 
 interface VideoSectionProps {
   section: {
     heading?: string
     subheading?: string
     url: string
-    posterImage?: SanityImg
+    posterImage?: ImgSrc
     maxWidth?: 'medium' | 'wide' | 'full'
   }
 }
@@ -32,10 +23,8 @@ const maxWidthClass: Record<string, string> = {
 }
 
 function getEmbedUrl(url: string): string {
-  // YouTube
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/)
   if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`
-  // Vimeo
   const vmMatch = url.match(/vimeo\.com\/(\d+)/)
   if (vmMatch) return `https://player.vimeo.com/video/${vmMatch[1]}?autoplay=1`
   return url
@@ -45,6 +34,7 @@ export function VideoSection({ section }: VideoSectionProps) {
   const { heading, subheading, url, posterImage, maxWidth = 'wide' } = section
   const [playing, setPlaying] = useState(false)
   const embedUrl = getEmbedUrl(url)
+  const posterUrl = resolveImg(posterImage)
 
   return (
     <section className="py-16 px-6 bg-[#0d0e14]">
@@ -68,9 +58,9 @@ export function VideoSection({ section }: VideoSectionProps) {
               onClick={() => setPlaying(true)}
               className="absolute inset-0 w-full h-full flex items-center justify-center group"
             >
-              {posterImage?.asset && (
+              {posterUrl && (
                 <Image
-                  src={urlFor(posterImage).width(1200).url()}
+                  src={posterUrl}
                   alt="Video thumbnail"
                   fill
                   className="object-cover"

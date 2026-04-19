@@ -1,10 +1,10 @@
 /**
  * lib/directus/queries.ts
  *
- * All CMS read functions — replaces lib/sanity/queries.ts + the fetch calls
+ * All CMS read functions for Directus.
  * scattered across page server components.
  *
- * Each function returns the same normalised type that Sanity queries returned,
+ * Each function returns a normalised type consumed by pages, sections, and API routes.
  * so consumers need only change the import path, not the usage.
  *
  * Note: We use `as unknown as T` casts because the Directus SDK v21 generics

@@ -1,6 +1,6 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import type { CtaSection as CtaSectionType } from '@/types/sanity'
+import type { CtaSection as CtaSectionType } from '@/types/cms'
 
 interface Props {
   section: CtaSectionType

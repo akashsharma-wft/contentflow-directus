@@ -1,9 +1,9 @@
-// sections/PostDetailTagsSection.tsx
+﻿// sections/PostDetailTagsSection.tsx
 //
 // Configuration section for the post detail tags row.
 // Config consumed by app/[lang]/[slug]/page.tsx → PostDetail component.
 
-import type { SectionPostDetailTagsContent } from '@/types/sanity'
+import type { SectionPostDetailTagsContent } from '@/types/cms'
 
 interface Props {
   content: SectionPostDetailTagsContent

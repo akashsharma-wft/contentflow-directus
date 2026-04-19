@@ -5,7 +5,7 @@ import { useUser } from '@/hooks/useUser'
 
 interface Props {
   label: string
-  /** Href from Sanity (e.g. /signup). Overridden to /posts when authenticated. */
+  /** Href from CMS config (e.g. /signup). Overridden to /posts when authenticated. */
   href: string
   className: string
 }
@@ -13,7 +13,7 @@ interface Props {
 /**
  * Primary CTA link in the Hero section.
  * When the user is authenticated the destination becomes /posts (the dashboard)
- * instead of the Sanity-configured href (typically /signup or /login).
+ * instead of the CMS-configured href (typically /signup or /login).
  * No visual flicker — href resolves silently after auth state is known.
  */
 export function HeroPrimaryCta({ label, href, className }: Props) {

@@ -1,6 +1,6 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import type { ComponentGridContent } from '@/types/sanity'
+import type { ComponentGridContent } from '@/types/cms'
 
 interface Props {
   component: ComponentGridContent

@@ -1,9 +1,9 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import type { ComponentMobileNavBottomContent } from '@/types/sanity'
+import type { ComponentMobileNavBottomContent } from '@/types/cms'
 
 interface Props {
   component: ComponentMobileNavBottomContent

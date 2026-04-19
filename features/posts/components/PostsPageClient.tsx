@@ -5,8 +5,6 @@
 
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { sanityClient } from '@/lib/sanity/client'
-import { groq } from 'next-sanity'
 import { useUser } from '@/hooks/useUser'
 import { useDebounce } from '@/hooks/useDebounce'
 import { toast } from 'sonner'
@@ -23,7 +21,7 @@ import { CreatePostModal } from './CreatePostModal'
 interface PostsPageConfig {
   heading?: string
   subheading?: string
-  groqBadgeLabel?: string
+  apiBadgeLabel?: string
   syncButtonLabel?: string
   newPostButtonLabel?: string
   myPostsLabel?: string
@@ -43,7 +41,7 @@ interface PostsPageClientProps {
   config: PostsPageConfig
 }
 
-interface SanityPost {
+interface PostItem {
   _id: string
   title: string
   slug: string
@@ -66,28 +64,12 @@ export function PostsPageClient({ config }: PostsPageClientProps) {
   const [modalOpen, setModalOpen] = useState(false)
   const debouncedSearch = useDebounce(searchQuery, 300)
 
-  // Fetch ALL posts (published + drafts authored by user)
   const { data: allFetchedPosts, isLoading, isError, refetch } = useQuery({
-    queryKey: ['posts-all', user?.id],
+    queryKey: ['posts', 'all', 'en'],
     queryFn: async () => {
-      if (!user?.id) return []
-      return sanityClient.fetch(groq`
-        *[_type == "post"] | order(publishedAt desc, _createdAt desc) {
-          _id,
-          title,
-          "slug": slug.current,
-          excerpt,
-          publishedAt,
-          featured,
-          tags,
-          authorId,
-          authorName,
-          authorEmail,
-          authorAvatar,
-          language,
-          "coverImage": coverImage.asset->url
-        }
-      `)
+      const res = await fetch('/api/posts')
+      if (!res.ok) throw new Error('Failed to load posts')
+      return res.json() as Promise<PostItem[]>
     },
     enabled: !!user?.id,
     staleTime: 0,
@@ -97,7 +79,7 @@ export function PostsPageClient({ config }: PostsPageClientProps) {
     setIsSyncing(true)
     try {
       await refetch()
-      toast.success(config.syncButtonLabel ? 'Synced from Sanity' : 'Synced from Sanity')
+      toast.success('Posts refreshed')
     } catch {
       toast.error('Sync failed')
     } finally {
@@ -105,7 +87,7 @@ export function PostsPageClient({ config }: PostsPageClientProps) {
     }
   }
 
-  const posts = (allFetchedPosts ?? []) as SanityPost[]
+  const posts = (allFetchedPosts ?? []) as PostItem[]
 
   // Add status derived field
   const postsWithStatus = posts.map((p) => ({
@@ -138,7 +120,7 @@ export function PostsPageClient({ config }: PostsPageClientProps) {
               {config.heading ?? 'Blog Posts'}
             </h1>
             <span className="text-[10px] font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">
-              {config.groqBadgeLabel ?? 'via Sanity GROQ'}
+              {config.apiBadgeLabel ?? 'via Directus'}
             </span>
           </div>
           <p className="text-white/35 text-sm">

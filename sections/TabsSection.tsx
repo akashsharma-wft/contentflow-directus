@@ -1,26 +1,17 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
-import imageUrlBuilder from '@sanity/image-url'
-import { createClient } from 'next-sanity'
 import { PortableText } from '@portabletext/react'
 
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
-  apiVersion: '2024-01-01',
-  useCdn: true,
-})
-const builder = imageUrlBuilder(client)
-type SanityImg = { asset: { _ref: string } }
-function urlFor(src: SanityImg) { return builder.image(src) }
+type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
+function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
 
 interface Tab {
   _key?: string
   label: string
   icon?: string
   content?: unknown[]
-  image?: SanityImg
+  image?: ImgSrc
 }
 
 interface TabsSectionProps {
@@ -61,16 +52,19 @@ export function TabsSection({ section }: TabsSectionProps) {
         {/* Tab content */}
         {current && (
           <div className="border border-white/8 rounded-2xl p-8 bg-white/2">
-            {current.image?.asset && (
-              <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-6">
-                <Image
-                  src={urlFor(current.image).width(1000).url()}
-                  alt={current.label}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            )}
+            {(() => {
+              const imgUrl = resolveImg(current.image)
+              return imgUrl ? (
+                <div className="relative w-full aspect-video rounded-xl overflow-hidden mb-6">
+                  <Image
+                    src={imgUrl}
+                    alt={current.label}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ) : null
+            })()}
             {current.content && (
               <div className="prose prose-invert prose-sm max-w-none text-white/70">
                 <PortableText value={current.content as Parameters<typeof PortableText>[0]['value']} />

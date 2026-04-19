@@ -7,10 +7,9 @@
  */
 import Link from 'next/link'
 import { format } from 'date-fns'
-import { sanityClient } from '@/lib/sanity/client'
-import { POSTS_BY_LANG_QUERY } from '@/lib/sanity/queries'
-import { SUPPORTED_LANGUAGES, LANG_LABELS, type SupportedLang } from '@/lib/sanity/pageResolver'
-import type { SanityPostCard } from '@/types/sanity'
+import { getRecentPosts } from '@/lib/directus/queries'
+import { SUPPORTED_LANGUAGES, LANG_LABELS, type SupportedLang } from '@/lib/directus/pageResolver'
+import type { PostCard } from '@/types/cms'
 
 interface Props {
   lang: SupportedLang
@@ -22,7 +21,7 @@ function langUrl(lang: string): string {
 }
 
 export async function PostsListing({ lang }: Props) {
-  const posts: SanityPostCard[] = await sanityClient.fetch(POSTS_BY_LANG_QUERY, { lang })
+  const posts = (await getRecentPosts(lang, 50)) as unknown as PostCard[]
 
   return (
     <main className="min-h-screen bg-[#0d0e14] text-white px-6 py-12 max-w-4xl mx-auto">
@@ -57,11 +56,7 @@ export async function PostsListing({ lang }: Props) {
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <p className="text-white/30 text-lg mb-2">No posts yet</p>
           <p className="text-white/20 text-sm">
-            Add content in{' '}
-            <Link href="/studio" className="text-indigo-400 hover:text-indigo-300 underline">
-              Sanity Studio
-            </Link>{' '}
-            with language set to &quot;{LANG_LABELS[lang]}&quot;
+            Create posts in the dashboard with language set to &quot;{LANG_LABELS[lang]}&quot;
           </p>
         </div>
       ) : (

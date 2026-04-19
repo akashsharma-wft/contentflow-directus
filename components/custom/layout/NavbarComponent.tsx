@@ -1,8 +1,8 @@
-'use client'
+﻿'use client'
 
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
-import type { ComponentNavbarContent } from '@/types/sanity'
+import type { ComponentNavbarContent } from '@/types/cms'
 
 interface Props {
   component: ComponentNavbarContent

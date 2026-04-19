@@ -1,11 +1,12 @@
 /**
- * TypeScript types for all Sanity CMS schemas.
- * Keep in sync with sanity/schemaTypes/.
+ * TypeScript types for the CMS layer (Directus).
+ * Section/component content types are CMS-agnostic — they describe the JSON
+ * blob shapes stored in pages.sections and are shared across all consumers.
  */
 
 // ─── Shared ────────────────────────────────────────────────────────────────────
 
-export type SanityImageAsset = {
+export type ImageAsset = {
   _type: 'image'
   asset: { _ref: string; _type: 'reference' }
   hotspot?: { x: number; y: number; height: number; width: number }
@@ -22,7 +23,7 @@ export type PortableTextBlock = {
 
 // ─── Post ──────────────────────────────────────────────────────────────────────
 
-export type SanityPost = {
+export type PostRecord = {
   _id: string
   _type: 'post'
   _createdAt: string
@@ -32,7 +33,7 @@ export type SanityPost = {
   language?: string
   excerpt?: string
   body?: PortableTextBlock[]
-  coverImage?: SanityImageAsset
+  coverImage?: ImageAsset
   publishedAt?: string
   featured?: boolean
   tags?: string[]
@@ -43,8 +44,8 @@ export type SanityPost = {
 }
 
 /** Flat card shape returned by post list queries (coverImage is a resolved URL string). */
-export type SanityPostCard = Pick<
-  SanityPost,
+export type PostCard = Pick<
+  PostRecord,
   | '_id'
   | 'title'
   | 'language'
@@ -156,7 +157,7 @@ export type FooterSection = {
 }
 
 /** A dereferenced custom section document (from a reference in page.sections). */
-export type SanityCustomSection = {
+export type CustomSection = {
   _type: 'section'
   _id: string
   title: string
@@ -247,7 +248,7 @@ export type ComponentGridItem = {
   heading: string
   body?: string
   icon?: string
-  image?: SanityImageAsset & { url?: string }
+  image?: ImageAsset & { url?: string }
   linkLabel?: string
   linkHref?: string
 }
@@ -264,7 +265,7 @@ export type ComponentCardItem = {
   heading: string
   body?: string
   badge?: string
-  image?: SanityImageAsset & { url?: string }
+  image?: ImageAsset & { url?: string }
   tags?: string[]
   ctaLabel?: string
   ctaHref?: string
@@ -336,7 +337,7 @@ export type ComponentListContent = {
 export type ComponentFlexItem = {
   heading?: string
   body?: string
-  image?: SanityImageAsset & { url?: string }
+  image?: ImageAsset & { url?: string }
   width?: string
 }
 
@@ -351,11 +352,11 @@ export type ComponentFlexContent = {
 }
 
 /**
- * A fully dereferenced `component` document returned by `sections[]->`.
+ * A fully dereferenced `component` document.
  * The `componentType` field is the discriminator; one of the named content
  * sub-objects will be populated depending on which type was selected.
  */
-export type SanityComponentDoc = {
+export type ComponentDoc = {
   _type:         'component'
   _id:           string
   name?:         string
@@ -375,19 +376,6 @@ export type SanityComponentDoc = {
   dataTable?:    ComponentDataTableContent    | null
   list?:         ComponentListContent         | null
   flex?:         ComponentFlexContent         | null
-}
-
-/** @deprecated — legacy narrow type kept for existing code. Use SanityComponentDoc instead. */
-export type SanityComponent = {
-  _id: string
-  name: string
-  type: 'button' | 'input' | 'select' | 'container' | 'form' | 'grid'
-  config?: {
-    label?: string
-    placeholder?: string
-    variant?: string
-    className?: string
-  }
 }
 
 // ─── Legacy section types (kept for backward compat with existing data) ────────
@@ -503,7 +491,7 @@ export type Testimonial = {
   quote: string
   name: string
   title?: string
-  avatar?: SanityImageAsset
+  avatar?: ImageAsset
   rating?: number
 }
 
@@ -553,7 +541,7 @@ export type TeamMember = {
   name: string
   role?: string
   bio?: string
-  avatar?: SanityImageAsset
+  avatar?: ImageAsset
   linkedIn?: string
   twitter?: string
 }
@@ -571,12 +559,12 @@ export type LogoBarSection = {
   _type: 'logoBarSection'
   _key: string
   heading?: string
-  logos?: { image: SanityImageAsset; alt: string; href?: string }[]
+  logos?: { image: ImageAsset; alt: string; href?: string }[]
   scrolling?: boolean
 }
 
 export type CarouselSlide = {
-  image?: SanityImageAsset
+  image?: ImageAsset
   heading?: string
   body?: string
   ctaLabel?: string
@@ -633,7 +621,7 @@ export type TabsItem = {
   label: string
   icon?: string
   content?: PortableTextBlock[]
-  image?: SanityImageAsset
+  image?: ImageAsset
 }
 
 export type TabsSection = {
@@ -646,7 +634,7 @@ export type TabsSection = {
 export type ImageSection = {
   _type: 'imageSection'
   _key: string
-  image: SanityImageAsset
+  image: ImageAsset
   alt: string
   caption?: string
   maxWidth?: 'narrow' | 'medium' | 'wide' | 'full'
@@ -655,7 +643,7 @@ export type ImageSection = {
 }
 
 export type GalleryImage = {
-  image: SanityImageAsset
+  image: ImageAsset
   alt: string
   caption?: string
 }
@@ -676,7 +664,7 @@ export type VideoSection = {
   heading?: string
   subheading?: string
   url: string
-  posterImage?: SanityImageAsset
+  posterImage?: ImageAsset
   maxWidth?: 'medium' | 'wide' | 'full'
 }
 
@@ -758,7 +746,7 @@ export type NotFoundSection = {
 export type GridCard = {
   heading: string
   body?: string
-  image?: SanityImageAsset
+  image?: ImageAsset
   icon?: string
   linkLabel?: string
   linkHref?: string
@@ -806,9 +794,7 @@ export type LoginPageSection    = { _type: 'loginPageSection';    _key: string; 
 export type SignupPageSection   = { _type: 'signupPageSection';   _key: string; heading?: string; description?: string }
 export type PostDetailPageSection = { _type: 'postDetailPageSection'; _key: string; heading?: string; description?: string }
 
-// ─── Section document content sub-objects (new architecture) ─────────────────
-// These mirror the named sub-object fields in the `section` document schema.
-// They are passed to components by SectionRenderer after reading `sectionType`.
+// ─── Section document content sub-objects ─────────────────────────────────────
 
 export type SectionHeroContent = Omit<HeroSection, '_type' | '_key'>
 export type SectionFeaturedPostsContent = Omit<FeaturedPostsSection, '_type' | '_key'>
@@ -973,7 +959,8 @@ export type SectionSettingsDangerContent = {
 export type SectionPostsHeaderContent = {
   heading?:        string
   subheading?:     string
-  groqBadgeLabel?: string
+  /** Badge label shown next to the section heading (e.g. "via Directus"). */
+  apiBadgeLabel?:  string
 }
 
 export type SectionPostsStatsContent = {
@@ -1076,11 +1063,11 @@ export type SectionAnalyticsContent = {
 }
 
 /**
- * A dereferenced `section` document returned by `sections[]->` in GROQ.
+ * A dereferenced `section` document.
  * The `sectionType` field is the discriminator; one of the named content
  * sub-objects will be populated depending on which type was selected.
  */
-export type SanityPageSection = {
+export type PageSection = {
   _type:       'section'
   _id:         string
   sectionType: string
@@ -1125,14 +1112,14 @@ export type SanityPageSection = {
   admin?:              SectionAdminContent | null
 }
 
-// ─── SanitySection union ──────────────────────────────────────────────────────
+// ─── CmsSection union ─────────────────────────────────────────────────────────
 
-export type SanitySection =
-  // New section document type (sections[]-> dereferenced)
-  | SanityPageSection
-  // New component document type (sections[]-> dereferenced)
-  | SanityComponentDoc
-  // New system sections
+export type CmsSection =
+  // Section document type (sections[]-> dereferenced)
+  | PageSection
+  // Component document type (sections[]-> dereferenced)
+  | ComponentDoc
+  // System sections
   | HeroSection
   | FeaturesSection
   | PostsSection
@@ -1140,8 +1127,8 @@ export type SanitySection =
   | AnalyticsSection
   | NavbarSection
   | FooterSection
-  | SanityCustomSection
-  // Legacy sections (still in existing Sanity data)
+  | CustomSection
+  // Legacy sections (still in existing data)
   | CtaSection
   | FeaturedPostsSection
   | RecentPostsSection
@@ -1184,33 +1171,21 @@ export type SanitySection =
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
-export type SanityPage = {
+export type PageRecord = {
   _id: string
   _type: 'page'
   title: string
-  /** Full slug object returned by PAGE_BY_SLUG_AND_LANG_QUERY. Use slug.current. */
   slug: { current: string }
   language?: string
   access?: 'guest' | 'user' | 'admin'
   layout?: 'home' | 'dashboard' | 'auth'
-  sections?: SanitySection[]
+  sections?: CmsSection[]
   seoTitle?: string
   seoDescription?: string
-  /** Resolved OG image URL (optional, may be absent if not set). */
   ogImage?: string
 }
 
 // ─── Site config ───────────────────────────────────────────────────────────────
-//
-// Architecture:
-//   Structure / layout  → code  (Next.js components do the rendering)
-//   Content  / config   → Sanity (editors control text, links, labels, visibility)
-//
-// Four layout config zones matching the real UI:
-//   navbarConfig    — public header bar + mobile bottom bar
-//   footerConfig    — public footer (brand, columns, social, legal row)
-//   sidebarConfig   — dashboard sidebar (brand, nav, CTA, footer links, status bar)
-//   mobileNavConfig — dashboard mobile bottom tab bar
 
 // ── Shared primitives ─────────────────────────────────────────────────────────
 
@@ -1305,23 +1280,22 @@ export type SiteMobileNavConfig = {
   items?:      SiteNavItem[]
 }
 
-// ── SanitySiteConfig ──────────────────────────────────────────────────────────
+// ── SiteConfig ────────────────────────────────────────────────────────────────
 
-export type SanitySiteConfig = {
+export type SiteConfig = {
   _id:      string
   _type:    'siteConfig'
   title:    string
   siteName: string
-  // ── Layout content/config — inline objects, not references ────────────────
   navbarConfig?:    SiteNavbarConfig
   footerConfig?:    SiteFooterConfig
   sidebarConfig?:   SiteSidebarConfig
   mobileNavConfig?: SiteMobileNavConfig
-  // ── Legacy optional fields — kept for backward compat ────────────────────
+  // Legacy optional fields — kept for backward compat
   language?: string
   tagline?:  string
-  logo?:     SanityImageAsset
-  favicon?:  SanityImageAsset
+  logo?:     ImageAsset
+  favicon?:  ImageAsset
   publicNav?:    NavLink[]
   sidebarNav?:   SidebarNavLink[]
   footerTagline?: string
@@ -1332,8 +1306,7 @@ export type SanitySiteConfig = {
 // ─── Shared nav / link types ──────────────────────────────────────────────────
 
 /**
- * Lightweight page stub returned by NAV_PAGES_QUERY.
- * Used to build the dynamic public Navbar.
+ * Lightweight page stub for nav generation.
  */
 export type NavPage = {
   _id:    string
@@ -1360,121 +1333,4 @@ export type SidebarNavLink = {
 export type AuthFeatureBullet = {
   text: string
   icon?: string
-}
-
-/** @deprecated Removed from schema — queries return null for new installs. */
-export type SanityAuthConfig = {
-  _id: string
-  _type: 'authConfig'
-  showGoogleOAuth?: boolean
-  showEmailPassword?: boolean
-  loginHeading?: string
-  loginSubheading?: string
-  loginSubmitLabel?: string
-  loginFooterText?: string
-  loginFooterLinkLabel?: string
-  loginFooterLinkHref?: string
-  signupHeading?: string
-  signupSubheading?: string
-  signupSubmitLabel?: string
-  signupFooterText?: string
-  signupFooterLinkLabel?: string
-  signupFooterLinkHref?: string
-  leftPanelHeadline?: string
-  leftPanelBadge?: string
-  leftPanelFeatures?: AuthFeatureBullet[]
-}
-
-/** @deprecated Removed from schema. */
-export type SanityPostsPageConfig = {
-  heading?: string
-  subheading?: string
-  groqBadgeLabel?: string
-  syncButtonLabel?: string
-  newPostButtonLabel?: string
-  myPostsLabel?: string
-  publishedLabel?: string
-  draftsLabel?: string
-  searchPlaceholder?: string
-  colTitle?: string
-  colStatus?: string
-  colTags?: string
-  colLastModified?: string
-  emptyTitle?: string
-  emptyBody?: string
-  emptyCtaLabel?: string
-}
-
-/** @deprecated Removed from schema. */
-export type SanityAnalyticsConfig = {
-  heading?: string
-  subheading?: string
-  eventsLabel?: string
-  usersLabel?: string
-  avgSessionLabel?: string
-  liveStreamLabel?: string
-  refreshLabel?: string
-  emptyTitle?: string
-  emptyBody?: string
-  featureFlagLabel?: string
-}
-
-/** @deprecated Removed from schema. */
-export type SanitySettingsPageConfig = {
-  heading?: string
-  subheading?: string
-  profileSectionLabel?: string
-  displayNameLabel?: string
-  emailLabel?: string
-  emailHelperText?: string
-  bioLabel?: string
-  bioMaxLength?: number
-  websiteLabel?: string
-  uploadPhotoLabel?: string
-  saveLabel?: string
-  discardLabel?: string
-  dangerZoneHeading?: string
-  dangerZoneBody?: string
-  dangerZoneWarning?: string
-  deleteAccountLabel?: string
-}
-
-/** @deprecated Removed from schema. */
-export type SanityBillingPageConfig = {
-  heading?: string
-  subheading?: string
-  currentPlanLabel?: string
-  manageLabel?: string
-  cancelLabel?: string
-  reactivateLabel?: string
-  upgradeLabel?: string
-  usageHeading?: string
-  postsUsageLabel?: string
-  apiUsageLabel?: string
-  storageUsageLabel?: string
-  seatsUsageLabel?: string
-  plansHeading?: string
-  freePlanName?: string
-  freePlanTagline?: string
-  freePlanPrice?: string
-  freePlanFeatures?: string[]
-  proPlanName?: string
-  proPlanTagline?: string
-  proPlanBadge?: string
-  proPlanFeatures?: string[]
-  downgradeLabel?: string
-  currentPlanButtonLabel?: string
-}
-
-/** @deprecated Removed from schema. */
-export type SanityAdminPageConfig = {
-  heading?: string
-  subheading?: string
-  totalUsersLabel?: string
-  colUser?: string
-  colPlan?: string
-  colRole?: string
-  colJoined?: string
-  footerNote?: string
-  emptyLabel?: string
 }

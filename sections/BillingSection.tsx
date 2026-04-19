@@ -2,8 +2,6 @@
 //
 // FIX: SectionRenderer calls <BillingSection lang={lang} /> but the component
 // accepted no arguments. Added lang prop to the signature.
-import { sanityClient } from '@/lib/sanity/client'
-import { BILLING_PAGE_CONFIG_QUERY } from '@/lib/sanity/queries'
 import { BillingPageClient } from '@/features/billing/components/BillingPageClient'
 
 export type BillingConfig = {
@@ -37,6 +35,5 @@ interface Props {
 }
 
 export async function BillingSection({ lang: _lang = 'en' }: Props) {
-  const config = await sanityClient.fetch<BillingConfig | null>(BILLING_PAGE_CONFIG_QUERY)
-  return <BillingPageClient config={config ?? {}} />
+  return <BillingPageClient config={{}} />
 }

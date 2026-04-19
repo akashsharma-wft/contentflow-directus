@@ -3,7 +3,7 @@
 // Client component — renders the profile avatar / photo card for /settings.
 // ProfileAvatar auto-saves avatar_url directly to Supabase, so it is fully
 // detached from the profile form below it.
-// Receives CMS labels from the `settingsInfo` Sanity section document.
+// Receives CMS labels from the `settingsInfo` CMS section config.
 
 'use client'
 
@@ -12,7 +12,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useUser } from '@/hooks/useUser'
 import { ProfileAvatar } from '@/features/settings/components/ProfileAvatar'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { SectionSettingsInfoContent } from '@/types/sanity'
+import type { SectionSettingsInfoContent } from '@/types/cms'
 
 interface Props {
   content: SectionSettingsInfoContent

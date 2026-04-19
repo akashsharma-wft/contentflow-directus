@@ -1,8 +1,8 @@
-'use client'
+﻿'use client'
 
 import { useState, useMemo } from 'react'
 import { cn } from '@/lib/utils'
-import type { ComponentDataTableContent } from '@/types/sanity'
+import type { ComponentDataTableContent } from '@/types/cms'
 
 interface Props {
   component: ComponentDataTableContent

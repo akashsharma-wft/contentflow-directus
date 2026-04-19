@@ -2,11 +2,11 @@
 //
 // Server component — renders the CTA buttons for /billing-success.
 // Primary and secondary button labels and hrefs are fully configurable
-// from the `billingSuccessActions` Sanity section document.
+// from the `billingSuccessActions` CMS section config.
 
 import Link from 'next/link'
 import { ArrowRight, CreditCard } from 'lucide-react'
-import type { SectionBillingSuccessActionsContent } from '@/types/sanity'
+import type { SectionBillingSuccessActionsContent } from '@/types/cms'
 
 interface Props {
   content: SectionBillingSuccessActionsContent

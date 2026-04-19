@@ -17,7 +17,7 @@ function isAuthPagePath(pathname: string): boolean {
   return false
 }
 
-// Routes that require a logged-in session (fast-path check before Sanity loads)
+// Routes that require a logged-in session
 // /studio is included — unauthenticated users get redirected to login;
 // the admin/non-admin fork is handled in the studio page component itself.
 const PROTECTED_PATHS = ['/posts', '/analytics', '/settings', '/billing', '/admin', '/studio']
