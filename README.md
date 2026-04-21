@@ -345,7 +345,7 @@ const { data: { user } } = await supabase.auth.getUser()
 
 ### Allowed Remote Image Domains
 
-- `qyzgcwwoehpeietxrqrh.supabase.co`
+- `ktqsazdaexebnxxqueuc.supabase.co`
 - `picsum.photos`
 - `fastly.picsum.photos`
 - `images.unsplash.com`

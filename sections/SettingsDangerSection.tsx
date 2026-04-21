@@ -6,8 +6,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { useUser } from '@/hooks/useUser'
+import { createClient } from '@/lib/supabase/client'
 import { DeleteAccountDialog } from '@/features/settings/components/DeleteAccountDialog'
+import { Skeleton } from '@/components/ui/skeleton'
 import type { SectionSettingsDangerContent } from '@/types/cms'
 
 interface Props {
@@ -15,8 +18,30 @@ interface Props {
 }
 
 export function SettingsDangerSection({ content }: Props) {
-  const { user } = useUser()
+  const { user, isLoading: isAuthLoading } = useUser()
+  const supabase = createClient()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+
+  const { isLoading: isProfileLoading } = useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('profiles').select('*').eq('id', user!.id).single()
+      if (error) throw error
+      return data
+    },
+    enabled: !!user?.id,
+  })
+
+  if (isAuthLoading || isProfileLoading) {
+    return (
+      <div className="mt-5 bg-[#13141c] border border-red-500/10 rounded-2xl p-5 space-y-3 animate-pulse">
+        <Skeleton className="h-4 w-24 rounded bg-red-500/10" />
+        <Skeleton className="h-3 w-full rounded bg-white/5" />
+        <Skeleton className="h-3 w-3/4 rounded bg-white/5" />
+        <Skeleton className="h-8 w-32 rounded-lg bg-red-500/10 mt-1" />
+      </div>
+    )
+  }
 
   return (
     <>

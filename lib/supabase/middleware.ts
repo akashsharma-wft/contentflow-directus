@@ -18,12 +18,10 @@ function isAuthPagePath(pathname: string): boolean {
 }
 
 // Routes that require a logged-in session
-// /studio is included — unauthenticated users get redirected to login;
-// the admin/non-admin fork is handled in the studio page component itself.
-const PROTECTED_PATHS = ['/posts', '/analytics', '/settings', '/billing', '/admin', '/studio']
+const PROTECTED_PATHS = ['/posts', '/analytics', '/settings', '/billing', '/admin']
 
-// Routes that require admin role
-const ADMIN_PATHS = ['/admin']
+// Routes that additionally require role === 'admin'
+const ADMIN_PATHS = ['/admin', '/analytics']
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })

@@ -27,7 +27,7 @@ export async function FeaturedPostsSection({ section, lang = 'en' }: Props) {
   const postUrl = (post: PostCard) =>
     lang === 'en' ? `/${post.slug}` : `/${lang}/${post.slug}`
 
-  const viewAllUrl = lang === 'en' ? '/' : `/${lang}`
+  const viewAllUrl = lang === 'en' ? '/posts' : `/${lang}/posts`
 
   return (
     <section className="w-full px-4 sm:px-6 py-14 max-w-7xl mx-auto">

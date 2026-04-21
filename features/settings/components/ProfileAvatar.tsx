@@ -11,7 +11,7 @@ interface ProfileAvatarProps {
   avatarUrl: string | null
   displayName: string | null
   userId: string
-  onUploadComplete: (url: string) => void
+  onUploadComplete: (url: string, profile?: Record<string, unknown>) => void
   uploadLabel?: string
 }
 
@@ -57,13 +57,17 @@ export function ProfileAvatar({
       const urlWithCacheBust = `${publicUrl}?t=${Date.now()}`
       setUploadProgress(100)
 
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: urlWithCacheBust } as never)
-        .eq('id', userId)
-      if (updateError) throw updateError
+      const updateRes = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ avatar_url: urlWithCacheBust }),
+      })
+      const updateJson = await updateRes.json().catch(() => ({}))
+      if (!updateRes.ok) {
+        throw new Error((updateJson as { error?: string }).error || 'Failed to save avatar')
+      }
 
-      onUploadComplete(urlWithCacheBust)
+      onUploadComplete(urlWithCacheBust, (updateJson as { profile?: Record<string, unknown> }).profile)
       toast.success('Photo updated')
     } catch (err: unknown) {
       toast.error(err instanceof Error ? err.message : 'Upload failed')

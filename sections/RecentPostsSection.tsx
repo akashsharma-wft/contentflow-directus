@@ -12,7 +12,6 @@ export async function RecentPostsSection({ section, lang = 'en' }: Props) {
     heading = 'Recent Publications',
     subheading,
     count = 12,
-    viewAllLabel = 'View all posts',
   } = section
 
   const posts = (await getRecentPosts(lang, Math.max(count, 24))) as unknown as PostCard[]
@@ -31,7 +30,7 @@ export async function RecentPostsSection({ section, lang = 'en' }: Props) {
       </div>
 
       {/* Client component handles filter tabs + load more */}
-      <PostFilterGrid posts={posts} lang={lang} viewAllLabel={viewAllLabel} />
+      <PostFilterGrid posts={posts} lang={lang} />
     </section>
   )
 }

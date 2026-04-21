@@ -45,11 +45,12 @@ const profileSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>
 
 export function SettingsFormSection({ content }: Props) {
-  const supabase = createClient()
   const queryClient = useQueryClient()
-  const { user } = useUser()
+  const { user, isLoading: isAuthLoading } = useUser()
   const posthog = usePostHog()
   const bioMax = content.bioMaxLength ?? 200
+
+  const supabase = createClient()
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -61,41 +62,55 @@ export function SettingsFormSection({ content }: Props) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('display_name, bio, website')
+        .select('*')
         .eq('id', user!.id)
         .single()
       if (error) throw error
+      console.log('[SettingsFormSection] query fetched:', data)
       return data
     },
     enabled: !!user?.id,
   })
 
   useEffect(() => {
+    console.log('[SettingsFormSection] useEffect — profile:', profile, 'user:', user?.email)
     if (profile && user) {
-      form.reset({
+      const resetValues = {
         displayName: profile.display_name ?? '',
         email:       user.email ?? '',
         bio:         profile.bio ?? '',
         website:     profile.website ?? '',
-      })
+      }
+      console.log('[SettingsFormSection] form.reset with:', resetValues)
+      form.reset(resetValues)
     }
   }, [profile, user, form])
 
   const { mutate: saveProfile, isPending: isSaving } = useMutation({
     mutationFn: async (data: ProfileFormData) => {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
+      const res = await fetch('/api/profile', {
+        method:  'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           display_name: data.displayName,
-          bio:          data.bio || null,
+          bio:          data.bio     || null,
           website:      data.website || null,
-          updated_at:   new Date().toISOString(),
-        })
-        .eq('id', user!.id)
-      if (error) throw error
+        }),
+      })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        throw new Error((json as { error?: string }).error || 'Failed to save profile')
+      }
+      return json as { success: true; profile: { display_name: string | null; bio: string | null; website: string | null } }
     },
-    onSuccess: (_, data) => {
-      queryClient.invalidateQueries({ queryKey: ['profile', user?.id] })
+    onSuccess: (result, data) => {
+      // Write the returned fields directly into the cache — no background refetch,
+      // no stale-data window. The useEffect fires synchronously with the new values.
+      if (result?.profile) {
+        queryClient.setQueryData(['profile', user?.id], result.profile)
+      } else {
+        queryClient.invalidateQueries({ queryKey: ['profile', user?.id] })
+      }
       toast.success('Profile saved successfully')
       posthog?.capture('form_submitted', {
         form: 'settings_profile',
@@ -116,8 +131,8 @@ export function SettingsFormSection({ content }: Props) {
     }
   }
 
-  if (isLoading) {
-    return <Skeleton className="h-64 w-full rounded-2xl bg-white/5" />
+  if (isAuthLoading || isLoading) {
+    return <div className="mb-5"><Skeleton className="h-64 w-full rounded-2xl bg-white/5" /></div>
   }
 
   const bioValue          = form.watch('bio') ?? ''

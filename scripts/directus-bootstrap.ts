@@ -13,22 +13,25 @@
  *   NEXT_PUBLIC_DIRECTUS_URL  — e.g. https://your-project.directus.app
  *   DIRECTUS_ADMIN_TOKEN      — static token for an admin user
  *
- * ── Permissions (Directus v11) ──────────────────────────────────────────────
- * Directus v11 uses policy-based permissions. Automated permission creation
- * is intentionally left out of this script because the policy/role/user
- * relationship is environment-specific and hard to make idempotent via API.
+ * ── Access model (Directus v11) ──────────────────────────────────────────────
+ * The app uses exactly two Directus tokens — no other roles are needed.
  *
- * Manual setup (one-time, takes ~2 minutes):
- *   1. Settings → Access Policies → New Policy → "ContentFlow Frontend Read"
- *      App Access: OFF, Admin Access: OFF
- *   2. Inside that policy add three Read permissions:
- *        posts        — Custom filter: { "published_at": { "_nnull": true } }
- *        pages        — Custom filter: { "status": { "_eq": "published" } }
- *        site_config  — No filter (all rows)
- *      Fields: * (all) for each.
- *   3. Assign this policy to the role whose static token you use as
- *      NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN, OR assign it directly to the
- *      Public policy if you want unauthenticated read access.
+ *   DIRECTUS_ADMIN_TOKEN          Full-access admin token (server-side writes only).
+ *   NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN  Read-only token for server-component fetches.
+ *
+ * One-time manual setup for the public token (Settings → Access Policies):
+ *   1. Create policy "ContentFlow Public Read"
+ *      App Access: OFF  |  Admin Access: OFF
+ *   2. Add Read permissions to the policy:
+ *        posts        — filter: { "published_at": { "_nnull": true } }  fields: *
+ *        pages        — filter: { "status": { "_eq": "published" } }    fields: *
+ *        site_config  — no filter                                        fields: *
+ *   3. Create a user (or use an existing non-admin user), generate a
+ *      static token for them, and assign "ContentFlow Public Read" to them.
+ *      Paste that token as NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN in .env.local.
+ *
+ * Everything else in Directus (default editor/viewer roles, extra policies
+ * from the starter) is unused by this app and can be left or deleted.
  */
 
 import 'dotenv/config'
@@ -569,20 +572,20 @@ async function main() {
   await bootstrapSiteConfig()
 
   console.log('\n✅  Bootstrap complete!')
-  console.log('\n── Permissions (manual step required for Directus v11) ──────────────')
-  console.log('   Directus v11 uses policy-based permissions — not automated here.')
-  console.log('   One-time setup in Directus Admin → Settings → Access Policies:')
+  console.log('\n── Access model (one-time manual step in Directus dashboard) ───────')
+  console.log('   Two tokens are all the app needs:')
+  console.log('     DIRECTUS_ADMIN_TOKEN             — full-access, server-side writes')
+  console.log('     NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN — read-only, server-component fetches')
   console.log()
-  console.log('   1. Create policy: "ContentFlow Frontend Read"')
-  console.log('      App Access: OFF, Admin Access: OFF')
+  console.log('   Settings → Access Policies → New Policy → "ContentFlow Public Read"')
+  console.log('     App Access: OFF  |  Admin Access: OFF')
+  console.log('     Read permissions:')
+  console.log('       posts        filter: { "published_at": { "_nnull": true } }  fields: *')
+  console.log('       pages        filter: { "status": { "_eq": "published" } }    fields: *')
+  console.log('       site_config  no filter                                        fields: *')
   console.log()
-  console.log('   2. Add Read permissions to that policy:')
-  console.log('      posts       — filter: { "published_at": { "_nnull": true } }')
-  console.log('      pages       — filter: { "status": { "_eq": "published" } }')
-  console.log('      site_config — no filter, all rows, fields: *')
-  console.log()
-  console.log('   3. Assign the policy to the role whose static token you use as')
-  console.log('      NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN')
+  console.log('   Assign this policy to the user whose static token is')
+  console.log('   NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN.')
   console.log()
   console.log('── Next: seed demo data ─────────────────────────────────────────────')
   console.log('   npm run directus:seed\n')

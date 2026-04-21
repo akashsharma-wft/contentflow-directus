@@ -8,6 +8,9 @@ import { z } from 'zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { useUser } from '@/hooks/useUser'
+import type { Database } from '@/types/supabase'
+
+type ProfileRow = Database['public']['Tables']['profiles']['Row']
 import {
   Form,
   FormControl,
@@ -58,7 +61,7 @@ const profileSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>
 
 export function ProfileForm({ config }: ProfileFormProps) {
-  const supabase = createClient()
+  const supabase = createClient()    // used only for reading the profile
   const queryClient = useQueryClient()
   const { user } = useUser()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -104,20 +107,31 @@ export function ProfileForm({ config }: ProfileFormProps) {
 
   const { mutate: saveProfile, isPending: isSaving } = useMutation({
     mutationFn: async (data: ProfileFormData) => {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
+      const res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           display_name: data.displayName,
-          bio: data.bio || null,
-          website: data.website || null,
-          avatar_url: data.avatarUrl || null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', user!.id)
-      if (error) throw error
+          bio:          data.bio     || null,
+          website:      data.website || null,
+        }),
+      })
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        throw new Error((json as { error?: string }).error || 'Failed to save profile')
+      }
+      // Return the updated profile row from the API response so onSuccess can
+      // write it directly into the React Query cache without a round-trip SELECT.
+      return json as { success: true; profile: ProfileRow }
     },
-    onSuccess: (_, data) => {
-      queryClient.invalidateQueries({ queryKey: ['profile', user?.id] })
+    onSuccess: (result, data) => {
+      // Write the returned profile directly into the cache — avoids a background
+      // refetch and the stale-data window that comes with invalidateQueries.
+      if (result?.profile) {
+        queryClient.setQueryData(['profile', user?.id], result.profile)
+      } else {
+        queryClient.invalidateQueries({ queryKey: ['profile', user?.id] })
+      }
       toast.success('Profile saved successfully')
       posthog?.capture('form_submitted', {
         form: 'settings_profile',
@@ -172,7 +186,12 @@ export function ProfileForm({ config }: ProfileFormProps) {
             avatarUrl={form.watch('avatarUrl') || null}
             displayName={form.watch('displayName')}
             userId={user?.id ?? ''}
-            onUploadComplete={(url) => form.setValue('avatarUrl', url)}
+            onUploadComplete={(url, updatedProfile) => {
+              form.setValue('avatarUrl', url)
+              if (updatedProfile) {
+                queryClient.setQueryData(['profile', user?.id], updatedProfile as ProfileRow)
+              }
+            }}
             uploadLabel={config.uploadPhotoLabel}
           />
 

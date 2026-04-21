@@ -162,7 +162,7 @@ export function PostFilterGrid({ posts, lang, viewAllLabel }: Props) {
             )}
             {viewAllLabel && !hasMore && (
               <Link
-                href={lang === 'en' ? '/' : `/${lang}`}
+                href={lang === 'en' ? '/posts' : `/${lang}/posts`}
                 className="text-white/40 hover:text-white text-sm font-medium transition-colors inline-flex items-center gap-1.5"
               >
                 {viewAllLabel} →

@@ -7,7 +7,7 @@
 
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { useUser } from '@/hooks/useUser'
 import { ProfileAvatar } from '@/features/settings/components/ProfileAvatar'
@@ -19,25 +19,27 @@ interface Props {
 }
 
 export function SettingsInfoSection({ content }: Props) {
-  const { user } = useUser()
+  const { user, isLoading: isAuthLoading } = useUser()
+  const queryClient = useQueryClient()
   const supabase = createClient()
 
-  const { data: profile, isLoading, refetch } = useQuery({
+  const { data: profile, isLoading } = useQuery({
     queryKey: ['profile', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('avatar_url, display_name')
+        .select('*')
         .eq('id', user!.id)
         .single()
       if (error) throw error
+      console.log('[SettingsInfoSection] query fetched:', data)
       return data
     },
     enabled: !!user?.id,
   })
 
-  if (isLoading) {
-    return <Skeleton className="h-24 w-full rounded-2xl bg-white/5" />
+  if (isAuthLoading || isLoading) {
+    return <div className="mb-5"><Skeleton className="h-24 w-full rounded-2xl bg-white/5" /></div>
   }
 
   return (
@@ -46,7 +48,13 @@ export function SettingsInfoSection({ content }: Props) {
         avatarUrl={profile?.avatar_url ?? null}
         displayName={profile?.display_name ?? null}
         userId={user?.id ?? ''}
-        onUploadComplete={() => refetch()}
+        onUploadComplete={(_url, updatedProfile) => {
+          if (updatedProfile) {
+            queryClient.setQueryData(['profile', user?.id], updatedProfile)
+          } else {
+            queryClient.invalidateQueries({ queryKey: ['profile', user?.id] })
+          }
+        }}
         uploadLabel={content.uploadPhotoLabel}
       />
     </div>

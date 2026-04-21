@@ -32,6 +32,14 @@
         "viewAllLabel": "View all posts"
       },
       {
+        "_type": "recentPostsSection",
+        "_key": "recent-posts-en",
+        "heading": "Recent Publications",
+        "subheading": "Latest articles from the team.",
+        "count": 12,
+        "viewAllLabel": "View all posts"
+      },
+      {
         "_type": "ctaSection",
         "_key": "cta-en",
         "heading": "Ready to ship faster?",
