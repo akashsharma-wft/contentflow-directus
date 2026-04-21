@@ -90,6 +90,10 @@ export function BillingCurrentPlanSection({ content }: Props) {
         cancelLabel={content.cancelLabel}
         reactivateLabel={content.reactivateLabel}
         upgradeLabel={content.upgradeLabel}
+        activeBadgeLabel={content.activeBadgeLabel}
+        cancellingBadgeLabel={content.cancellingBadgeLabel}
+        freeTierBadgeLabel={content.freeTierBadgeLabel}
+        cancellingNote={content.cancellingNote}
       />
     </div>
   )

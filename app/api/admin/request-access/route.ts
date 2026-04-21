@@ -1,5 +1,5 @@
-// app/api/studio/request-access/route.ts
-// POST — authenticated non-admin user requests admin/studio access.
+// app/api/admin/request-access/route.ts
+// POST — authenticated non-admin user requests admin access.
 //
 // Auth:   must be authenticated (any role)
 // Body:   { message?: string }
@@ -86,13 +86,13 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (insertError) {
-      console.error('studio/request-access insert error:', insertError)
+      console.error('admin/request-access insert error:', insertError)
       return NextResponse.json({ error: 'Failed to submit request' }, { status: 500 })
     }
 
     return NextResponse.json({ success: true, request: row })
   } catch (err) {
-    console.error('studio/request-access unexpected error:', err)
+    console.error('admin/request-access unexpected error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

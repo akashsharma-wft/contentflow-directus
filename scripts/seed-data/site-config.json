@@ -7,10 +7,28 @@
     "ctaButton": { "label": "Get Started", "href": "/signup" },
     "items": [
       {
+        "_key": "nav-features",
+        "label": { "en": "Features", "hi": "विशेषताएं", "kn": "ವೈಶಿಷ್ಟ್ಯಗಳು" },
+        "href": "/#features",
+        "visibleFor": ["guest"]
+      },
+      {
+        "_key": "nav-pricing",
+        "label": { "en": "Pricing", "hi": "मूल्य निर्धारण", "kn": "ಬೆಲೆ" },
+        "href": "/#pricing",
+        "visibleFor": ["guest"]
+      },
+      {
         "_key": "nav-posts",
         "label": { "en": "Blog", "hi": "ब्लॉग", "kn": "ಬ್ಲಾಗ್" },
         "href": "/posts",
         "visibleFor": ["guest", "user", "admin"]
+      },
+      {
+        "_key": "nav-dashboard",
+        "label": { "en": "Dashboard", "hi": "डैशबोर्ड", "kn": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್" },
+        "href": "/posts",
+        "visibleFor": ["user", "admin"]
       }
     ]
   },

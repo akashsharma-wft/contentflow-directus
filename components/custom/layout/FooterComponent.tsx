@@ -1,4 +1,5 @@
 ﻿import Link from 'next/link'
+import { cn } from '@/lib/utils'
 import type { ComponentFooterContent } from '@/types/cms'
 
 interface Props {
@@ -55,7 +56,12 @@ export function FooterComponent({ component }: Props) {
 
           {/* Link columns */}
           {columns.length > 0 && (
-            <div className={`grid grid-cols-2 sm:grid-cols-${Math.min(columns.length, 4)} gap-8`}>
+            <div className={cn(
+              'grid grid-cols-2 gap-8',
+              columns.length >= 4 ? 'sm:grid-cols-4'
+              : columns.length === 3 ? 'sm:grid-cols-3'
+              : 'sm:grid-cols-2'
+            )}>
               {columns.map((col, ci) => (
                 <div key={ci} className="space-y-3">
                   <p className="text-xs font-semibold uppercase tracking-widest text-white/30">{col.heading}</p>

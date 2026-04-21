@@ -8,8 +8,9 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { APP_NAV_ITEMS, ICON_MAP, filterNavItems, localizeHref, getLocalizedLabel } from '@/lib/navigation'
+import { APP_NAV_ITEMS, filterNavItems, localizeHref, getLocalizedLabel } from '@/lib/navigation'
 import { useUser } from '@/hooks/useUser'
+import { cn } from '@/lib/utils'
 import type { SiteConfig } from '@/types/cms'
 
 interface Props {
@@ -92,7 +93,12 @@ export function Footer({ siteConfig }: Props) {
           {/* Link columns — CMS-driven if configured, else fallback nav */}
           <div className="sm:col-span-3">
             {footerColumns.length > 0 ? (
-              <div className={`grid grid-cols-2 sm:grid-cols-${Math.min(footerColumns.length, 4)} gap-8`}>
+              <div className={cn(
+                'grid grid-cols-2 gap-8',
+                footerColumns.length >= 4 ? 'sm:grid-cols-4'
+                : footerColumns.length === 3 ? 'sm:grid-cols-3'
+                : 'sm:grid-cols-2'
+              )}>
                 {footerColumns.map((col) => (
                   <div key={col._key} className="space-y-3">
                     <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest">{col.heading}</p>

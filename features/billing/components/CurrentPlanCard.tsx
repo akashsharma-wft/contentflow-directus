@@ -18,6 +18,10 @@ interface CurrentPlanCardProps {
   cancelLabel?: string
   reactivateLabel?: string
   upgradeLabel?: string
+  activeBadgeLabel?: string
+  cancellingBadgeLabel?: string
+  freeTierBadgeLabel?: string
+  cancellingNote?: string
 }
 
 export function CurrentPlanCard({
@@ -27,6 +31,10 @@ export function CurrentPlanCard({
   cancelLabel = 'Cancel',
   reactivateLabel = 'Reactivate',
   upgradeLabel = 'Upgrade to Pro',
+  activeBadgeLabel = 'Active',
+  cancellingBadgeLabel = 'Cancelling',
+  freeTierBadgeLabel = 'Free Tier',
+  cancellingNote,
 }: CurrentPlanCardProps) {
   const isPro = tier === 'pro'
   const { user } = useUser()
@@ -71,7 +79,7 @@ export function CurrentPlanCard({
                 ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
                 : 'text-white/40 bg-white/5 border-white/10'
             }`}>
-              {isCancelling ? 'Cancelling' : isPro ? 'Active' : 'Free Tier'}
+              {isCancelling ? cancellingBadgeLabel : isPro ? activeBadgeLabel : freeTierBadgeLabel}
             </span>
           </div>
 
@@ -111,10 +119,14 @@ export function CurrentPlanCard({
           <div className="mt-4 flex items-start gap-2 px-3 py-2.5 bg-amber-500/8 border border-amber-500/15 rounded-xl">
             <span className="text-amber-400 text-xs mt-0.5">⚠</span>
             <p className="text-amber-300/80 text-xs leading-relaxed">
-              Your Pro access continues until{' '}
-              <span className="font-semibold text-amber-300">{cancelAt}</span>.
-              After that, your account reverts to Free. Click{' '}
-              <span className="font-semibold">Reactivate</span> to continue Pro.
+              {cancellingNote
+                ? cancellingNote
+                : <>Your Pro access continues until{' '}
+                    <span className="font-semibold text-amber-300">{cancelAt}</span>.
+                    After that, your account reverts to Free. Click{' '}
+                    <span className="font-semibold">Reactivate</span> to continue Pro.
+                  </>
+              }
             </p>
           </div>
         )}

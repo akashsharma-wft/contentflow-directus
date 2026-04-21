@@ -25,7 +25,7 @@ import type { SiteConfig, NavPage } from '@/types/cms'
 const LANG_CODES = ['en', 'hi', 'kn'] as const
 type LangCode = (typeof LANG_CODES)[number]
 
-const SUPPRESS_ROUTES = ['/studio', '/login', '/signup']
+const SUPPRESS_ROUTES = ['/login', '/signup']
 
 function parseCurrentLang(pathname: string): LangCode {
   const segments = pathname.split('/').filter(Boolean)
