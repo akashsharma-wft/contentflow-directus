@@ -1,14 +1,5 @@
 'use client'
 
-// components/directus/VisualEditingBridge.tsx
-//
-// Activates Directus Visual Editing when ?visual-editing=true is present in the URL.
-// Must be wrapped in <Suspense> at the call site (useSearchParams requires it).
-//
-// The bridge calls apply() once on mount, which scans the DOM for [data-directus]
-// attributes added by editableAttr() and overlays edit buttons.
-// onSaved reloads the page so the server-rendered HTML reflects the saved data.
-
 import { useEffect, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { apply } from '@directus/visual-editing'
@@ -24,14 +15,20 @@ export function VisualEditingBridge() {
     const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL ?? ''
     if (!directusUrl) return
 
+    let cancelled = false
+
     apply({
       directusUrl,
-      onSaved: () => window.location.reload(),
-    }).then((instance) => {
-      if (instance) removeRef.current = instance.remove
+      onSaved: () => setTimeout(() => window.location.reload(), 300),
     })
+      .then((instance) => {
+        if (cancelled || !instance) return
+        removeRef.current = instance.remove
+      })
+      .catch((err) => console.error('[VisualEditingBridge]', err))
 
     return () => {
+      cancelled = true
       removeRef.current?.()
       removeRef.current = undefined
     }

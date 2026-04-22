@@ -38,9 +38,7 @@ export function editableAttr(config: EditableConfig): string {
     parts.push(`fields:${f}`)
   }
 
-  if (config.mode) {
-    parts.push(`mode:${config.mode}`)
-  }
+  parts.push(`mode:${config.mode ?? 'drawer'}`)
 
   return parts.join(';')
 }
