@@ -26,8 +26,6 @@ import { createClient as createSupabaseServer } from '@/lib/supabase/server'
 import {
   getPageBySlugAndLang,
   getPostBySlugAndLang,
-  getAllPageSlugs,
-  getAllPostSlugs,
   getSiteConfig,
   getNavPages,
   getPostLangVariants,
@@ -80,23 +78,11 @@ function getPageAccess(page: DirectusPage) {
 // ── Static params ─────────────────────────────────────────────────────────────
 
 export async function generateStaticParams() {
-  const [pageSlugs, postSlugs] = await Promise.all([
-    getAllPageSlugs(),
-    getAllPostSlugs(),
-  ])
-
-  const seen = new Set<string>()
-
-  // Always include language codes (for /hi and /kn homepages)
-  seen.add('hi')
-  seen.add('kn')
-
-  // Include all English page/post slugs (handled as /[slug] at this route)
-  for (const { slug, language } of [...pageSlugs, ...postSlugs]) {
-    if (language === 'en' && slug !== 'home') seen.add(slug)
-  }
-
-  return Array.from(seen).map((lang) => ({ lang }))
+  // Only pre-render the language homepages at build time.
+  // All English slug pages (/posts, /login, /[post-slug], …) and non-English
+  // slug pages are ISR'd on first request (revalidate = 60) to stay well under
+  // Directus Cloud's 50 req/window rate limit during Vercel static generation.
+  return [{ lang: 'hi' }, { lang: 'kn' }]
 }
 
 // ── Metadata ──────────────────────────────────────────────────────────────────

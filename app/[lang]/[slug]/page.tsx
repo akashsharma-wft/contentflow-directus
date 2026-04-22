@@ -12,8 +12,6 @@ import { createClient as createSupabaseServer } from '@/lib/supabase/server'
 import {
   getPageBySlugAndLang,
   getPostBySlugAndLang,
-  getAllPageSlugs,
-  getAllPostSlugs,
   getSiteConfig,
   getNavPages,
   getPostLangVariants,
@@ -22,7 +20,6 @@ import {
 import {
   SUPPORTED_LANGUAGES,
   LANG_LABELS,
-  type SlugEntry,
   type SupportedLang,
 } from '@/lib/directus/pageResolver'
 import { buildMetadata } from '@/lib/seo'
@@ -84,14 +81,10 @@ function assemblePostDetailConfig(sections: PageSection[]) {
 // ── Static params ──────────────────────────────────────────────────────────────
 
 export async function generateStaticParams() {
-  const [pageSlugs, postSlugs] = await Promise.all([
-    getAllPageSlugs(),
-    getAllPostSlugs(),
-  ])
-
-  return [...pageSlugs, ...postSlugs]
-    .filter((s) => s.language === 'hi' || s.language === 'kn')
-    .map((s) => ({ lang: s.language, slug: s.slug }))
+  // Return empty — all /[lang]/[slug] paths (hi/kn post and page detail) are
+  // ISR'd on first request rather than pre-rendered at build time. This avoids
+  // exhausting Directus Cloud's 50 req/window rate limit during Vercel builds.
+  return []
 }
 
 // ── Metadata ──────────────────────────────────────────────────────────────────
