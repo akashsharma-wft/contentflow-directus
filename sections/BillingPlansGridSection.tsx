@@ -20,9 +20,10 @@ const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!
 
 interface Props {
   content: SectionBillingPlansGridContent
+  lang?: string
 }
 
-export function BillingPlansGridSection({ content }: Props) {
+export function BillingPlansGridSection({ content, lang = 'en' }: Props) {
   const router = useRouter()
   const posthog = usePostHog()
   const { user } = useUser()
@@ -56,7 +57,7 @@ export function BillingPlansGridSection({ content }: Props) {
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: PRO_PRICE_ID }),
+        body: JSON.stringify({ priceId: PRO_PRICE_ID, lang }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to create checkout session')

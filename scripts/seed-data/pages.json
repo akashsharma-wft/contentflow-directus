@@ -579,6 +579,25 @@
     ]
   },
   {
+    "slug": "billing-success",
+    "status": "published",
+    "access": "user",
+    "layout": "dashboard",
+    "og_image": null,
+    "translations": [
+      {
+        "languages_code": "en",
+        "title": "Subscription Activated",
+        "seo_title": null,
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "billing-success-hero-en", "sectionType": "billingSuccessHero", "billingSuccessHero": { "icon": "CheckCircle", "heading": "Subscription Activated!", "subheading": "Your Pro plan is now active.", "body": "You now have access to unlimited posts, advanced analytics, and priority support." } },
+          { "_type": "section", "_id": "billing-success-actions-en", "sectionType": "billingSuccessActions", "billingSuccessActions": { "primaryLabel": "Go to Posts", "primaryHref": "/posts", "secondaryLabel": "Manage Subscription", "secondaryHref": "/billing" } }
+        ]
+      }
+    ]
+  },
+  {
     "slug": "admin",
     "status": "published",
     "access": "admin",

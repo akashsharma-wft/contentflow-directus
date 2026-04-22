@@ -150,7 +150,7 @@ export async function SectionRenderer({ sections, lang = 'en' }: SectionRenderer
             case 'billingHeader':      return <BillingHeaderSection      key={key} content={s.billingHeader ?? {}} />
             case 'billingCurrentPlan': return <BillingCurrentPlanSection key={key} content={s.billingCurrentPlan ?? {}} />
             case 'billingUsage':       return <BillingUsageSection       key={key} content={s.billingUsage ?? {}} />
-            case 'billingPlansGrid':   return <BillingPlansGridSection   key={key} content={s.billingPlansGrid ?? {}} />
+            case 'billingPlansGrid':   return <BillingPlansGridSection   key={key} content={s.billingPlansGrid ?? {}} lang={lang} />
             case 'billingFooter':      return <BillingFooterSection      key={key} content={s.billingFooter ?? {}} />
             case 'billingSuccessHero':    return <BillingSuccessHeroSection    key={key} content={s.billingSuccessHero ?? {}} />
             case 'billingSuccessActions': return <BillingSuccessActionsSection key={key} content={s.billingSuccessActions ?? {}} />

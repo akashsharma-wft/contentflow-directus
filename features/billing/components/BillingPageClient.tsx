@@ -44,9 +44,10 @@ interface BillingConfig {
 
 interface BillingPageClientProps {
   config: BillingConfig
+  lang?: string
 }
 
-function BillingContent({ config }: BillingPageClientProps) {
+function BillingContent({ config, lang = 'en' }: BillingPageClientProps) {
   const router = useRouter()
   const posthog = usePostHog()
   // ctxProfile: the profile already fetched by AuthProvider (used for display).
@@ -127,7 +128,7 @@ function BillingContent({ config }: BillingPageClientProps) {
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId: PRO_PRICE_ID }),
+        body: JSON.stringify({ priceId: PRO_PRICE_ID, lang }),
       })
       const data = await response.json()
       if (!response.ok) throw new Error(data.error || 'Failed to create checkout session')
@@ -210,7 +211,7 @@ function BillingContent({ config }: BillingPageClientProps) {
   )
 }
 
-export function BillingPageClient({ config }: BillingPageClientProps) {
+export function BillingPageClient({ config, lang = 'en' }: BillingPageClientProps) {
   return (
     <Suspense fallback={
       <div className="py-6 space-y-4">
@@ -218,7 +219,7 @@ export function BillingPageClient({ config }: BillingPageClientProps) {
         <Skeleton className="h-24 w-full bg-white/5 rounded-2xl" />
       </div>
     }>
-      <BillingContent config={config} />
+      <BillingContent config={config} lang={lang} />
     </Suspense>
   )
 }

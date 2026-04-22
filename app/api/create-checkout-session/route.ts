@@ -19,13 +19,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { priceId } = body
+    const { priceId, lang = 'en' } = body
 
     if (!priceId) {
       return NextResponse.json({ error: 'Price ID required' }, { status: 400 })
     }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+    const langPrefix = lang && lang !== 'en' ? `/${lang}` : ''
+    const successUrl = `${appUrl}${langPrefix}/billing-success`
+    const cancelUrl  = `${appUrl}${langPrefix}/billing`
 
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -35,8 +38,8 @@ export async function POST(request: NextRequest) {
       // Pass user ID in metadata so webhook can identify who paid
       metadata: { userId: user.id },
       customer_email: user.email,
-      success_url: `${appUrl}/billing-success`,
-      cancel_url: `${appUrl}/billing/cancel`,
+      success_url: successUrl,
+      cancel_url:  cancelUrl,
     })
 
     return NextResponse.json({ url: session.url })

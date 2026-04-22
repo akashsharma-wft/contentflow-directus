@@ -34,6 +34,6 @@ interface Props {
   lang?: string
 }
 
-export async function BillingSection({ lang: _lang = 'en' }: Props) {
-  return <BillingPageClient config={{}} />
+export async function BillingSection({ lang = 'en' }: Props) {
+  return <BillingPageClient config={{}} lang={lang} />
 }
