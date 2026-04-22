@@ -27,7 +27,8 @@ export async function POST(request: NextRequest) {
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
     const langPrefix = lang && lang !== 'en' ? `/${lang}` : ''
-    const successUrl = `${appUrl}${langPrefix}/billing-success`
+    // session_id lets the success page verify payment server-side (webhook fallback)
+    const successUrl = `${appUrl}/billing-success?session_id={CHECKOUT_SESSION_ID}&lang=${lang}`
     const cancelUrl  = `${appUrl}${langPrefix}/billing`
 
     // Create Stripe Checkout Session
