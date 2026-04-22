@@ -58,10 +58,9 @@ export function PostsTableSection({ content, lang = 'en' }: Props) {
   const { data: allPosts, isLoading, isError, refetch } = useQuery<PostItem[]>({
     queryKey,
     queryFn: async () => {
-      const res = await fetch('/api/posts')
+      const res = await fetch(`/api/posts?lang=${lang}`)
       if (!res.ok) throw new Error('Failed to load posts')
-      const data = (await res.json()) as PostItem[]
-      return data.filter(p => !lang || p.language === lang || (!p.language && lang === 'en'))
+      return (await res.json()) as PostItem[]
     },
     enabled: !!user?.id,
     staleTime: 60_000,

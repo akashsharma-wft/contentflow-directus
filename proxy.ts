@@ -8,8 +8,7 @@ const ALWAYS_PUBLIC = ['/api/', '/auth/']
 // Auth pages: pass through updateSession so logged-in users get redirected away
 const AUTH_PAGE_SLUGS = ['login', 'signup']
 // App pages that always require auth (fast-path)
-// 'studio' is kept so unauthenticated users are redirected to login
-const ALWAYS_AUTH = ['posts', 'analytics', 'settings', 'billing', 'admin', 'studio']
+const ALWAYS_AUTH = ['posts', 'analytics', 'settings', 'billing', 'admin']
 const ALWAYS_ADMIN = ['admin', 'analytics']
 
 const LANGS = ['hi', 'kn', 'en']

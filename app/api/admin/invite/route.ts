@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       reviewed_at: new Date().toISOString(),
     })
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true, directGrant: true })
   } catch (err) {
     console.error('admin/invite unexpected error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

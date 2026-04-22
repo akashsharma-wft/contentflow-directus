@@ -1,208 +1,617 @@
 [
   {
-    "title": "Home",
     "slug": "home",
-    "language": "en",
+    "status": "published",
     "access": "guest",
     "layout": "home",
-    "status": "published",
-    "seo_title": "ContentFlow — CMS-driven SaaS Dashboard",
-    "seo_description": "A modern CMS-driven SaaS dashboard built with Next.js and Directus.",
-    "sections": [
+    "og_image": null,
+    "translations": [
       {
-        "_type": "heroSection",
-        "_key": "hero-en",
-        "heading": "Build faster with a CMS-driven dashboard",
-        "subheading": "ContentFlow is a production-ready SaaS starter with Directus CMS, Supabase Auth, and Stripe billing.",
-        "badge": "Now on Directus",
-        "layout": "split",
-        "primaryCta": { "label": "Get started free", "href": "/signup" },
-        "secondaryCta": { "label": "View posts", "href": "/posts" },
-        "communityText": "Trusted by developers worldwide"
+        "languages_code": "en",
+        "title": "Home",
+        "seo_title": "ContentFlow — CMS-driven SaaS Dashboard",
+        "seo_description": "A modern CMS-driven SaaS dashboard built with Next.js and Directus.",
+        "sections": [
+          {
+            "_type": "heroSection",
+            "_key": "hero-en",
+            "heading": "Build faster with a CMS-driven dashboard",
+            "subheading": "ContentFlow is a production-ready SaaS starter with Directus CMS, Supabase Auth, and Stripe billing.",
+            "badge": "Now on Directus",
+            "layout": "split",
+            "primaryCta": { "label": "Get started free", "href": "/signup" },
+            "secondaryCta": { "label": "View posts", "href": "/posts" },
+            "communityText": "Trusted by developers worldwide"
+          },
+          {
+            "_type": "featuredPostsSection",
+            "_key": "featured-posts-en",
+            "heading": "Featured Posts",
+            "subheading": "Hand-picked articles from our team.",
+            "maxPosts": 3,
+            "layout": "featured",
+            "showExcerpt": true,
+            "showTags": true,
+            "viewAllLabel": "View all posts"
+          },
+          {
+            "_type": "recentPostsSection",
+            "_key": "recent-posts-en",
+            "heading": "Recent Publications",
+            "subheading": "Latest articles from the team.",
+            "count": 12,
+            "viewAllLabel": "View all posts"
+          },
+          {
+            "_type": "ctaSection",
+            "_key": "cta-en",
+            "heading": "Ready to ship faster?",
+            "body": "Sign up today and have your CMS-driven dashboard running in minutes.",
+            "primaryButton": { "label": "Start for free", "href": "/signup" },
+            "theme": "indigo",
+            "centered": true
+          }
+        ]
       },
       {
-        "_type": "featuredPostsSection",
-        "_key": "featured-posts-en",
-        "heading": "Featured Posts",
-        "subheading": "Hand-picked articles from our team.",
-        "maxPosts": 3,
-        "layout": "featured",
-        "showExcerpt": true,
-        "showTags": true,
-        "viewAllLabel": "View all posts"
+        "languages_code": "hi",
+        "title": "होम",
+        "seo_title": "ContentFlow — CMS-संचालित SaaS डैशबोर्ड",
+        "seo_description": "Next.js और Directus के साथ बनाया गया एक आधुनिक CMS-संचालित SaaS डैशबोर्ड।",
+        "sections": [
+          {
+            "_type": "heroSection",
+            "_key": "hero-hi",
+            "heading": "CMS-संचालित डैशबोर्ड के साथ तेज़ी से बनाएं",
+            "subheading": "ContentFlow एक प्रोडक्शन-रेडी SaaS स्टार्टर है जिसमें Directus CMS, Supabase Auth, और Stripe बिलिंग शामिल है।",
+            "badge": "अब Directus पर",
+            "layout": "split",
+            "primaryCta": { "label": "मुफ्त में शुरू करें", "href": "/signup" },
+            "secondaryCta": { "label": "पोस्ट देखें", "href": "/posts" },
+            "communityText": "विश्वभर के डेवलपर्स द्वारा विश्वसनीय"
+          },
+          {
+            "_type": "featuredPostsSection",
+            "_key": "featured-posts-hi",
+            "heading": "विशेष पोस्ट",
+            "subheading": "हमारी टीम द्वारा चुने गए लेख।",
+            "maxPosts": 3,
+            "layout": "featured",
+            "showExcerpt": true,
+            "showTags": true,
+            "viewAllLabel": "सभी पोस्ट देखें"
+          },
+          {
+            "_type": "recentPostsSection",
+            "_key": "recent-posts-hi",
+            "heading": "हाल की प्रकाशनाएं",
+            "subheading": "टीम के नवीनतम लेख।",
+            "count": 12,
+            "viewAllLabel": "सभी पोस्ट देखें"
+          },
+          {
+            "_type": "ctaSection",
+            "_key": "cta-hi",
+            "heading": "तेज़ी से लॉन्च करने के लिए तैयार?",
+            "body": "आज ही साइन अप करें और मिनटों में अपना CMS-संचालित डैशबोर्ड चलाएं।",
+            "primaryButton": { "label": "मुफ्त में शुरू करें", "href": "/signup" },
+            "theme": "indigo",
+            "centered": true
+          }
+        ]
       },
       {
-        "_type": "recentPostsSection",
-        "_key": "recent-posts-en",
-        "heading": "Recent Publications",
-        "subheading": "Latest articles from the team.",
-        "count": 12,
-        "viewAllLabel": "View all posts"
-      },
-      {
-        "_type": "ctaSection",
-        "_key": "cta-en",
-        "heading": "Ready to ship faster?",
-        "body": "Sign up today and have your CMS-driven dashboard running in minutes.",
-        "primaryButton": { "label": "Start for free", "href": "/signup" },
-        "theme": "indigo",
-        "centered": true
+        "languages_code": "kn",
+        "title": "ಮುಖಪುಟ",
+        "seo_title": "ContentFlow — CMS-ಚಾಲಿತ SaaS ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+        "seo_description": "Next.js ಮತ್ತು Directus ನೊಂದಿಗೆ ನಿರ್ಮಿಸಲಾದ ಆಧುನಿಕ CMS-ಚಾಲಿತ SaaS ಡ್ಯಾಶ್‌ಬೋರ್ಡ್.",
+        "sections": [
+          {
+            "_type": "heroSection",
+            "_key": "hero-kn",
+            "heading": "CMS-ಚಾಲಿತ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ನೊಂದಿಗೆ ವೇಗವಾಗಿ ನಿರ್ಮಿಸಿ",
+            "subheading": "ContentFlow ಒಂದು ಪ್ರೊಡಕ್ಷನ್-ರೆಡಿ SaaS ಸ್ಟಾರ್ಟರ್ ಆಗಿದ್ದು Directus CMS, Supabase Auth, ಮತ್ತು Stripe ಬಿಲ್ಲಿಂಗ್ ಒಳಗೊಂಡಿದೆ.",
+            "badge": "ಈಗ Directus ನಲ್ಲಿ",
+            "layout": "split",
+            "primaryCta": { "label": "ಉಚಿತವಾಗಿ ಪ್ರಾರಂಭಿಸಿ", "href": "/signup" },
+            "secondaryCta": { "label": "ಪೋಸ್ಟ್‌ಗಳನ್ನು ನೋಡಿ", "href": "/posts" },
+            "communityText": "ವಿಶ್ವದಾದ್ಯಂತ ಡೆವಲಪರ್‌ಗಳು ನಂಬಿದ್ದಾರೆ"
+          },
+          {
+            "_type": "featuredPostsSection",
+            "_key": "featured-posts-kn",
+            "heading": "ವಿಶೇಷ ಪೋಸ್ಟ್‌ಗಳು",
+            "subheading": "ನಮ್ಮ ತಂಡದಿಂದ ಆಯ್ಕೆಮಾಡಿದ ಲೇಖನಗಳು.",
+            "maxPosts": 3,
+            "layout": "featured",
+            "showExcerpt": true,
+            "showTags": true,
+            "viewAllLabel": "ಎಲ್ಲಾ ಪೋಸ್ಟ್‌ಗಳನ್ನು ನೋಡಿ"
+          },
+          {
+            "_type": "recentPostsSection",
+            "_key": "recent-posts-kn",
+            "heading": "ಇತ್ತೀಚಿನ ಪ್ರಕಟಣೆಗಳು",
+            "subheading": "ತಂಡದ ಇತ್ತೀಚಿನ ಲೇಖನಗಳು.",
+            "count": 12,
+            "viewAllLabel": "ಎಲ್ಲಾ ಪೋಸ್ಟ್‌ಗಳನ್ನು ನೋಡಿ"
+          },
+          {
+            "_type": "ctaSection",
+            "_key": "cta-kn",
+            "heading": "ವೇಗವಾಗಿ ಲಾಂಚ್ ಮಾಡಲು ಸಿದ್ಧರಿದ್ದೀರಾ?",
+            "body": "ಇಂದೇ ಸೈನ್ ಅಪ್ ಮಾಡಿ ಮತ್ತು ನಿಮಿಷಗಳಲ್ಲಿ ನಿಮ್ಮ CMS-ಚಾಲಿತ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಚಲಾಯಿಸಿ.",
+            "primaryButton": { "label": "ಉಚಿತವಾಗಿ ಪ್ರಾರಂಭಿಸಿ", "href": "/signup" },
+            "theme": "indigo",
+            "centered": true
+          }
+        ]
       }
     ]
   },
   {
-    "title": "Login",
     "slug": "login",
-    "language": "en",
+    "status": "published",
     "access": "guest",
     "layout": "auth",
-    "status": "published",
-    "seo_title": "Log in — ContentFlow",
-    "sections": [
+    "og_image": null,
+    "translations": [
       {
-        "_type": "authHeroSection",
-        "_key": "auth-hero-en",
-        "badge": "Welcome back",
-        "headline": "The CMS-powered dashboard for modern teams",
-        "features": [
-          { "_key": "f1", "icon": "Zap",    "text": "Instant CMS updates" },
-          { "_key": "f2", "icon": "Shield", "text": "Supabase Auth baked in" },
-          { "_key": "f3", "icon": "Globe",  "text": "Multi-language content" }
-        ],
-        "footerNote": "No credit card required"
+        "languages_code": "en",
+        "title": "Login",
+        "seo_title": "Log in — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          {
+            "_type": "authHeroSection",
+            "_key": "auth-hero-en",
+            "badge": "Welcome back",
+            "headline": "The CMS-powered dashboard for modern teams",
+            "features": [
+              { "_key": "f1", "icon": "Zap",    "text": "Instant CMS updates" },
+              { "_key": "f2", "icon": "Shield", "text": "Supabase Auth baked in" },
+              { "_key": "f3", "icon": "Globe",  "text": "Multi-language content" }
+            ],
+            "footerNote": "No credit card required"
+          },
+          {
+            "_type": "authSection",
+            "_key": "auth-form-login-en",
+            "mode": "login",
+            "heading": "Sign in to your account",
+            "googleLabel": "Continue with Google",
+            "dividerLabel": "or",
+            "emailLabel": "Email",
+            "emailPlaceholder": "you@example.com",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "••••••••",
+            "submitLabel": "Sign in",
+            "footerText": "Don't have an account?",
+            "footerLinkLabel": "Sign up",
+            "footerLinkHref": "/signup",
+            "showGoogleOAuth": true,
+            "showEmailPassword": true
+          }
+        ]
       },
       {
-        "_type": "authSection",
-        "_key": "auth-form-login-en",
-        "mode": "login",
-        "heading": "Sign in to your account",
-        "googleLabel": "Continue with Google",
-        "dividerLabel": "or",
-        "emailLabel": "Email",
-        "emailPlaceholder": "you@example.com",
-        "passwordLabel": "Password",
-        "passwordPlaceholder": "••••••••",
-        "submitLabel": "Sign in",
-        "footerText": "Don't have an account?",
-        "footerLinkLabel": "Sign up",
-        "footerLinkHref": "/signup",
-        "showGoogleOAuth": true,
-        "showEmailPassword": true
+        "languages_code": "hi",
+        "title": "लॉगिन",
+        "seo_title": "लॉग इन — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          {
+            "_type": "authHeroSection",
+            "_key": "auth-hero-hi",
+            "badge": "वापस स्वागत है",
+            "headline": "आधुनिक टीमों के लिए CMS-संचालित डैशबोर्ड",
+            "features": [
+              { "_key": "f1", "icon": "Zap",    "text": "तत्काल CMS अपडेट" },
+              { "_key": "f2", "icon": "Shield", "text": "Supabase Auth अंतर्निहित" },
+              { "_key": "f3", "icon": "Globe",  "text": "बहुभाषी सामग्री" }
+            ],
+            "footerNote": "क्रेडिट कार्ड की जरूरत नहीं"
+          },
+          {
+            "_type": "authSection",
+            "_key": "auth-form-login-hi",
+            "mode": "login",
+            "heading": "अपने खाते में साइन इन करें",
+            "googleLabel": "Google के साथ जारी रखें",
+            "dividerLabel": "या",
+            "emailLabel": "ईमेल",
+            "emailPlaceholder": "you@example.com",
+            "passwordLabel": "पासवर्ड",
+            "passwordPlaceholder": "••••••••",
+            "submitLabel": "साइन इन करें",
+            "footerText": "खाता नहीं है?",
+            "footerLinkLabel": "साइन अप करें",
+            "footerLinkHref": "/signup",
+            "showGoogleOAuth": true,
+            "showEmailPassword": true
+          }
+        ]
+      },
+      {
+        "languages_code": "kn",
+        "title": "ಲಾಗಿನ್",
+        "seo_title": "ಲಾಗ್ ಇನ್ — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          {
+            "_type": "authHeroSection",
+            "_key": "auth-hero-kn",
+            "badge": "ಮರಳಿ ಸ್ವಾಗತ",
+            "headline": "ಆಧುನಿಕ ತಂಡಗಳಿಗಾಗಿ CMS-ಚಾಲಿತ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",
+            "features": [
+              { "_key": "f1", "icon": "Zap",    "text": "ತಕ್ಷಣ CMS ಅಪ್‌ಡೇಟ್‌ಗಳು" },
+              { "_key": "f2", "icon": "Shield", "text": "Supabase Auth ಅಂತರ್ನಿರ್ಮಿತ" },
+              { "_key": "f3", "icon": "Globe",  "text": "ಬಹುಭಾಷಾ ವಿಷಯ" }
+            ],
+            "footerNote": "ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಅಗತ್ಯವಿಲ್ಲ"
+          },
+          {
+            "_type": "authSection",
+            "_key": "auth-form-login-kn",
+            "mode": "login",
+            "heading": "ನಿಮ್ಮ ಖಾತೆಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ",
+            "googleLabel": "Google ನೊಂದಿಗೆ ಮುಂದುವರಿಯಿರಿ",
+            "dividerLabel": "ಅಥವಾ",
+            "emailLabel": "ಇಮೇಲ್",
+            "emailPlaceholder": "you@example.com",
+            "passwordLabel": "ಪಾಸ್‌ವರ್ಡ್",
+            "passwordPlaceholder": "••••••••",
+            "submitLabel": "ಸೈನ್ ಇನ್ ಮಾಡಿ",
+            "footerText": "ಖಾತೆ ಇಲ್ಲವೇ?",
+            "footerLinkLabel": "ಸೈನ್ ಅಪ್ ಮಾಡಿ",
+            "footerLinkHref": "/signup",
+            "showGoogleOAuth": true,
+            "showEmailPassword": true
+          }
+        ]
       }
     ]
   },
   {
-    "title": "Sign Up",
     "slug": "signup",
-    "language": "en",
+    "status": "published",
     "access": "guest",
     "layout": "auth",
-    "status": "published",
-    "seo_title": "Sign up — ContentFlow",
-    "sections": [
+    "og_image": null,
+    "translations": [
       {
-        "_type": "authHeroSection",
-        "_key": "auth-hero-signup-en",
-        "badge": "Get started for free",
-        "headline": "Your CMS-powered dashboard awaits",
-        "features": [
-          { "_key": "f1", "icon": "Zap",       "text": "Set up in under 5 minutes" },
-          { "_key": "f2", "icon": "FileText",   "text": "Unlimited draft posts" },
-          { "_key": "f3", "icon": "CreditCard", "text": "Free tier always available" }
-        ],
-        "footerNote": "No credit card required"
+        "languages_code": "en",
+        "title": "Sign Up",
+        "seo_title": "Sign up — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          {
+            "_type": "authHeroSection",
+            "_key": "auth-hero-signup-en",
+            "badge": "Get started for free",
+            "headline": "Your CMS-powered dashboard awaits",
+            "features": [
+              { "_key": "f1", "icon": "Zap",       "text": "Set up in under 5 minutes" },
+              { "_key": "f2", "icon": "FileText",   "text": "Unlimited draft posts" },
+              { "_key": "f3", "icon": "CreditCard", "text": "Free tier always available" }
+            ],
+            "footerNote": "No credit card required"
+          },
+          {
+            "_type": "authSection",
+            "_key": "auth-form-signup-en",
+            "mode": "signup",
+            "heading": "Create your account",
+            "googleLabel": "Sign up with Google",
+            "dividerLabel": "or",
+            "nameLabel": "Display name",
+            "namePlaceholder": "Your name",
+            "emailLabel": "Email",
+            "emailPlaceholder": "you@example.com",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "8+ characters",
+            "submitLabel": "Create account",
+            "footerText": "Already have an account?",
+            "footerLinkLabel": "Log in",
+            "footerLinkHref": "/login",
+            "showGoogleOAuth": true,
+            "showEmailPassword": true
+          }
+        ]
       },
       {
-        "_type": "authSection",
-        "_key": "auth-form-signup-en",
-        "mode": "signup",
-        "heading": "Create your account",
-        "googleLabel": "Sign up with Google",
-        "dividerLabel": "or",
-        "nameLabel": "Display name",
-        "namePlaceholder": "Your name",
-        "emailLabel": "Email",
-        "emailPlaceholder": "you@example.com",
-        "passwordLabel": "Password",
-        "passwordPlaceholder": "8+ characters",
-        "submitLabel": "Create account",
-        "footerText": "Already have an account?",
-        "footerLinkLabel": "Log in",
-        "footerLinkHref": "/login",
-        "showGoogleOAuth": true,
-        "showEmailPassword": true
+        "languages_code": "hi",
+        "title": "साइन अप",
+        "seo_title": "साइन अप — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          {
+            "_type": "authHeroSection",
+            "_key": "auth-hero-signup-hi",
+            "badge": "मुफ्त में शुरू करें",
+            "headline": "आपका CMS-संचालित डैशबोर्ड आपका इंतजार कर रहा है",
+            "features": [
+              { "_key": "f1", "icon": "Zap",       "text": "5 मिनट से कम में सेटअप" },
+              { "_key": "f2", "icon": "FileText",   "text": "असीमित ड्राफ्ट पोस्ट" },
+              { "_key": "f3", "icon": "CreditCard", "text": "फ्री टियर हमेशा उपलब्ध" }
+            ],
+            "footerNote": "क्रेडिट कार्ड की जरूरत नहीं"
+          },
+          {
+            "_type": "authSection",
+            "_key": "auth-form-signup-hi",
+            "mode": "signup",
+            "heading": "अपना खाता बनाएं",
+            "googleLabel": "Google से साइन अप करें",
+            "dividerLabel": "या",
+            "nameLabel": "प्रदर्शन नाम",
+            "namePlaceholder": "आपका नाम",
+            "emailLabel": "ईमेल",
+            "emailPlaceholder": "you@example.com",
+            "passwordLabel": "पासवर्ड",
+            "passwordPlaceholder": "8+ अक्षर",
+            "submitLabel": "खाता बनाएं",
+            "footerText": "पहले से खाता है?",
+            "footerLinkLabel": "लॉग इन करें",
+            "footerLinkHref": "/login",
+            "showGoogleOAuth": true,
+            "showEmailPassword": true
+          }
+        ]
+      },
+      {
+        "languages_code": "kn",
+        "title": "ಸೈನ್ ಅಪ್",
+        "seo_title": "ಸೈನ್ ಅಪ್ — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          {
+            "_type": "authHeroSection",
+            "_key": "auth-hero-signup-kn",
+            "badge": "ಉಚಿತವಾಗಿ ಪ್ರಾರಂಭಿಸಿ",
+            "headline": "ನಿಮ್ಮ CMS-ಚಾಲಿತ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಕಾಯುತ್ತಿದೆ",
+            "features": [
+              { "_key": "f1", "icon": "Zap",       "text": "5 ನಿಮಿಷದಲ್ಲಿ ಸೆಟಪ್" },
+              { "_key": "f2", "icon": "FileText",   "text": "ಅಪರಿಮಿತ ಡ್ರಾಫ್ಟ್ ಪೋಸ್ಟ್‌ಗಳು" },
+              { "_key": "f3", "icon": "CreditCard", "text": "ಉಚಿತ ಟಯರ್ ಯಾವಾಗಲೂ ಲಭ್ಯ" }
+            ],
+            "footerNote": "ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಅಗತ್ಯವಿಲ್ಲ"
+          },
+          {
+            "_type": "authSection",
+            "_key": "auth-form-signup-kn",
+            "mode": "signup",
+            "heading": "ನಿಮ್ಮ ಖಾತೆ ರಚಿಸಿ",
+            "googleLabel": "Google ನೊಂದಿಗೆ ಸೈನ್ ಅಪ್ ಮಾಡಿ",
+            "dividerLabel": "ಅಥವಾ",
+            "nameLabel": "ಪ್ರದರ್ಶನ ಹೆಸರು",
+            "namePlaceholder": "ನಿಮ್ಮ ಹೆಸರು",
+            "emailLabel": "ಇಮೇಲ್",
+            "emailPlaceholder": "you@example.com",
+            "passwordLabel": "ಪಾಸ್‌ವರ್ಡ್",
+            "passwordPlaceholder": "8+ ಅಕ್ಷರಗಳು",
+            "submitLabel": "ಖಾತೆ ರಚಿಸಿ",
+            "footerText": "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?",
+            "footerLinkLabel": "ಲಾಗ್ ಇನ್ ಮಾಡಿ",
+            "footerLinkHref": "/login",
+            "showGoogleOAuth": true,
+            "showEmailPassword": true
+          }
+        ]
       }
     ]
   },
   {
-    "title": "Posts",
     "slug": "posts",
-    "language": "en",
+    "status": "published",
     "access": "user",
     "layout": "dashboard",
-    "status": "published",
-    "seo_title": "Posts — ContentFlow",
-    "sections": [
-      { "_type": "section", "_id": "posts-header",  "sectionType": "postsHeader",  "postsHeader":  { "heading": "Posts", "subheading": "Manage your content" } },
-      { "_type": "section", "_id": "posts-stats",   "sectionType": "postsStats",   "postsStats":   { "myPostsLabel": "My Posts", "publishedLabel": "Published", "draftsLabel": "Drafts" } },
-      { "_type": "section", "_id": "posts-actions", "sectionType": "postsActions", "postsActions": { "syncButtonLabel": "Sync", "newPostButtonLabel": "New Post" } },
-      { "_type": "section", "_id": "posts-search",  "sectionType": "postsSearch",  "postsSearch":  { "searchPlaceholder": "Search posts…" } },
-      { "_type": "section", "_id": "posts-table",   "sectionType": "postsTable",   "postsTable":   { "colTitle": "Title", "colStatus": "Status", "colImage": "Cover", "colTags": "Tags", "colLastModified": "Modified", "emptyTitle": "No posts yet", "emptyBody": "Create your first post to get started.", "emptyCtaLabel": "New post", "featuredLabel": "Featured", "viewPostLabel": "View", "editPostLabel": "Edit", "deletePostLabel": "Delete", "deleteDialogTitle": "Delete post?", "deleteDialogBody": "This cannot be undone.", "deleteDialogConfirmLabel": "Delete", "deleteDialogCancelLabel": "Cancel" } }
+    "og_image": null,
+    "translations": [
+      {
+        "languages_code": "en",
+        "title": "Posts",
+        "seo_title": "Posts — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "posts-header",  "sectionType": "postsHeader",  "postsHeader":  { "heading": "Posts", "subheading": "Manage your content" } },
+          { "_type": "section", "_id": "posts-stats",   "sectionType": "postsStats",   "postsStats":   { "myPostsLabel": "My Posts", "publishedLabel": "Published", "draftsLabel": "Drafts" } },
+          { "_type": "section", "_id": "posts-actions", "sectionType": "postsActions", "postsActions": { "syncButtonLabel": "Sync", "newPostButtonLabel": "New Post" } },
+          { "_type": "section", "_id": "posts-search",  "sectionType": "postsSearch",  "postsSearch":  { "searchPlaceholder": "Search posts…" } },
+          { "_type": "section", "_id": "posts-table",   "sectionType": "postsTable",   "postsTable":   { "colTitle": "Title", "colStatus": "Status", "colImage": "Cover", "colTags": "Tags", "colLastModified": "Modified", "emptyTitle": "No posts yet", "emptyBody": "Create your first post to get started.", "emptyCtaLabel": "New post", "featuredLabel": "Featured", "viewPostLabel": "View", "editPostLabel": "Edit", "deletePostLabel": "Delete", "deleteDialogTitle": "Delete post?", "deleteDialogBody": "This cannot be undone.", "deleteDialogConfirmLabel": "Delete", "deleteDialogCancelLabel": "Cancel" } }
+        ]
+      },
+      {
+        "languages_code": "hi",
+        "title": "पोस्ट",
+        "seo_title": "पोस्ट — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "posts-header-hi",  "sectionType": "postsHeader",  "postsHeader":  { "heading": "पोस्ट", "subheading": "अपनी सामग्री प्रबंधित करें" } },
+          { "_type": "section", "_id": "posts-stats-hi",   "sectionType": "postsStats",   "postsStats":   { "myPostsLabel": "मेरी पोस्ट", "publishedLabel": "प्रकाशित", "draftsLabel": "ड्राफ्ट" } },
+          { "_type": "section", "_id": "posts-actions-hi", "sectionType": "postsActions", "postsActions": { "syncButtonLabel": "सिंक", "newPostButtonLabel": "नई पोस्ट" } },
+          { "_type": "section", "_id": "posts-search-hi",  "sectionType": "postsSearch",  "postsSearch":  { "searchPlaceholder": "पोस्ट खोजें…" } },
+          { "_type": "section", "_id": "posts-table-hi",   "sectionType": "postsTable",   "postsTable":   { "colTitle": "शीर्षक", "colStatus": "स्थिति", "colImage": "कवर", "colTags": "टैग", "colLastModified": "संशोधित", "emptyTitle": "अभी तक कोई पोस्ट नहीं", "emptyBody": "शुरुआत करने के लिए अपनी पहली पोस्ट बनाएं।", "emptyCtaLabel": "नई पोस्ट", "featuredLabel": "विशेष", "viewPostLabel": "देखें", "editPostLabel": "संपादित करें", "deletePostLabel": "हटाएं", "deleteDialogTitle": "पोस्ट हटाएं?", "deleteDialogBody": "यह पूर्ववत नहीं किया जा सकता।", "deleteDialogConfirmLabel": "हटाएं", "deleteDialogCancelLabel": "रद्द करें" } }
+        ]
+      },
+      {
+        "languages_code": "kn",
+        "title": "ಪೋಸ್ಟ್‌ಗಳು",
+        "seo_title": "ಪೋಸ್ಟ್‌ಗಳು — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "posts-header-kn",  "sectionType": "postsHeader",  "postsHeader":  { "heading": "ಪೋಸ್ಟ್‌ಗಳು", "subheading": "ನಿಮ್ಮ ವಿಷಯವನ್ನು ನಿರ್ವಹಿಸಿ" } },
+          { "_type": "section", "_id": "posts-stats-kn",   "sectionType": "postsStats",   "postsStats":   { "myPostsLabel": "ನನ್ನ ಪೋಸ್ಟ್‌ಗಳು", "publishedLabel": "ಪ್ರಕಟಿತ", "draftsLabel": "ಡ್ರಾಫ್ಟ್‌ಗಳು" } },
+          { "_type": "section", "_id": "posts-actions-kn", "sectionType": "postsActions", "postsActions": { "syncButtonLabel": "ಸಿಂಕ್", "newPostButtonLabel": "ಹೊಸ ಪೋಸ್ಟ್" } },
+          { "_type": "section", "_id": "posts-search-kn",  "sectionType": "postsSearch",  "postsSearch":  { "searchPlaceholder": "ಪೋಸ್ಟ್‌ಗಳನ್ನು ಹುಡುಕಿ…" } },
+          { "_type": "section", "_id": "posts-table-kn",   "sectionType": "postsTable",   "postsTable":   { "colTitle": "ಶೀರ್ಷಿಕೆ", "colStatus": "ಸ್ಥಿತಿ", "colImage": "ಕವರ್", "colTags": "ಟ್ಯಾಗ್‌ಗಳು", "colLastModified": "ಮಾರ್ಪಡಿಸಲಾಗಿದೆ", "emptyTitle": "ಇನ್ನೂ ಯಾವುದೇ ಪೋಸ್ಟ್ ಇಲ್ಲ", "emptyBody": "ಪ್ರಾರಂಭಿಸಲು ನಿಮ್ಮ ಮೊದಲ ಪೋಸ್ಟ್ ರಚಿಸಿ.", "emptyCtaLabel": "ಹೊಸ ಪೋಸ್ಟ್", "featuredLabel": "ವಿಶೇಷ", "viewPostLabel": "ನೋಡಿ", "editPostLabel": "ಸಂಪಾದಿಸಿ", "deletePostLabel": "ಅಳಿಸಿ", "deleteDialogTitle": "ಪೋಸ್ಟ್ ಅಳಿಸುವುದೇ?", "deleteDialogBody": "ಇದನ್ನು ರದ್ದು ಮಾಡಲಾಗುವುದಿಲ್ಲ.", "deleteDialogConfirmLabel": "ಅಳಿಸಿ", "deleteDialogCancelLabel": "ರದ್ದುಮಾಡಿ" } }
+        ]
+      }
     ]
   },
   {
-    "title": "Analytics",
     "slug": "analytics",
-    "language": "en",
+    "status": "published",
     "access": "admin",
     "layout": "dashboard",
-    "status": "published",
-    "seo_title": "Analytics — ContentFlow",
-    "sections": [
-      { "_type": "section", "_id": "analytics-section", "sectionType": "analytics", "analytics": { "heading": "Analytics", "subheading": "PostHog event stream", "eventsLabel": "Events", "usersLabel": "Live users", "avgSessionLabel": "Avg session", "liveStreamLabel": "Live stream", "refreshLabel": "Refresh", "emptyTitle": "No events yet", "emptyBody": "Events will appear here once users interact with your app.", "connectedLabel": "Connected", "ctaLabel": "Open PostHog", "showingLabel": "Showing", "prevLabel": "Prev", "nextLabel": "Next" } }
+    "og_image": null,
+    "translations": [
+      {
+        "languages_code": "en",
+        "title": "Analytics",
+        "seo_title": "Analytics — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "analytics-section", "sectionType": "analytics", "analytics": { "heading": "Analytics", "subheading": "PostHog event stream", "eventsLabel": "Events", "usersLabel": "Live users", "avgSessionLabel": "Avg session", "liveStreamLabel": "Live stream", "refreshLabel": "Refresh", "emptyTitle": "No events yet", "emptyBody": "Events will appear here once users interact with your app.", "connectedLabel": "Connected", "ctaLabel": "Open PostHog", "showingLabel": "Showing", "prevLabel": "Prev", "nextLabel": "Next" } }
+        ]
+      },
+      {
+        "languages_code": "hi",
+        "title": "एनालिटिक्स",
+        "seo_title": "एनालिटिक्स — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "analytics-section-hi", "sectionType": "analytics", "analytics": { "heading": "एनालिटिक्स", "subheading": "PostHog इवेंट स्ट्रीम", "eventsLabel": "इवेंट", "usersLabel": "लाइव उपयोगकर्ता", "avgSessionLabel": "औसत सत्र", "liveStreamLabel": "लाइव स्ट्रीम", "refreshLabel": "रिफ्रेश", "emptyTitle": "अभी तक कोई इवेंट नहीं", "emptyBody": "जब उपयोगकर्ता आपके ऐप से इंटरैक्ट करेंगे तो यहाँ इवेंट दिखेंगे।", "connectedLabel": "कनेक्टेड", "ctaLabel": "PostHog खोलें", "showingLabel": "दिखाया जा रहा है", "prevLabel": "पिछला", "nextLabel": "अगला" } }
+        ]
+      },
+      {
+        "languages_code": "kn",
+        "title": "ವಿಶ್ಲೇಷಣೆ",
+        "seo_title": "ವಿಶ್ಲೇಷಣೆ — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "analytics-section-kn", "sectionType": "analytics", "analytics": { "heading": "ವಿಶ್ಲೇಷಣೆ", "subheading": "PostHog ಈವೆಂಟ್ ಸ್ಟ್ರೀಮ್", "eventsLabel": "ಈವೆಂಟ್‌ಗಳು", "usersLabel": "ಲೈವ್ ಬಳಕೆದಾರರು", "avgSessionLabel": "ಸರಾಸರಿ ಸೆಷನ್", "liveStreamLabel": "ಲೈವ್ ಸ್ಟ್ರೀಮ್", "refreshLabel": "ರಿಫ್ರೆಶ್", "emptyTitle": "ಇನ್ನೂ ಯಾವುದೇ ಈವೆಂಟ್ ಇಲ್ಲ", "emptyBody": "ಬಳಕೆದಾರರು ನಿಮ್ಮ ಅಪ್ಲಿಕೇಶನ್‌ನೊಂದಿಗೆ ಸಂವಹಿಸಿದಾಗ ಈವೆಂಟ್‌ಗಳು ಇಲ್ಲಿ ಕಾಣಿಸಿಕೊಳ್ಳುತ್ತವೆ.", "connectedLabel": "ಸಂಪರ್ಕಿತ", "ctaLabel": "PostHog ತೆರೆಯಿರಿ", "showingLabel": "ತೋರಿಸಲಾಗುತ್ತಿದೆ", "prevLabel": "ಹಿಂದಿನ", "nextLabel": "ಮುಂದಿನ" } }
+        ]
+      }
     ]
   },
   {
-    "title": "Settings",
     "slug": "settings",
-    "language": "en",
+    "status": "published",
     "access": "user",
     "layout": "dashboard",
-    "status": "published",
-    "seo_title": "Settings — ContentFlow",
-    "sections": [
-      { "_type": "section", "_id": "settings-header", "sectionType": "settingsHeader", "settingsHeader": { "heading": "Settings", "subheading": "Manage your profile and preferences" } },
-      { "_type": "section", "_id": "settings-info",   "sectionType": "settingsInfo",   "settingsInfo":   { "uploadPhotoLabel": "Upload photo" } },
-      { "_type": "section", "_id": "settings-form",   "sectionType": "settingsForm",   "settingsForm":   { "displayNameLabel": "Display name", "emailLabel": "Email", "emailHelperText": "Email cannot be changed here.", "bioLabel": "Bio", "bioPlaceholder": "Tell us about yourself…", "bioMaxLength": 200, "websiteLabel": "Website", "websitePlaceholder": "https://yoursite.com", "saveLabel": "Save changes", "discardLabel": "Discard" } },
-      { "_type": "section", "_id": "settings-danger", "sectionType": "settingsDanger", "settingsDanger": { "heading": "Danger zone", "body": "Permanently delete your account and all data.", "warningText": "This action cannot be undone.", "deleteLabel": "Delete account" } }
+    "og_image": null,
+    "translations": [
+      {
+        "languages_code": "en",
+        "title": "Settings",
+        "seo_title": "Settings — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "settings-header", "sectionType": "settingsHeader", "settingsHeader": { "heading": "Settings", "subheading": "Manage your profile and preferences" } },
+          { "_type": "section", "_id": "settings-info",   "sectionType": "settingsInfo",   "settingsInfo":   { "uploadPhotoLabel": "Upload photo" } },
+          { "_type": "section", "_id": "settings-form",   "sectionType": "settingsForm",   "settingsForm":   { "displayNameLabel": "Display name", "emailLabel": "Email", "emailHelperText": "Email cannot be changed here.", "bioLabel": "Bio", "bioPlaceholder": "Tell us about yourself…", "bioMaxLength": 200, "websiteLabel": "Website", "websitePlaceholder": "https://yoursite.com", "saveLabel": "Save changes", "discardLabel": "Discard" } },
+          { "_type": "section", "_id": "settings-danger", "sectionType": "settingsDanger", "settingsDanger": { "heading": "Danger zone", "body": "Permanently delete your account and all data.", "warningText": "This action cannot be undone.", "deleteLabel": "Delete account" } }
+        ]
+      },
+      {
+        "languages_code": "hi",
+        "title": "सेटिंग्स",
+        "seo_title": "सेटिंग्स — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "settings-header-hi", "sectionType": "settingsHeader", "settingsHeader": { "heading": "सेटिंग्स", "subheading": "अपनी प्रोफ़ाइल और प्राथमिकताएं प्रबंधित करें" } },
+          { "_type": "section", "_id": "settings-info-hi",   "sectionType": "settingsInfo",   "settingsInfo":   { "uploadPhotoLabel": "फोटो अपलोड करें" } },
+          { "_type": "section", "_id": "settings-form-hi",   "sectionType": "settingsForm",   "settingsForm":   { "displayNameLabel": "प्रदर्शन नाम", "emailLabel": "ईमेल", "emailHelperText": "ईमेल यहाँ बदली नहीं जा सकती।", "bioLabel": "परिचय", "bioPlaceholder": "अपने बारे में बताएं…", "bioMaxLength": 200, "websiteLabel": "वेबसाइट", "websitePlaceholder": "https://yoursite.com", "saveLabel": "बदलाव सहेजें", "discardLabel": "रद्द करें" } },
+          { "_type": "section", "_id": "settings-danger-hi", "sectionType": "settingsDanger", "settingsDanger": { "heading": "खतरनाक क्षेत्र", "body": "अपना खाता और सभी डेटा स्थायी रूप से हटाएं।", "warningText": "यह क्रिया वापस नहीं ली जा सकती।", "deleteLabel": "खाता हटाएं" } }
+        ]
+      },
+      {
+        "languages_code": "kn",
+        "title": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+        "seo_title": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "settings-header-kn", "sectionType": "settingsHeader", "settingsHeader": { "heading": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", "subheading": "ನಿಮ್ಮ ಪ್ರೊಫೈಲ್ ಮತ್ತು ಆದ್ಯತೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ" } },
+          { "_type": "section", "_id": "settings-info-kn",   "sectionType": "settingsInfo",   "settingsInfo":   { "uploadPhotoLabel": "ಫೋಟೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ" } },
+          { "_type": "section", "_id": "settings-form-kn",   "sectionType": "settingsForm",   "settingsForm":   { "displayNameLabel": "ಪ್ರದರ್ಶನ ಹೆಸರು", "emailLabel": "ಇಮೇಲ್", "emailHelperText": "ಇಮೇಲ್ ಇಲ್ಲಿ ಬದಲಾಯಿಸಲಾಗುವುದಿಲ್ಲ.", "bioLabel": "ಪರಿಚಯ", "bioPlaceholder": "ನಿಮ್ಮ ಬಗ್ಗೆ ಹೇಳಿ…", "bioMaxLength": 200, "websiteLabel": "ವೆಬ್‌ಸೈಟ್", "websitePlaceholder": "https://yoursite.com", "saveLabel": "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ", "discardLabel": "ರದ್ದುಮಾಡಿ" } },
+          { "_type": "section", "_id": "settings-danger-kn", "sectionType": "settingsDanger", "settingsDanger": { "heading": "ಅಪಾಯಕಾರಿ ವಲಯ", "body": "ನಿಮ್ಮ ಖಾತೆ ಮತ್ತು ಎಲ್ಲಾ ಡೇಟಾವನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಿ.", "warningText": "ಈ ಕ್ರಿಯೆಯನ್ನು ರದ್ದು ಮಾಡಲಾಗುವುದಿಲ್ಲ.", "deleteLabel": "ಖಾತೆ ಅಳಿಸಿ" } }
+        ]
+      }
     ]
   },
   {
-    "title": "Billing",
     "slug": "billing",
-    "language": "en",
+    "status": "published",
     "access": "user",
     "layout": "dashboard",
-    "status": "published",
-    "seo_title": "Billing — ContentFlow",
-    "sections": [
-      { "_type": "section", "_id": "billing-header",  "sectionType": "billingHeader",  "billingHeader":  { "heading": "Billing", "subheading": "Manage your subscription" } },
-      { "_type": "section", "_id": "billing-plan",    "sectionType": "billingCurrentPlan", "billingCurrentPlan": { "currentPlanLabel": "Current plan", "activeBadgeLabel": "Active", "cancellingBadgeLabel": "Cancelling", "freeTierBadgeLabel": "Free", "manageLabel": "Manage", "cancelLabel": "Cancel", "reactivateLabel": "Reactivate", "upgradeLabel": "Upgrade", "cancellingNote": "Your plan will remain active until the end of the billing period." } },
-      { "_type": "section", "_id": "billing-usage",   "sectionType": "billingUsage",   "billingUsage":   { "usageHeading": "Usage", "postsUsageLabel": "Posts", "apiUsageLabel": "API calls", "storageUsageLabel": "Storage", "seatsUsageLabel": "Seats" } },
-      { "_type": "section", "_id": "billing-plans",   "sectionType": "billingPlansGrid", "billingPlansGrid": { "plansHeading": "Plans", "freePlanName": "Free", "freePlanTagline": "For individuals and hobby projects", "freePlanPrice": "$0", "freePlanFeatures": ["Up to 5 published posts", "Basic analytics", "Community support"], "proPlanName": "Pro", "proPlanTagline": "For serious creators and teams", "proPlanBadge": "Popular", "proPlanFeatures": ["Unlimited published posts", "Advanced analytics", "Priority support", "Custom domain"], "upgradeLabel": "Upgrade to Pro", "downgradeLabel": "Downgrade", "currentPlanButtonLabel": "Current plan" } },
-      { "_type": "section", "_id": "billing-footer",  "sectionType": "billingFooter",  "billingFooter":  { "stripeNote": "Payments powered by Stripe.", "webhookNote": "Subscription changes may take a few minutes to reflect." } }
+    "og_image": null,
+    "translations": [
+      {
+        "languages_code": "en",
+        "title": "Billing",
+        "seo_title": "Billing — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "billing-header",  "sectionType": "billingHeader",  "billingHeader":  { "heading": "Billing", "subheading": "Manage your subscription" } },
+          { "_type": "section", "_id": "billing-plan",    "sectionType": "billingCurrentPlan", "billingCurrentPlan": { "currentPlanLabel": "Current plan", "activeBadgeLabel": "Active", "cancellingBadgeLabel": "Cancelling", "freeTierBadgeLabel": "Free", "manageLabel": "Manage", "cancelLabel": "Cancel", "reactivateLabel": "Reactivate", "upgradeLabel": "Upgrade", "cancellingNote": "Your plan will remain active until the end of the billing period." } },
+          { "_type": "section", "_id": "billing-usage",   "sectionType": "billingUsage",   "billingUsage":   { "usageHeading": "Usage", "postsUsageLabel": "Posts", "apiUsageLabel": "API calls", "storageUsageLabel": "Storage", "seatsUsageLabel": "Seats" } },
+          { "_type": "section", "_id": "billing-plans",   "sectionType": "billingPlansGrid", "billingPlansGrid": { "plansHeading": "Plans", "freePlanName": "Free", "freePlanTagline": "For individuals and hobby projects", "freePlanPrice": "$0", "freePlanFeatures": ["Up to 5 published posts", "Basic analytics", "Community support"], "proPlanName": "Pro", "proPlanTagline": "For serious creators and teams", "proPlanBadge": "Popular", "proPlanFeatures": ["Unlimited published posts", "Advanced analytics", "Priority support", "Custom domain"], "upgradeLabel": "Upgrade to Pro", "downgradeLabel": "Downgrade", "currentPlanButtonLabel": "Current plan" } },
+          { "_type": "section", "_id": "billing-footer",  "sectionType": "billingFooter",  "billingFooter":  { "stripeNote": "Payments powered by Stripe.", "webhookNote": "Subscription changes may take a few minutes to reflect." } }
+        ]
+      },
+      {
+        "languages_code": "hi",
+        "title": "बिलिंग",
+        "seo_title": "बिलिंग — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "billing-header-hi",  "sectionType": "billingHeader",  "billingHeader":  { "heading": "बिलिंग", "subheading": "अपनी सदस्यता प्रबंधित करें" } },
+          { "_type": "section", "_id": "billing-plan-hi",    "sectionType": "billingCurrentPlan", "billingCurrentPlan": { "currentPlanLabel": "वर्तमान प्लान", "activeBadgeLabel": "सक्रिय", "cancellingBadgeLabel": "रद्द हो रहा है", "freeTierBadgeLabel": "मुफ्त", "manageLabel": "प्रबंधित करें", "cancelLabel": "रद्द करें", "reactivateLabel": "पुनः सक्रिय करें", "upgradeLabel": "अपग्रेड", "cancellingNote": "आपका प्लान बिलिंग अवधि के अंत तक सक्रिय रहेगा।" } },
+          { "_type": "section", "_id": "billing-usage-hi",   "sectionType": "billingUsage",   "billingUsage":   { "usageHeading": "उपयोग", "postsUsageLabel": "पोस्ट", "apiUsageLabel": "API कॉल", "storageUsageLabel": "स्टोरेज", "seatsUsageLabel": "सीट" } },
+          { "_type": "section", "_id": "billing-plans-hi",   "sectionType": "billingPlansGrid", "billingPlansGrid": { "plansHeading": "प्लान", "freePlanName": "मुफ्त", "freePlanTagline": "व्यक्तियों और शौक परियोजनाओं के लिए", "freePlanPrice": "$0", "freePlanFeatures": ["5 प्रकाशित पोस्ट तक", "बेसिक एनालिटिक्स", "कम्युनिटी सपोर्ट"], "proPlanName": "प्रो", "proPlanTagline": "गंभीर क्रिएटर्स और टीमों के लिए", "proPlanBadge": "लोकप्रिय", "proPlanFeatures": ["असीमित प्रकाशित पोस्ट", "उन्नत एनालिटिक्स", "प्राथमिकता सपोर्ट", "कस्टम डोमेन"], "upgradeLabel": "Pro में अपग्रेड करें", "downgradeLabel": "डाउनग्रेड", "currentPlanButtonLabel": "वर्तमान प्लान" } },
+          { "_type": "section", "_id": "billing-footer-hi",  "sectionType": "billingFooter",  "billingFooter":  { "stripeNote": "भुगतान Stripe द्वारा संचालित।", "webhookNote": "सदस्यता परिवर्तन दिखने में कुछ मिनट लग सकते हैं।" } }
+        ]
+      },
+      {
+        "languages_code": "kn",
+        "title": "ಬಿಲ್ಲಿಂಗ್",
+        "seo_title": "ಬಿಲ್ಲಿಂಗ್ — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "billing-header-kn",  "sectionType": "billingHeader",  "billingHeader":  { "heading": "ಬಿಲ್ಲಿಂಗ್", "subheading": "ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆ ನಿರ್ವಹಿಸಿ" } },
+          { "_type": "section", "_id": "billing-plan-kn",    "sectionType": "billingCurrentPlan", "billingCurrentPlan": { "currentPlanLabel": "ಪ್ರಸ್ತುತ ಯೋಜನೆ", "activeBadgeLabel": "ಸಕ್ರಿಯ", "cancellingBadgeLabel": "ರದ್ದಾಗುತ್ತಿದೆ", "freeTierBadgeLabel": "ಉಚಿತ", "manageLabel": "ನಿರ್ವಹಿಸಿ", "cancelLabel": "ರದ್ದುಮಾಡಿ", "reactivateLabel": "ಮರುಸಕ್ರಿಯಗೊಳಿಸಿ", "upgradeLabel": "ಅಪ್‌ಗ್ರೇಡ್", "cancellingNote": "ನಿಮ್ಮ ಯೋಜನೆ ಬಿಲ್ಲಿಂಗ್ ಅವಧಿ ಮುಗಿಯುವವರೆಗೆ ಸಕ್ರಿಯವಾಗಿರುತ್ತದೆ." } },
+          { "_type": "section", "_id": "billing-usage-kn",   "sectionType": "billingUsage",   "billingUsage":   { "usageHeading": "ಬಳಕೆ", "postsUsageLabel": "ಪೋಸ್ಟ್‌ಗಳು", "apiUsageLabel": "API ಕರೆಗಳು", "storageUsageLabel": "ಶೇಖರಣೆ", "seatsUsageLabel": "ಆಸನಗಳು" } },
+          { "_type": "section", "_id": "billing-plans-kn",   "sectionType": "billingPlansGrid", "billingPlansGrid": { "plansHeading": "ಯೋಜನೆಗಳು", "freePlanName": "ಉಚಿತ", "freePlanTagline": "ವ್ಯಕ್ತಿಗಳು ಮತ್ತು ಹವ್ಯಾಸ ಯೋಜನೆಗಳಿಗೆ", "freePlanPrice": "$0", "freePlanFeatures": ["5 ಪ್ರಕಟಿತ ಪೋಸ್ಟ್‌ಗಳವರೆಗೆ", "ಮೂಲ ವಿಶ್ಲೇಷಣೆ", "ಸಮುದಾಯ ಬೆಂಬಲ"], "proPlanName": "ಪ್ರೊ", "proPlanTagline": "ಗಂಭೀರ ಸೃಷ್ಟಿಕರ್ತರು ಮತ್ತು ತಂಡಗಳಿಗೆ", "proPlanBadge": "ಜನಪ್ರಿಯ", "proPlanFeatures": ["ಅಪರಿಮಿತ ಪ್ರಕಟಿತ ಪೋಸ್ಟ್‌ಗಳು", "ಸುಧಾರಿತ ವಿಶ್ಲೇಷಣೆ", "ಆದ್ಯತಾ ಬೆಂಬಲ", "ಕಸ್ಟಮ್ ಡೊಮೈನ್"], "upgradeLabel": "Pro ಗೆ ಅಪ್‌ಗ್ರೇಡ್ ಮಾಡಿ", "downgradeLabel": "ಡೌನ್‌ಗ್ರೇಡ್", "currentPlanButtonLabel": "ಪ್ರಸ್ತುತ ಯೋಜನೆ" } },
+          { "_type": "section", "_id": "billing-footer-kn",  "sectionType": "billingFooter",  "billingFooter":  { "stripeNote": "ಪಾವತಿಗಳು Stripe ನಿಂದ ನಡೆಸಲ್ಪಡುತ್ತವೆ.", "webhookNote": "ಚಂದಾದಾರಿಕೆ ಬದಲಾವಣೆಗಳು ಕಾಣಿಸಿಕೊಳ್ಳಲು ಕೆಲವು ನಿಮಿಷಗಳು ತಗಲಬಹುದು." } }
+        ]
+      }
     ]
   },
   {
-    "title": "Admin",
     "slug": "admin",
-    "language": "en",
+    "status": "published",
     "access": "admin",
     "layout": "dashboard",
-    "status": "published",
-    "seo_title": "Admin — ContentFlow",
-    "sections": [
-      { "_type": "section", "_id": "admin-section", "sectionType": "admin", "admin": { "heading": "Admin", "subheading": "Manage users and access", "totalUsersLabel": "Total users", "proLabel": "Pro", "freeLabel": "Free", "colUser": "User", "colPlan": "Plan", "colRole": "Role", "colJoined": "Joined", "emptyLabel": "No users yet", "inviteSectionHeading": "Studio Access", "inviteFormTitle": "Invite user", "inviteEmailLabel": "Email", "inviteEmailPlaceholder": "user@example.com", "inviteMessageLabel": "Message (optional)", "inviteSendLabel": "Send invite", "pendingInvitesHeading": "Pending invites", "inviteEmptyLabel": "No pending invites", "cancelInviteLabel": "Cancel", "pendingRequestsHeading": "Access requests", "requestEmptyLabel": "No pending requests", "approveLabel": "Approve", "rejectLabel": "Reject", "colEmail": "Email", "colType": "Type", "colSentAt": "Sent", "colActions": "Actions" } }
+    "og_image": null,
+    "translations": [
+      {
+        "languages_code": "en",
+        "title": "Admin",
+        "seo_title": "Admin — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "admin-section", "sectionType": "admin", "admin": { "heading": "Admin", "subheading": "Manage users and access", "totalUsersLabel": "Total users", "proLabel": "Pro", "freeLabel": "Free", "colUser": "User", "colPlan": "Plan", "colRole": "Role", "colJoined": "Joined", "emptyLabel": "No users yet", "inviteSectionHeading": "Admin Access", "inviteFormTitle": "Invite user", "inviteEmailLabel": "Email", "inviteEmailPlaceholder": "user@example.com", "inviteMessageLabel": "Message (optional)", "inviteSendLabel": "Send invite", "pendingInvitesHeading": "Pending invites", "inviteEmptyLabel": "No pending invites", "cancelInviteLabel": "Cancel", "pendingRequestsHeading": "Access requests", "requestEmptyLabel": "No pending requests", "approveLabel": "Approve", "rejectLabel": "Reject", "colEmail": "Email", "colType": "Type", "colSentAt": "Sent", "colActions": "Actions" } }
+        ]
+      },
+      {
+        "languages_code": "hi",
+        "title": "एडमिन",
+        "seo_title": "एडमिन — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "admin-section-hi", "sectionType": "admin", "admin": { "heading": "एडमिन", "subheading": "उपयोगकर्ता और एक्सेस प्रबंधित करें", "totalUsersLabel": "कुल उपयोगकर्ता", "proLabel": "प्रो", "freeLabel": "मुफ्त", "colUser": "उपयोगकर्ता", "colPlan": "प्लान", "colRole": "भूमिका", "colJoined": "जुड़े", "emptyLabel": "अभी तक कोई उपयोगकर्ता नहीं", "inviteSectionHeading": "एडमिन एक्सेस", "inviteFormTitle": "उपयोगकर्ता को आमंत्रित करें", "inviteEmailLabel": "ईमेल", "inviteEmailPlaceholder": "user@example.com", "inviteMessageLabel": "संदेश (वैकल्पिक)", "inviteSendLabel": "आमंत्रण भेजें", "pendingInvitesHeading": "लंबित आमंत्रण", "inviteEmptyLabel": "कोई लंबित आमंत्रण नहीं", "cancelInviteLabel": "रद्द करें", "pendingRequestsHeading": "एक्सेस अनुरोध", "requestEmptyLabel": "कोई लंबित अनुरोध नहीं", "approveLabel": "स्वीकार करें", "rejectLabel": "अस्वीकार करें", "colEmail": "ईमेल", "colType": "प्रकार", "colSentAt": "भेजा गया", "colActions": "क्रियाएं" } }
+        ]
+      },
+      {
+        "languages_code": "kn",
+        "title": "ನಿರ್ವಾಹಕ",
+        "seo_title": "ನಿರ್ವಾಹಕ — ContentFlow",
+        "seo_description": null,
+        "sections": [
+          { "_type": "section", "_id": "admin-section-kn", "sectionType": "admin", "admin": { "heading": "ನಿರ್ವಾಹಕ", "subheading": "ಬಳಕೆದಾರರು ಮತ್ತು ಪ್ರವೇಶವನ್ನು ನಿರ್ವಹಿಸಿ", "totalUsersLabel": "ಒಟ್ಟು ಬಳಕೆದಾರರು", "proLabel": "ಪ್ರೊ", "freeLabel": "ಉಚಿತ", "colUser": "ಬಳಕೆದಾರ", "colPlan": "ಯೋಜನೆ", "colRole": "ಪಾತ್ರ", "colJoined": "ಸೇರಿದ", "emptyLabel": "ಇನ್ನೂ ಯಾವುದೇ ಬಳಕೆದಾರರಿಲ್ಲ", "inviteSectionHeading": "ನಿರ್ವಾಹಕ ಪ್ರವೇಶ", "inviteFormTitle": "ಬಳಕೆದಾರರನ್ನು ಆಹ್ವಾನಿಸಿ", "inviteEmailLabel": "ಇಮೇಲ್", "inviteEmailPlaceholder": "user@example.com", "inviteMessageLabel": "ಸಂದೇಶ (ಐಚ್ಛಿಕ)", "inviteSendLabel": "ಆಹ್ವಾನ ಕಳುಹಿಸಿ", "pendingInvitesHeading": "ಬಾಕಿ ಆಹ್ವಾನಗಳು", "inviteEmptyLabel": "ಬಾಕಿ ಆಹ್ವಾನಗಳಿಲ್ಲ", "cancelInviteLabel": "ರದ್ದುಮಾಡಿ", "pendingRequestsHeading": "ಪ್ರವೇಶ ವಿನಂತಿಗಳು", "requestEmptyLabel": "ಬಾಕಿ ವಿನಂತಿಗಳಿಲ್ಲ", "approveLabel": "ಅನುಮೋದಿಸಿ", "rejectLabel": "ತಿರಸ್ಕರಿಸಿ", "colEmail": "ಇಮೇಲ್", "colType": "ಪ್ರಕಾರ", "colSentAt": "ಕಳುಹಿಸಲಾಗಿದೆ", "colActions": "ಕ್ರಿಯೆಗಳು" } }
+        ]
+      }
     ]
   }
 ]

@@ -47,6 +47,7 @@ import { PostDetail } from '@/features/posts/components/PostDetail'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import type { DirectusPage, DirectusPost } from '@/types/directus'
+import { editableAttr } from '@/lib/directus/visual-editing'
 import type {
   SiteConfig,
   NavPage,
@@ -212,18 +213,19 @@ async function EnglishSlugPage({ slug }: { slug: string }) {
   const { header, meta, body, tags, backLink } = assemblePostDetailConfig([])
 
   const postData = {
-    _id:          post._id,
-    title:        post.title,
-    slug:         post.slug,            // DirectusPost.slug is already a flat string
-    body:         (post.body ?? []) as unknown[],
-    tags:         post.tags ?? [],
-    featured:     post.featured ?? false,
-    publishedAt:  post.publishedAt ?? null,
-    coverImage:   post.coverImage ?? null,
-    authorId:     post.authorId,
-    authorName:   post.authorName,
-    authorEmail:  post.authorEmail,
-    authorAvatar: post.authorAvatar ?? null,
+    _id:           post._id,
+    title:         post.title,
+    slug:          post.slug,
+    body:          (post.body ?? []) as unknown[],
+    tags:          post.tags ?? [],
+    featured:      post.featured ?? false,
+    publishedAt:   post.publishedAt ?? null,
+    coverImage:    post.coverImage ?? null,
+    authorId:      post.authorId,
+    authorName:    post.authorName,
+    authorEmail:   post.authorEmail,
+    authorAvatar:  post.authorAvatar ?? null,
+    translationId: post.resolvedTranslationId ?? null,
   }
 
   return (
@@ -295,12 +297,21 @@ async function RenderPage({ page, lang }: { page: DirectusPage; lang: string }) 
   const sections = page.sections ?? []
   const typedLang = lang as SupportedLang
 
+  const trAttr = editableAttr({
+    collection: 'pages_translations',
+    item: page.resolvedTranslationId ?? null,
+    fields: 'sections',
+    mode: 'drawer',
+  })
+
   // Dashboard layout
   if (access.showSidebar) {
     return (
       <DashboardLayout lang={typedLang}>
         {sections.length > 0 ? (
-          <SectionRenderer sections={sections} lang={typedLang} />
+          <div data-directus={trAttr}>
+            <SectionRenderer sections={sections} lang={typedLang} />
+          </div>
         ) : (
           <div className="flex items-center justify-center h-64">
             <p className="text-white/30 text-sm">This page has no sections yet.</p>
@@ -314,7 +325,7 @@ async function RenderPage({ page, lang }: { page: DirectusPage; lang: string }) 
   // authHeroSection (left 45%) + authSection (right flex-1)
   if (access.isAuth) {
     return sections.length > 0 ? (
-      <div className="min-h-screen bg-[#0d0e14] lg:flex lg:flex-wrap">
+      <div className="min-h-screen bg-[#0d0e14] lg:flex lg:flex-wrap" data-directus={trAttr}>
         <SectionRenderer sections={sections} lang={typedLang} />
       </div>
     ) : (
@@ -332,7 +343,9 @@ async function RenderPage({ page, lang }: { page: DirectusPage; lang: string }) 
     <div className="min-h-screen bg-[#0d0e14]">
       <Navbar siteConfig={siteConfig as unknown as SiteConfig} navPages={navPages as unknown as NavPage[]} lang={typedLang} />
       {sections.length > 0 ? (
-        <SectionRenderer sections={sections} lang={typedLang} />
+        <div data-directus={trAttr}>
+          <SectionRenderer sections={sections} lang={typedLang} />
+        </div>
       ) : (
         <div className="flex items-center justify-center min-h-[60vh]">
           <p className="text-white/30 text-sm">No sections configured for this page.</p>

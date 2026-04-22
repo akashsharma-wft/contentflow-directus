@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { readItem, updateItem, deleteItem } from '@directus/sdk'
+import { readItem, updateItem, deleteItem, readItems, createItem } from '@directus/sdk'
 import { createClient } from '@/lib/supabase/server'
 import { directusAdminClient } from '@/lib/directus/client'
-import type { DirectusSchema } from '@/types/directus'
+import type { DirectusSchema, DirectusPostTranslationRow } from '@/types/directus'
 
 export async function PATCH(
   request: NextRequest,
@@ -26,26 +26,56 @@ export async function PATCH(
     }
 
     const body = await request.json()
-    const { title, excerpt, tags, featured, publishedAt, coverImageUrl, removeCoverImage } = body
+    const { title, excerpt, tags, featured, publishedAt, coverImageUrl, removeCoverImage, language } = body
+    const lang = language ?? 'en'
 
-    const updateData: Record<string, unknown> = {}
+    // ── Update parent (non-translatable fields) ───────────────────────────────
+    const parentUpdate: Record<string, unknown> = {}
+    if (tags !== undefined)       parentUpdate.tags        = tags
+    if (featured !== undefined)   parentUpdate.featured    = featured
+    if (publishedAt !== undefined) parentUpdate.published_at = publishedAt
+    if (coverImageUrl)            parentUpdate.cover_image = coverImageUrl
+    else if (removeCoverImage)    parentUpdate.cover_image = null
 
-    if (title !== undefined)      updateData.title       = title
-    if (excerpt !== undefined)    updateData.excerpt     = excerpt
-    if (tags !== undefined)       updateData.tags        = tags
-    if (featured !== undefined)   updateData.featured    = featured
-    if (publishedAt !== undefined) updateData.published_at = publishedAt
-
-    // Store Supabase Storage URL directly — no re-upload needed
-    if (coverImageUrl) {
-      updateData.cover_image = coverImageUrl
-    } else if (removeCoverImage) {
-      updateData.cover_image = null
+    if (Object.keys(parentUpdate).length) {
+      // fields:['id'] prevents Directus selecting the translations alias as a SQL column
+      await directusAdminClient.request(
+        updateItem('posts' as keyof DirectusSchema, id, parentUpdate as never, { fields: ['id'] } as never)
+      )
     }
 
-    await directusAdminClient.request(
-      updateItem('posts' as keyof DirectusSchema, id, updateData as never)
-    )
+    // ── Upsert translation (translatable fields) ──────────────────────────────
+    if (title !== undefined || excerpt !== undefined) {
+      const trRows = (await directusAdminClient.request(
+        readItems('posts_translations' as keyof DirectusSchema, {
+          filter: { posts_id: { _eq: id }, languages_code: { _eq: lang } } as never,
+          fields: ['id'] as never,
+          limit: 1,
+        } as never)
+      )) as unknown as DirectusPostTranslationRow[]
+
+      const trUpdate: Record<string, unknown> = {}
+      if (title !== undefined)   trUpdate.title   = title
+      if (excerpt !== undefined) trUpdate.excerpt  = excerpt
+
+      if (trRows.length) {
+        await directusAdminClient.request(
+          updateItem('posts_translations' as keyof DirectusSchema, trRows[0].id, trUpdate as never)
+        )
+      } else {
+        await directusAdminClient.request(
+          createItem('posts_translations' as keyof DirectusSchema, {
+            posts_id: id,
+            languages_code: lang,
+            title: title ?? '',
+            excerpt: excerpt ?? '',
+            body: null,
+            seo_title: null,
+            seo_description: null,
+          } as never)
+        )
+      }
+    }
 
     return NextResponse.json({ success: true })
   } catch (err: unknown) {
@@ -77,6 +107,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'You can only delete your own posts' }, { status: 403 })
     }
 
+    // Delete parent — cascade deletes posts_translations rows
     await directusAdminClient.request(
       deleteItem('posts' as keyof DirectusSchema, id)
     )

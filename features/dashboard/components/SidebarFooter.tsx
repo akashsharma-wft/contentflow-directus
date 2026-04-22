@@ -4,7 +4,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { LogOut, Plus, type LucideIcon } from 'lucide-react'
-import { ICON_MAP } from '@/lib/navigation'
+import { ICON_MAP, resolveLabel } from '@/lib/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { useUser } from '@/hooks/useUser'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -17,7 +17,7 @@ interface SidebarFooterProps {
 }
 
 const DEFAULT_FOOTER_LINKS: SiteSidebarFooterLink[] = [
-  { _key: 'fl1', label: 'Documentation', href: '/studio', icon: 'BookOpen', external: true },
+  { _key: 'fl1', label: 'Directus Docs', href: 'https://docs.directus.io', icon: 'BookOpen', external: true },
   { _key: 'fl2', label: 'Support',       href: '/settings', icon: 'LifeBuoy', external: false },
 ]
 
@@ -71,7 +71,7 @@ export function SidebarFooter({ ctaButton = DEFAULT_CTA, footerLinks = DEFAULT_F
           className="flex items-center justify-center gap-2 w-full py-2 mb-1 bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
         >
           <Plus size={12} />
-          {ctaButton.label}
+          {resolveLabel(ctaButton.label, 'en')}
         </Link>
       )}
 
@@ -89,14 +89,14 @@ export function SidebarFooter({ ctaButton = DEFAULT_CTA, footerLinks = DEFAULT_F
               className={sharedClass}
             >
               <Icon size={13} className="shrink-0" />
-              {link.label}
+              {resolveLabel(link.label, 'en')}
             </a>
           )
         }
         return (
           <Link key={link._key} href={link.href} className={sharedClass}>
             <Icon size={13} className="shrink-0" />
-            {link.label}
+            {resolveLabel(link.label, 'en')}
           </Link>
         )
       })}

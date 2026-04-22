@@ -1,37 +1,25 @@
 /**
  * scripts/directus-bootstrap.ts
  *
- * Creates the three ContentFlow collections (posts, pages, site_config) in Directus.
- * Safe to run against a Directus Cloud project that already has other collections —
- * it only ADDs; it never modifies or deletes existing collections or fields.
- * Idempotent: safe to run multiple times.
+ * Creates / verifies the ContentFlow Directus schema.
+ * Safe to re-run — only ADDs or updates metadata; never deletes data.
  *
- * Usage:
- *   npm run directus:bootstrap
+ * Schema overview
+ * ───────────────
+ *  languages            — { code (PK), name, direction }
+ *  posts                — non-translatable parent: slug, cover_image, published_at, author_*…
+ *  posts_translations   — per-language: title, excerpt, body, seo_title, seo_description
+ *  pages                — non-translatable parent: slug, status, access, layout, og_image
+ *  pages_translations   — per-language: title, sections (JSON), seo_title, seo_description
+ *  site_config          — singleton-style (id = 'site-config'): navbar_config, footer_config…
  *
- * Required env vars (.env.local):
- *   NEXT_PUBLIC_DIRECTUS_URL  — e.g. https://your-project.directus.app
- *   DIRECTUS_ADMIN_TOKEN      — static token for an admin user
+ * Relations wired for Directus "Translations" interface:
+ *   posts_translations.posts_id  → posts.id       (O2M, cascade delete)
+ *   posts_translations.languages_code → languages.code
+ *   pages_translations.pages_id  → pages.id       (O2M, cascade delete)
+ *   pages_translations.languages_code → languages.code
  *
- * ── Access model (Directus v11) ──────────────────────────────────────────────
- * The app uses exactly two Directus tokens — no other roles are needed.
- *
- *   DIRECTUS_ADMIN_TOKEN          Full-access admin token (server-side writes only).
- *   NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN  Read-only token for server-component fetches.
- *
- * One-time manual setup for the public token (Settings → Access Policies):
- *   1. Create policy "ContentFlow Public Read"
- *      App Access: OFF  |  Admin Access: OFF
- *   2. Add Read permissions to the policy:
- *        posts        — filter: { "published_at": { "_nnull": true } }  fields: *
- *        pages        — filter: { "status": { "_eq": "published" } }    fields: *
- *        site_config  — no filter                                        fields: *
- *   3. Create a user (or use an existing non-admin user), generate a
- *      static token for them, and assign "ContentFlow Public Read" to them.
- *      Paste that token as NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN in .env.local.
- *
- * Everything else in Directus (default editor/viewer roles, extra policies
- * from the starter) is unused by this app and can be left or deleted.
+ * Usage:  npm run directus:bootstrap
  */
 
 import 'dotenv/config'
@@ -49,7 +37,7 @@ const HEADERS = {
   Authorization: `Bearer ${ADMIN_TOKEN}`,
 }
 
-// ── Low-level helpers ─────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 async function api(method: string, path: string, body?: unknown): Promise<unknown> {
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -69,103 +57,120 @@ async function api(method: string, path: string, body?: unknown): Promise<unknow
 }
 
 async function collectionExists(name: string): Promise<boolean> {
-  try {
-    await api('GET', `/collections/${name}`)
-    return true
-  } catch { return false }
+  try { await api('GET', `/collections/${name}`); return true } catch { return false }
 }
 
 async function fieldExists(collection: string, field: string): Promise<boolean> {
+  try { await api('GET', `/fields/${collection}/${field}`); return true } catch { return false }
+}
+
+async function relationExists(collection: string, field: string): Promise<boolean> {
   try {
-    await api('GET', `/fields/${collection}/${field}`)
-    return true
+    const res = await fetch(
+      `${BASE_URL}/relations?filter[collection][_eq]=${collection}&filter[field][_eq]=${field}`,
+      { headers: HEADERS }
+    )
+    if (!res.ok) return false
+    const data = (await res.json()) as { data?: unknown[] }
+    return (data.data?.length ?? 0) > 0
   } catch { return false }
+}
+
+// ── languages ─────────────────────────────────────────────────────────────────
+
+async function bootstrapLanguages() {
+  const TAG = '[languages]'
+
+  if (!(await collectionExists('languages'))) {
+    await api('POST', '/collections', {
+      collection: 'languages',
+      meta: {
+        icon:             'translate',
+        display_template: '{{name}}',
+        sort_field:       null,
+      },
+      schema: {},
+      fields: [
+        {
+          field: 'code',
+          type:  'string',
+          meta:  { interface: 'input', width: 'half', required: true },
+          schema: { is_primary_key: true, length: 20, has_auto_increment: false },
+        },
+      ],
+    })
+    console.log(`  ${TAG} collection created`)
+  } else {
+    console.log(`  ${TAG} already exists — checking fields…`)
+  }
+
+  const fields: { field: string; payload: unknown }[] = [
+    {
+      field: 'name',
+      payload: {
+        field: 'name', type: 'string',
+        meta: { interface: 'input', width: 'half', required: true },
+        schema: { is_nullable: false },
+      },
+    },
+    {
+      field: 'direction',
+      payload: {
+        field: 'direction', type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          width:     'half',
+          options:   { choices: [{ text: 'LTR', value: 'ltr' }, { text: 'RTL', value: 'rtl' }] },
+        },
+        schema: { is_nullable: true, default_value: 'ltr' },
+      },
+    },
+  ]
+
+  for (const { field, payload } of fields) {
+    if (!(await fieldExists('languages', field))) {
+      await api('POST', '/fields/languages', payload)
+      console.log(`  ${TAG} field created: ${field}`)
+    }
+  }
 }
 
 // ── posts ─────────────────────────────────────────────────────────────────────
 
 async function bootstrapPosts() {
-  const COLLECTION = 'posts'
-  const tag = `[${COLLECTION}]`
+  const TAG = '[posts]'
 
-  if (!(await collectionExists(COLLECTION))) {
+  if (!(await collectionExists('posts'))) {
     await api('POST', '/collections', {
-      collection: COLLECTION,
+      collection: 'posts',
       meta: {
-        icon: 'article',
-        display_template: '{{title}}',
-        sort_field: 'date_created',
+        icon:             'article',
+        display_template: '{{slug}}',
+        sort_field:       'date_created',
       },
       schema: {},
       fields: [
         {
           field: 'id',
-          type: 'uuid',
-          meta: { hidden: true, readonly: true, interface: 'input', special: ['uuid'] },
+          type:  'uuid',
+          meta:  { hidden: true, readonly: true, interface: 'input', special: ['uuid'] },
           schema: { is_primary_key: true, has_auto_increment: false },
         },
       ],
     })
-    console.log(`  ${tag} collection created`)
+    console.log(`  ${TAG} collection created`)
   } else {
-    console.log(`  ${tag} collection already exists — checking fields…`)
+    console.log(`  ${TAG} already exists — checking fields…`)
   }
 
-  const fields: { field: string; payload: unknown }[] = [
-    {
-      field: 'title',
-      payload: {
-        field: 'title', type: 'string',
-        meta: { interface: 'input', required: true, width: 'full' },
-        schema: { is_nullable: false },
-      },
-    },
+  // Non-translatable parent fields
+  const parentFields: { field: string; payload: unknown }[] = [
     {
       field: 'slug',
       payload: {
         field: 'slug', type: 'string',
-        meta: { interface: 'input', required: true, width: 'half', note: 'URL-safe. Unique per language.' },
+        meta: { interface: 'input', required: true, width: 'half', note: 'URL-safe. Unique — shared across all language translations.' },
         schema: { is_nullable: false },
-      },
-    },
-    {
-      field: 'language',
-      payload: {
-        field: 'language', type: 'string',
-        meta: {
-          interface: 'select-dropdown',
-          width: 'half',
-          required: true,
-          options: {
-            choices: [
-              { text: 'English', value: 'en' },
-              { text: 'Hindi',   value: 'hi' },
-              { text: 'Kannada', value: 'kn' },
-            ],
-          },
-        },
-        schema: { is_nullable: false, default_value: 'en' },
-      },
-    },
-    {
-      field: 'excerpt',
-      payload: {
-        field: 'excerpt', type: 'text',
-        meta: { interface: 'input-multiline', width: 'full' },
-        schema: { is_nullable: true },
-      },
-    },
-    {
-      field: 'body',
-      payload: {
-        field: 'body', type: 'json',
-        meta: {
-          interface: 'input-code',
-          options: { language: 'json' },
-          width: 'full',
-          note: 'PortableText block array — rendered by @portabletext/react',
-        },
-        schema: { is_nullable: true },
       },
     },
     {
@@ -250,76 +255,226 @@ async function bootstrapPosts() {
     },
   ]
 
-  for (const { field, payload } of fields) {
-    if (!(await fieldExists(COLLECTION, field))) {
-      await api('POST', `/fields/${COLLECTION}`, payload)
-      console.log(`  ${tag} field created: ${field}`)
+  for (const { field, payload } of parentFields) {
+    if (!(await fieldExists('posts', field))) {
+      await api('POST', '/fields/posts', payload)
+      console.log(`  ${TAG} field created: ${field}`)
     }
+  }
+
+  // Hide deprecated per-language fields that moved to posts_translations
+  const deprecated = ['title', 'language', 'excerpt', 'body', 'seo_title', 'seo_description']
+  for (const field of deprecated) {
+    if (await fieldExists('posts', field)) {
+      await api('PATCH', `/fields/posts/${field}`, { meta: { hidden: true, note: '[deprecated — use translations]' } })
+      console.log(`  ${TAG} deprecated field hidden: ${field}`)
+    }
+  }
+}
+
+// ── posts_translations ────────────────────────────────────────────────────────
+
+async function bootstrapPostsTranslations() {
+  const TAG = '[posts_translations]'
+
+  if (!(await collectionExists('posts_translations'))) {
+    await api('POST', '/collections', {
+      collection: 'posts_translations',
+      meta: {
+        icon:   'translate',
+        hidden: true,
+        display_template: '{{languages_code}}: {{title}}',
+      },
+      schema: {},
+      fields: [
+        {
+          field: 'id',
+          type:  'integer',
+          meta:  { hidden: true, readonly: true, interface: 'input', special: ['cast-to-integer'] },
+          schema: { is_primary_key: true, has_auto_increment: true },
+        },
+      ],
+    })
+    console.log(`  ${TAG} collection created`)
+  } else {
+    console.log(`  ${TAG} already exists — checking fields…`)
+  }
+
+  const fields: { field: string; payload: unknown }[] = [
+    {
+      field: 'posts_id',
+      payload: {
+        field: 'posts_id', type: 'uuid',
+        meta:  { interface: 'select-dropdown-m2o', special: ['m2o'], hidden: true, width: 'half' },
+        schema: { is_nullable: true },
+      },
+    },
+    {
+      field: 'languages_code',
+      payload: {
+        field: 'languages_code', type: 'string',
+        meta:  { interface: 'select-dropdown-m2o', special: ['m2o'], width: 'half', display: 'related-values', display_options: { template: '{{name}}' } },
+        schema: { is_nullable: true },
+      },
+    },
+    {
+      field: 'title',
+      payload: {
+        field: 'title', type: 'string',
+        meta:  { interface: 'input', required: true, width: 'full' },
+        schema: { is_nullable: false },
+      },
+    },
+    {
+      field: 'excerpt',
+      payload: {
+        field: 'excerpt', type: 'text',
+        meta:  { interface: 'input-multiline', width: 'full' },
+        schema: { is_nullable: true },
+      },
+    },
+    {
+      field: 'body',
+      payload: {
+        field: 'body', type: 'json',
+        meta: {
+          interface: 'input-code',
+          options:   { language: 'json' },
+          width:     'full',
+          note:      'PortableText block array',
+        },
+        schema: { is_nullable: true },
+      },
+    },
+    {
+      field: 'seo_title',
+      payload: {
+        field: 'seo_title', type: 'string',
+        meta:  { interface: 'input', width: 'half', note: 'Max 60 chars' },
+        schema: { is_nullable: true },
+      },
+    },
+    {
+      field: 'seo_description',
+      payload: {
+        field: 'seo_description', type: 'text',
+        meta:  { interface: 'input-multiline', width: 'half', note: 'Max 160 chars' },
+        schema: { is_nullable: true },
+      },
+    },
+  ]
+
+  for (const { field, payload } of fields) {
+    if (!(await fieldExists('posts_translations', field))) {
+      await api('POST', '/fields/posts_translations', payload)
+      console.log(`  ${TAG} field created: ${field}`)
+    }
+  }
+
+  // O2M relation: posts_translations.posts_id → posts.id
+  // one_field: 'translations' exposes the O2M in the Directus admin on the parent.
+  // The alias field on posts (created below) must have type='alias' + schema=null.
+  // Writes to posts/pages pass fields:['id'] to avoid the post-write SELECT bug.
+  if (!(await relationExists('posts_translations', 'posts_id'))) {
+    await api('POST', '/relations', {
+      collection:         'posts_translations',
+      field:              'posts_id',
+      related_collection: 'posts',
+      meta: {
+        many_collection:       'posts_translations',
+        many_field:            'posts_id',
+        one_collection:        'posts',
+        one_field:             'translations',
+        one_deselect_action:   'nullify',
+        sort_field:            null,
+      },
+      schema: {
+        table:               'posts_translations',
+        column:              'posts_id',
+        foreign_key_table:   'posts',
+        foreign_key_column:  'id',
+        on_update:           'NO ACTION',
+        on_delete:           'CASCADE',
+      },
+    })
+    console.log(`  ${TAG} relation created: posts_id → posts.id`)
+  }
+
+  // M2O relation: posts_translations.languages_code → languages.code
+  if (!(await relationExists('posts_translations', 'languages_code'))) {
+    await api('POST', '/relations', {
+      collection:         'posts_translations',
+      field:              'languages_code',
+      related_collection: 'languages',
+      meta: {
+        many_collection:     'posts_translations',
+        many_field:          'languages_code',
+        one_collection:      'languages',
+        one_field:           null,
+        one_deselect_action: 'nullify',
+      },
+      schema: {
+        table:              'posts_translations',
+        column:             'languages_code',
+        foreign_key_table:  'languages',
+        foreign_key_column: 'code',
+        on_update:          'NO ACTION',
+        on_delete:          'CASCADE',
+      },
+    })
+    console.log(`  ${TAG} relation created: languages_code → languages.code`)
+  }
+
+  // Alias field: posts.translations (type='alias', schema=null — virtual, no DB column)
+  if (!(await fieldExists('posts', 'translations'))) {
+    await api('POST', '/fields/posts', {
+      field: 'translations', type: 'alias',
+      meta: {
+        special: ['o2m'], interface: 'list-o2m',
+        options: { enableCreate: true, enableSelect: false },
+        display: 'related-values', display_options: { template: '{{languages_code}}: {{title}}' },
+        readonly: false, hidden: false, width: 'full',
+      },
+      schema: null,
+    })
+    console.log(`  ${TAG} alias field created: posts.translations`)
   }
 }
 
 // ── pages ─────────────────────────────────────────────────────────────────────
 
 async function bootstrapPages() {
-  const COLLECTION = 'pages'
-  const tag = `[${COLLECTION}]`
+  const TAG = '[pages]'
 
-  if (!(await collectionExists(COLLECTION))) {
+  if (!(await collectionExists('pages'))) {
     await api('POST', '/collections', {
-      collection: COLLECTION,
+      collection: 'pages',
       meta: {
-        icon: 'article_shortcut',
-        display_template: '{{title}} ({{language}})',
+        icon:             'article_shortcut',
+        display_template: '{{slug}}',
       },
       schema: {},
       fields: [
         {
           field: 'id',
-          type: 'uuid',
-          meta: { hidden: true, readonly: true, interface: 'input', special: ['uuid'] },
+          type:  'uuid',
+          meta:  { hidden: true, readonly: true, interface: 'input', special: ['uuid'] },
           schema: { is_primary_key: true, has_auto_increment: false },
         },
       ],
     })
-    console.log(`  ${tag} collection created`)
+    console.log(`  ${TAG} collection created`)
   } else {
-    console.log(`  ${tag} collection already exists — checking fields…`)
+    console.log(`  ${TAG} already exists — checking fields…`)
   }
 
-  const fields: { field: string; payload: unknown }[] = [
-    {
-      field: 'title',
-      payload: {
-        field: 'title', type: 'string',
-        meta: { interface: 'input', required: true, width: 'full' },
-        schema: { is_nullable: false },
-      },
-    },
+  const parentFields: { field: string; payload: unknown }[] = [
     {
       field: 'slug',
       payload: {
         field: 'slug', type: 'string',
-        meta: { interface: 'input', required: true, width: 'half', note: 'e.g. home, login, posts' },
+        meta: { interface: 'input', required: true, width: 'half', note: 'e.g. home, login, posts. Shared across translations.' },
         schema: { is_nullable: false },
-      },
-    },
-    {
-      field: 'language',
-      payload: {
-        field: 'language', type: 'string',
-        meta: {
-          interface: 'select-dropdown',
-          width: 'half',
-          required: true,
-          options: {
-            choices: [
-              { text: 'English', value: 'en' },
-              { text: 'Hindi',   value: 'hi' },
-              { text: 'Kannada', value: 'kn' },
-            ],
-          },
-        },
-        schema: { is_nullable: false, default_value: 'en' },
       },
     },
     {
@@ -327,15 +482,8 @@ async function bootstrapPages() {
       payload: {
         field: 'status', type: 'string',
         meta: {
-          interface: 'select-dropdown',
-          width: 'half',
-          required: true,
-          options: {
-            choices: [
-              { text: 'Published', value: 'published' },
-              { text: 'Draft',     value: 'draft' },
-            ],
-          },
+          interface: 'select-dropdown', width: 'half', required: true,
+          options: { choices: [{ text: 'Published', value: 'published' }, { text: 'Draft', value: 'draft' }] },
         },
         schema: { is_nullable: false, default_value: 'published' },
       },
@@ -345,11 +493,10 @@ async function bootstrapPages() {
       payload: {
         field: 'access', type: 'string',
         meta: {
-          interface: 'select-dropdown',
-          width: 'half',
+          interface: 'select-dropdown', width: 'half',
           options: {
             choices: [
-              { text: 'Guest (public)',      value: 'guest' },
+              { text: 'Guest (public)',       value: 'guest' },
               { text: 'User (auth required)', value: 'user' },
               { text: 'Admin only',           value: 'admin' },
             ],
@@ -363,17 +510,96 @@ async function bootstrapPages() {
       payload: {
         field: 'layout', type: 'string',
         meta: {
-          interface: 'select-dropdown',
-          width: 'half',
+          interface: 'select-dropdown', width: 'half',
           options: {
             choices: [
               { text: 'Home (Navbar + Footer)', value: 'home' },
               { text: 'Dashboard (Sidebar)',    value: 'dashboard' },
-              { text: 'Auth (no chrome)',        value: 'auth' },
+              { text: 'Auth (no chrome)',       value: 'auth' },
             ],
           },
         },
         schema: { is_nullable: true, default_value: 'home' },
+      },
+    },
+    {
+      field: 'og_image',
+      payload: {
+        field: 'og_image', type: 'string',
+        meta: { interface: 'input', width: 'full', note: 'Open Graph image URL (shared across translations)' },
+        schema: { is_nullable: true },
+      },
+    },
+  ]
+
+  for (const { field, payload } of parentFields) {
+    if (!(await fieldExists('pages', field))) {
+      await api('POST', `/fields/pages`, payload)
+      console.log(`  ${TAG} field created: ${field}`)
+    }
+  }
+
+  // Hide deprecated per-language fields
+  const deprecated = ['title', 'language', 'sections', 'seo_title', 'seo_description']
+  for (const field of deprecated) {
+    if (await fieldExists('pages', field)) {
+      await api('PATCH', `/fields/pages/${field}`, { meta: { hidden: true, note: '[deprecated — use translations]' } })
+      console.log(`  ${TAG} deprecated field hidden: ${field}`)
+    }
+  }
+}
+
+// ── pages_translations ────────────────────────────────────────────────────────
+
+async function bootstrapPagesTranslations() {
+  const TAG = '[pages_translations]'
+
+  if (!(await collectionExists('pages_translations'))) {
+    await api('POST', '/collections', {
+      collection: 'pages_translations',
+      meta: {
+        icon:   'translate',
+        hidden: true,
+        display_template: '{{languages_code}}: {{title}}',
+      },
+      schema: {},
+      fields: [
+        {
+          field: 'id',
+          type:  'integer',
+          meta:  { hidden: true, readonly: true, interface: 'input', special: ['cast-to-integer'] },
+          schema: { is_primary_key: true, has_auto_increment: true },
+        },
+      ],
+    })
+    console.log(`  ${TAG} collection created`)
+  } else {
+    console.log(`  ${TAG} already exists — checking fields…`)
+  }
+
+  const fields: { field: string; payload: unknown }[] = [
+    {
+      field: 'pages_id',
+      payload: {
+        field: 'pages_id', type: 'uuid',
+        meta:  { interface: 'select-dropdown-m2o', special: ['m2o'], hidden: true, width: 'half' },
+        schema: { is_nullable: true },
+      },
+    },
+    {
+      field: 'languages_code',
+      payload: {
+        field: 'languages_code', type: 'string',
+        meta:  { interface: 'select-dropdown-m2o', special: ['m2o'], width: 'half' },
+        schema: { is_nullable: true },
+      },
+    },
+    {
+      field: 'title',
+      payload: {
+        field: 'title', type: 'string',
+        meta:  { interface: 'input', width: 'full' },
+        schema: { is_nullable: true },
       },
     },
     {
@@ -382,9 +608,9 @@ async function bootstrapPages() {
         field: 'sections', type: 'json',
         meta: {
           interface: 'input-code',
-          options: { language: 'json' },
-          width: 'full',
-          note: 'SectionRenderer section config array — see types/cms.ts for shape',
+          options:   { language: 'json' },
+          width:     'full',
+          note:      'SectionRenderer config array — all copy/labels for this language',
         },
         schema: { is_nullable: true },
       },
@@ -393,7 +619,7 @@ async function bootstrapPages() {
       field: 'seo_title',
       payload: {
         field: 'seo_title', type: 'string',
-        meta: { interface: 'input', width: 'half', note: 'Max 60 chars' },
+        meta:  { interface: 'input', width: 'half', note: 'Max 60 chars' },
         schema: { is_nullable: true },
       },
     },
@@ -401,77 +627,112 @@ async function bootstrapPages() {
       field: 'seo_description',
       payload: {
         field: 'seo_description', type: 'text',
-        meta: { interface: 'input-multiline', width: 'half', note: 'Max 160 chars' },
-        schema: { is_nullable: true },
-      },
-    },
-    {
-      field: 'og_image',
-      payload: {
-        field: 'og_image', type: 'string',
-        meta: { interface: 'input', width: 'full', note: 'Open Graph image URL' },
+        meta:  { interface: 'input-multiline', width: 'half', note: 'Max 160 chars' },
         schema: { is_nullable: true },
       },
     },
   ]
 
   for (const { field, payload } of fields) {
-    if (!(await fieldExists(COLLECTION, field))) {
-      await api('POST', `/fields/${COLLECTION}`, payload)
-      console.log(`  ${tag} field created: ${field}`)
+    if (!(await fieldExists('pages_translations', field))) {
+      await api('POST', '/fields/pages_translations', payload)
+      console.log(`  ${TAG} field created: ${field}`)
     }
+  }
+
+  // O2M: pages_translations.pages_id → pages.id
+  if (!(await relationExists('pages_translations', 'pages_id'))) {
+    await api('POST', '/relations', {
+      collection:         'pages_translations',
+      field:              'pages_id',
+      related_collection: 'pages',
+      meta: {
+        many_collection:     'pages_translations',
+        many_field:          'pages_id',
+        one_collection:      'pages',
+        one_field:           'translations',
+        one_deselect_action: 'nullify',
+        sort_field:          null,
+      },
+      schema: {
+        table:              'pages_translations',
+        column:             'pages_id',
+        foreign_key_table:  'pages',
+        foreign_key_column: 'id',
+        on_update:          'NO ACTION',
+        on_delete:          'CASCADE',
+      },
+    })
+    console.log(`  ${TAG} relation created: pages_id → pages.id`)
+  }
+
+  // M2O: pages_translations.languages_code → languages.code
+  if (!(await relationExists('pages_translations', 'languages_code'))) {
+    await api('POST', '/relations', {
+      collection:         'pages_translations',
+      field:              'languages_code',
+      related_collection: 'languages',
+      meta: {
+        many_collection:     'pages_translations',
+        many_field:          'languages_code',
+        one_collection:      'languages',
+        one_field:           null,
+        one_deselect_action: 'nullify',
+      },
+      schema: {
+        table:              'pages_translations',
+        column:             'languages_code',
+        foreign_key_table:  'languages',
+        foreign_key_column: 'code',
+        on_update:          'NO ACTION',
+        on_delete:          'CASCADE',
+      },
+    })
+    console.log(`  ${TAG} relation created: languages_code → languages.code`)
+  }
+
+  // Alias field: pages.translations (type='alias', schema=null — virtual, no DB column)
+  if (!(await fieldExists('pages', 'translations'))) {
+    await api('POST', '/fields/pages', {
+      field: 'translations', type: 'alias',
+      meta: {
+        special: ['o2m'], interface: 'list-o2m',
+        options: { enableCreate: true, enableSelect: false },
+        display: 'related-values', display_options: { template: '{{languages_code}}: {{title}}' },
+        readonly: false, hidden: false, width: 'full',
+      },
+      schema: null,
+    })
+    console.log(`  ${TAG} alias field created: pages.translations`)
   }
 }
 
 // ── site_config ───────────────────────────────────────────────────────────────
-//
-// IMPORTANT: site_config is a REGULAR collection with a fixed string PK
-// ("site-config"), NOT a Directus singleton. This is intentional.
-//
-// Why not singleton:
-//   The frontend reads via readItem('site_config', 'site-config') which
-//   generates GET /items/site_config/site-config — the ID-addressed route.
-//   Directus singletons drop the ID from the route (GET /items/site_config),
-//   making them incompatible with readItem(). Using a regular collection with
-//   a fixed string PK gives the same semantic guarantee with the correct routing.
-//
-// If Directus Cloud shows it as singleton (from a previous bootstrap run),
-// this script will un-singleton it automatically via PATCH /collections/site_config.
 
 async function bootstrapSiteConfig() {
-  const COLLECTION = 'site_config'
-  const tag = `[${COLLECTION}]`
+  const TAG = '[site_config]'
 
-  if (!(await collectionExists(COLLECTION))) {
-    // Create as a regular collection (no singleton flag) with string PK
+  if (!(await collectionExists('site_config'))) {
     await api('POST', '/collections', {
-      collection: COLLECTION,
-      meta: {
-        icon: 'settings',
-        display_template: '{{site_name}}',
-        // singleton: false is the default — explicitly NOT setting it
-      },
+      collection: 'site_config',
+      meta: { icon: 'settings', display_template: '{{site_name}}' },
       schema: {},
       fields: [
         {
           field: 'id',
-          type: 'string',
-          meta: { hidden: true, readonly: true, interface: 'input', special: null },
+          type:  'string',
+          meta:  { hidden: true, readonly: true, interface: 'input', special: null },
           schema: { is_primary_key: true, length: 255, has_auto_increment: false },
         },
       ],
     })
-    console.log(`  ${tag} collection created (regular, string PK)`)
+    console.log(`  ${TAG} collection created (regular, string PK)`)
   } else {
-    console.log(`  ${tag} collection already exists — checking fields…`)
-
-    // If a previous bootstrap run created it as singleton, fix that now.
-    // Without this fix, GET /items/site_config/site-config returns 404
-    // because singletons route to GET /items/site_config (no ID segment).
-    const meta = (await api('GET', `/collections/${COLLECTION}`)) as { data?: { meta?: { singleton?: boolean } } }
+    console.log(`  ${TAG} already exists — checking fields…`)
+    const meta = (await api('GET', `/collections/site_config`)) as { data?: { meta?: { singleton?: boolean } } }
     if (meta?.data?.meta?.singleton === true) {
-      await api('PATCH', `/collections/${COLLECTION}`, { meta: { singleton: false } })
-      console.log(`  ${tag} ⚠  was singleton — removed singleton flag (required for readItem by ID)`)
+      await api('PATCH', '/collections/site_config', { meta: { singleton: false } })
+      console.log(`  ${TAG} ⚠  singleton flag removed (required for readItem by ID)`)
     }
   }
 
@@ -488,12 +749,7 @@ async function bootstrapSiteConfig() {
       field: 'navbar_config',
       payload: {
         field: 'navbar_config', type: 'json',
-        meta: {
-          interface: 'input-code',
-          options: { language: 'json' },
-          width: 'full',
-          note: 'SiteNavbarConfig — brandName, items[], ctaButton, showLanguageSwitcher',
-        },
+        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full', note: 'Nav items use label: {"en":…,"hi":…,"kn":…}' },
         schema: { is_nullable: true },
       },
     },
@@ -501,12 +757,7 @@ async function bootstrapSiteConfig() {
       field: 'footer_config',
       payload: {
         field: 'footer_config', type: 'json',
-        meta: {
-          interface: 'input-code',
-          options: { language: 'json' },
-          width: 'full',
-          note: 'SiteFooterConfig — columns[], socialLinks[]',
-        },
+        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full' },
         schema: { is_nullable: true },
       },
     },
@@ -514,12 +765,7 @@ async function bootstrapSiteConfig() {
       field: 'sidebar_config',
       payload: {
         field: 'sidebar_config', type: 'json',
-        meta: {
-          interface: 'input-code',
-          options: { language: 'json' },
-          width: 'full',
-          note: 'SiteSidebarConfig — navItems[], footerLinks[]',
-        },
+        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full' },
         schema: { is_nullable: true },
       },
     },
@@ -527,21 +773,16 @@ async function bootstrapSiteConfig() {
       field: 'mobile_nav_config',
       payload: {
         field: 'mobile_nav_config', type: 'json',
-        meta: {
-          interface: 'input-code',
-          options: { language: 'json' },
-          width: 'full',
-          note: 'SiteMobileNavConfig — bottom tab items[]',
-        },
+        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full' },
         schema: { is_nullable: true },
       },
     },
   ]
 
   for (const { field, payload } of fields) {
-    if (!(await fieldExists(COLLECTION, field))) {
-      await api('POST', `/fields/${COLLECTION}`, payload)
-      console.log(`  ${tag} field created: ${field}`)
+    if (!(await fieldExists('site_config', field))) {
+      await api('POST', '/fields/site_config', payload)
+      console.log(`  ${TAG} field created: ${field}`)
     }
   }
 }
@@ -549,45 +790,51 @@ async function bootstrapSiteConfig() {
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
-  console.log('\n🚀  ContentFlow — Directus schema bootstrap')
+  console.log('\n🚀  ContentFlow — Directus schema bootstrap (with translations)')
   console.log(`    URL: ${BASE_URL}\n`)
 
-  // Connectivity check — uses /collections which returns proper JSON
-  // (unlike /server/ping which returns plain text "pong" and breaks JSON.parse)
   try {
     await api('GET', '/collections')
-    console.log('✓  Directus reachable and token valid\n')
+    console.log('✓  Directus reachable\n')
   } catch (err) {
-    console.error('❌  Cannot reach Directus or token is invalid.')
-    console.error('    Check NEXT_PUBLIC_DIRECTUS_URL and DIRECTUS_ADMIN_TOKEN in .env.local')
-    console.error('   ', (err as Error).message)
+    console.error('❌  Cannot reach Directus:', (err as Error).message)
     process.exit(1)
   }
 
-  console.log('📦  Creating/verifying collections…\n')
+  console.log('📦  languages…')
+  await bootstrapLanguages()
+  console.log()
+
+  console.log('📦  posts (parent fields)…')
   await bootstrapPosts()
   console.log()
+
+  console.log('📦  posts_translations…')
+  await bootstrapPostsTranslations()
+  console.log()
+
+  console.log('📦  pages (parent fields)…')
   await bootstrapPages()
   console.log()
+
+  console.log('📦  pages_translations…')
+  await bootstrapPagesTranslations()
+  console.log()
+
+  console.log('📦  site_config…')
   await bootstrapSiteConfig()
 
   console.log('\n✅  Bootstrap complete!')
-  console.log('\n── Access model (one-time manual step in Directus dashboard) ───────')
-  console.log('   Two tokens are all the app needs:')
-  console.log('     DIRECTUS_ADMIN_TOKEN             — full-access, server-side writes')
-  console.log('     NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN — read-only, server-component fetches')
+  console.log('\n── Access Policy (update in Directus dashboard) ─────────────────────')
+  console.log('   "ContentFlow Public Read" policy needs Read on:')
+  console.log('     posts                — filter: published_at._nnull  fields: *')
+  console.log('     posts_translations   — no filter                     fields: *')
+  console.log('     pages                — filter: status._eq=published  fields: *')
+  console.log('     pages_translations   — no filter                     fields: *')
+  console.log('     languages            — no filter                     fields: *')
+  console.log('     site_config          — no filter                     fields: *')
   console.log()
-  console.log('   Settings → Access Policies → New Policy → "ContentFlow Public Read"')
-  console.log('     App Access: OFF  |  Admin Access: OFF')
-  console.log('     Read permissions:')
-  console.log('       posts        filter: { "published_at": { "_nnull": true } }  fields: *')
-  console.log('       pages        filter: { "status": { "_eq": "published" } }    fields: *')
-  console.log('       site_config  no filter                                        fields: *')
-  console.log()
-  console.log('   Assign this policy to the user whose static token is')
-  console.log('   NEXT_PUBLIC_DIRECTUS_PUBLIC_TOKEN.')
-  console.log()
-  console.log('── Next: seed demo data ─────────────────────────────────────────────')
+  console.log('── Next: seed data ──────────────────────────────────────────────────')
   console.log('   npm run directus:seed\n')
 }
 

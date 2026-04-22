@@ -14,6 +14,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // ─── Admin guard ─────────────────────────────────────────────────────────
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+
+    if (profile?.role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
     // ─── Env Config ──────────────────────────────────────────────────────────
     const posthogPersonalKey = process.env.POSTHOG_PERSONAL_API_KEY
     const projectId = process.env.POSTHOG_PROJECT_ID

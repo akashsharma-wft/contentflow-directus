@@ -2,14 +2,17 @@
  * lib/directus/queries.ts
  *
  * All CMS read functions for Directus.
- * scattered across page server components.
  *
- * Each function returns a normalised type consumed by pages, sections, and API routes.
- * so consumers need only change the import path, not the usage.
+ * Multilingual strategy:
+ *  - Posts and pages have a parent row (non-translatable fields) and a junction
+ *    table (posts_translations / pages_translations) for per-language content.
+ *  - Because Directus's one_field alias causes SQL SELECT bugs on this hosted
+ *    instance, we fetch parents and translations in two separate requests, then
+ *    merge them in application code.
+ *  - mergePost / mergePage pick the best translation (preferred lang → 'en' fallback).
  *
- * Note: We use `as unknown as T` casts because the Directus SDK v21 generics
- * return a narrow inferred type when `fields` is specified. At runtime the data
- * is exactly what we declare, so the casts are safe.
+ * Note: `as never` / `as unknown as T` casts work around narrow SDK inferred types.
+ * At runtime the data matches our declared types exactly.
  */
 import 'server-only'
 import {
@@ -17,10 +20,10 @@ import {
   readItem,
   aggregate,
 } from '@directus/sdk'
-import { directusClient } from './client'
+import { directusClient, directusAdminClient } from './client'
 import {
-  toPost,
-  toPage,
+  mergePost,
+  mergePage,
   toSiteConfig,
   type DirectusPost,
   type DirectusPage,
@@ -29,7 +32,79 @@ import {
   type DirectusPostRow,
   type DirectusPageRow,
   type DirectusSiteConfigRow,
+  type DirectusPostTranslationRow,
+  type DirectusPageTranslationRow,
 } from '@/types/directus'
+
+// ─── Post parent fields (non-translatable) ────────────────────────────────────
+
+const POST_PARENT_FIELDS = [
+  'id', 'slug', 'cover_image', 'published_at', 'featured', 'tags',
+  'author_id', 'author_name', 'author_email', 'author_avatar',
+  'date_created', 'date_updated',
+] as never
+
+const POST_TR_FIELDS = [
+  'id', 'posts_id', 'languages_code', 'title', 'excerpt', 'body',
+  'seo_title', 'seo_description',
+] as never
+
+const PAGE_PARENT_FIELDS = [
+  'id', 'slug', 'status', 'access', 'layout', 'og_image',
+] as never
+
+const PAGE_TR_FIELDS = [
+  'id', 'pages_id', 'languages_code', 'title', 'sections',
+  'seo_title', 'seo_description',
+] as never
+
+// ─── Two-step fetch helpers ───────────────────────────────────────────────────
+
+/** Attach translations to post parent rows.
+ * Uses the admin client so junction-table reads are never blocked by
+ * public-token permissions — the parent IDs are already scoped by the
+ * public client's published/featured filters above.
+ */
+async function attachPostTranslations(
+  rows: DirectusPostRow[],
+  langs: string[],
+): Promise<DirectusPostRow[]> {
+  if (!rows.length) return rows
+  const ids = rows.map(r => r.id)
+  const trs = (await directusAdminClient.request(
+    readItems('posts_translations', {
+      filter: { posts_id: { _in: ids }, languages_code: { _in: langs } } as never,
+      fields: POST_TR_FIELDS,
+      limit: -1,
+    })
+  )) as unknown as DirectusPostTranslationRow[]
+  return rows.map(row => ({
+    ...row,
+    translations: trs.filter(t => t.posts_id === row.id),
+  }))
+}
+
+/** Attach translations to page parent rows.
+ * Uses the admin client for the same reason as attachPostTranslations.
+ */
+async function attachPageTranslations(
+  rows: DirectusPageRow[],
+  langs: string[],
+): Promise<DirectusPageRow[]> {
+  if (!rows.length) return rows
+  const ids = rows.map(r => r.id)
+  const trs = (await directusAdminClient.request(
+    readItems('pages_translations', {
+      filter: { pages_id: { _in: ids }, languages_code: { _in: langs } } as never,
+      fields: PAGE_TR_FIELDS,
+      limit: -1,
+    })
+  )) as unknown as DirectusPageTranslationRow[]
+  return rows.map(row => ({
+    ...row,
+    translations: trs.filter(t => t.pages_id === row.id),
+  }))
+}
 
 // ─── Posts ────────────────────────────────────────────────────────────────────
 
@@ -37,142 +112,128 @@ import {
 export async function getAllPosts(): Promise<DirectusPost[]> {
   const rows = (await directusClient.request(
     readItems('posts', {
-      filter: { published_at: { _nnull: true } },
+      filter: { published_at: { _nnull: true } } as never,
       sort: ['-published_at'],
+      fields: POST_PARENT_FIELDS,
     })
   )) as unknown as DirectusPostRow[]
-  return rows.map(toPost)
+  const full = await attachPostTranslations(rows, ['en'])
+  return full.map(row => mergePost(row, 'en'))
 }
 
-/** Published posts for a given language. Params: lang */
+/** Published posts for a given language, ordered by date desc. */
 export async function getPostsByLang(lang: string): Promise<DirectusPost[]> {
   const rows = (await directusClient.request(
     readItems('posts', {
-      filter: {
-        language:     { _eq: lang },
-        published_at: { _nnull: true },
-      },
+      filter: { published_at: { _nnull: true } } as never,
       sort: ['-published_at'],
+      fields: POST_PARENT_FIELDS,
     })
   )) as unknown as DirectusPostRow[]
-  return rows.map(toPost)
+  const full = await attachPostTranslations(rows, [lang, 'en'])
+  return full.map(row => mergePost(row, lang))
 }
 
 /** Paginated published posts for a language. */
 export async function getPostsByLangPaginated(
   lang: string,
   page: number,
-  perPage: number
+  perPage: number,
 ): Promise<DirectusPost[]> {
   const rows = (await directusClient.request(
     readItems('posts', {
-      filter: {
-        language:     { _eq: lang },
-        published_at: { _nnull: true },
-      },
+      filter: { published_at: { _nnull: true } } as never,
       sort: ['-published_at'],
-      limit:  perPage,
+      limit: perPage,
       offset: (page - 1) * perPage,
+      fields: POST_PARENT_FIELDS,
     })
   )) as unknown as DirectusPostRow[]
-  return rows.map(toPost)
+  const full = await attachPostTranslations(rows, [lang, 'en'])
+  return full.map(row => mergePost(row, lang))
 }
 
-/** Count of published posts for a language. */
-export async function getPostsCountByLang(lang: string): Promise<number> {
+/** Count of published posts. */
+export async function getPostsCountByLang(_lang: string): Promise<number> {
   const result = (await directusClient.request(
     aggregate('posts', {
       aggregate: { count: '*' },
-      query: { filter: { language: { _eq: lang }, published_at: { _nnull: true } } },
+      query: { filter: { published_at: { _nnull: true } } },
     })
   )) as unknown as { count: { '*': string } }[]
   return Number(result[0]?.count?.['*']) ?? 0
 }
 
-/** Single published post by slug + language (falls back to English if not found). */
+/** Single published post by slug + language (falls back to English). */
 export async function getPostBySlugAndLang(
   slug: string,
-  lang: string
+  lang: string,
 ): Promise<DirectusPost | null> {
-  let rows = (await directusClient.request(
+  const rows = (await directusClient.request(
     readItems('posts', {
-      filter: {
-        slug:         { _eq: slug },
-        language:     { _eq: lang },
-        published_at: { _nnull: true },
-      },
+      filter: { slug: { _eq: slug }, published_at: { _nnull: true } } as never,
+      fields: POST_PARENT_FIELDS,
       limit: 1,
     })
   )) as unknown as DirectusPostRow[]
-
-  // Fall back to English
-  if (!rows.length && lang !== 'en') {
-    rows = (await directusClient.request(
-      readItems('posts', {
-        filter: {
-          slug:         { _eq: slug },
-          language:     { _eq: 'en' },
-          published_at: { _nnull: true },
-        },
-        limit: 1,
-      })
-    )) as unknown as DirectusPostRow[]
-  }
-
-  return rows.length ? toPost(rows[0]) : null
+  if (!rows.length) return null
+  const full = await attachPostTranslations(rows, [lang, 'en'])
+  return mergePost(full[0], lang)
 }
 
-/** All language variants of a post (same slug, different language). */
+/** All language variants of a post (same slug). */
 export async function getPostLangVariants(
-  slug: string
+  slug: string,
 ): Promise<{ slug: string; language: string }[]> {
   const rows = (await directusClient.request(
     readItems('posts', {
-      filter: {
-        slug:         { _eq: slug },
-        published_at: { _nnull: true },
-      },
-      fields: ['slug', 'language'] as never,
+      filter: { slug: { _eq: slug }, published_at: { _nnull: true } } as never,
+      fields: ['id', 'slug'] as never,
+      limit: 1,
     })
-  )) as unknown as { slug: string; language: string }[]
-  return rows
+  )) as unknown as { id: string; slug: string }[]
+  if (!rows.length) return []
+
+  const trs = (await directusClient.request(
+    readItems('posts_translations', {
+      filter: { posts_id: { _eq: rows[0].id } } as never,
+      fields: ['languages_code'] as never,
+      limit: -1,
+    })
+  )) as unknown as { languages_code: string }[]
+
+  if (trs.length) {
+    return trs.map(tr => ({ slug: rows[0].slug, language: tr.languages_code }))
+  }
+  return [{ slug: rows[0].slug, language: 'en' }]
 }
 
-/** Featured published posts up to a limit, for a language. */
-export async function getFeaturedPosts(
-  lang: string,
-  limit = 3
-): Promise<DirectusPost[]> {
+/** All featured published posts for a language, sorted newest first. */
+export async function getFeaturedPosts(lang: string): Promise<DirectusPost[]> {
   const rows = (await directusClient.request(
     readItems('posts', {
-      filter: {
-        language:     { _eq: lang },
-        published_at: { _nnull: true },
-        featured:     { _eq: true },
-      },
+      filter: { published_at: { _nnull: true }, featured: { _eq: true } } as never,
       sort: ['-published_at'],
-      limit,
+      limit: -1,
+      fields: POST_PARENT_FIELDS,
     })
   )) as unknown as DirectusPostRow[]
-  return rows.map(toPost)
+  const full = await attachPostTranslations(rows, [lang, 'en'])
+  return full.map(row => mergePost(row, lang))
 }
 
-/** Recent published posts up to a limit, for a language. */
-export async function getRecentPosts(
-  lang: string,
-  limit = 6
-): Promise<DirectusPost[]> {
+/** Recent published posts up to a limit. */
+export async function getRecentPosts(lang: string, limit = 6): Promise<DirectusPost[]> {
   const rows = (await directusClient.request(
     readItems('posts', {
-      filter: {
-        language:     { _eq: lang },
-        published_at: { _nnull: true },
-      },
+      filter: { published_at: { _nnull: true } } as never,
       sort: ['-published_at'],
       limit,
+      fields: POST_PARENT_FIELDS,
     })
   )) as unknown as DirectusPostRow[]
-  return rows.map(toPost)
+  const full = await attachPostTranslations(rows, [lang, 'en'])
+  return full.map(row => mergePost(row, lang))
 }
 
 /**
@@ -182,16 +243,18 @@ export async function getRecentPosts(
 export async function getMyPosts(authorId: string): Promise<DirectusPost[]> {
   const rows = (await directusClient.request(
     readItems('posts', {
-      filter: { author_id: { _eq: authorId } },
+      filter: { author_id: { _eq: authorId } } as never,
       sort: ['-date_updated'],
+      fields: POST_PARENT_FIELDS,
     })
   )) as unknown as DirectusPostRow[]
-  return rows.map(toPost)
+  const full = await attachPostTranslations(rows, ['en'])
+  return full.map(row => mergePost(row, 'en'))
 }
 
 /** Published + draft counts for a user. */
 export async function getMyPostsCount(
-  authorId: string
+  authorId: string,
 ): Promise<{ total: number; published: number }> {
   const [totalResult, publishedResult] = await Promise.all([
     directusClient.request(
@@ -231,26 +294,56 @@ export async function getMyPublishedPostCount(authorId: string): Promise<number>
 export async function getPostSlugsByLang(lang: string): Promise<string[]> {
   const rows = (await directusClient.request(
     readItems('posts', {
-      filter: {
-        language:     { _eq: lang },
-        published_at: { _nnull: true },
-      },
-      sort:   ['-published_at'],
-      fields: ['slug'] as never,
+      filter: { published_at: { _nnull: true } } as never,
+      sort: ['-published_at'],
+      fields: ['id', 'slug'] as never,
     })
-  )) as unknown as { slug: string }[]
-  return rows.map(r => r.slug)
+  )) as unknown as { id: string; slug: string }[]
+
+  if (!rows.length) return []
+  const ids = rows.map(r => r.id)
+  const trs = (await directusClient.request(
+    readItems('posts_translations', {
+      filter: { posts_id: { _in: ids }, languages_code: { _in: [lang, 'en'] } } as never,
+      fields: ['posts_id', 'languages_code'] as never,
+      limit: -1,
+    })
+  )) as unknown as { posts_id: string; languages_code: string }[]
+
+  const trsByPostId = new Map<string, string[]>()
+  for (const tr of trs) {
+    if (!trsByPostId.has(tr.posts_id)) trsByPostId.set(tr.posts_id, [])
+    trsByPostId.get(tr.posts_id)!.push(tr.languages_code)
+  }
+
+  return rows
+    .filter(r => (trsByPostId.get(r.id) ?? []).includes(lang) || (trsByPostId.get(r.id) ?? []).includes('en'))
+    .map(r => r.slug)
 }
 
 /** All published post slugs + languages (for generateStaticParams). */
 export async function getAllPostSlugs(): Promise<{ slug: string; language: string }[]> {
   const rows = (await directusClient.request(
     readItems('posts', {
-      filter: { published_at: { _nnull: true } },
-      fields: ['slug', 'language'] as never,
+      filter: { published_at: { _nnull: true } } as never,
+      fields: ['id', 'slug'] as never,
     })
-  )) as unknown as { slug: string; language: string }[]
-  return rows
+  )) as unknown as { id: string; slug: string }[]
+
+  if (!rows.length) return []
+  const ids = rows.map(r => r.id)
+  const trs = (await directusClient.request(
+    readItems('posts_translations', {
+      filter: { posts_id: { _in: ids } } as never,
+      fields: ['posts_id', 'languages_code'] as never,
+      limit: -1,
+    })
+  )) as unknown as { posts_id: string; languages_code: string }[]
+
+  const slugById = new Map(rows.map(r => [r.id, r.slug]))
+  if (!trs.length) return rows.map(r => ({ slug: r.slug, language: 'en' }))
+
+  return trs.map(tr => ({ slug: slugById.get(tr.posts_id) ?? '', language: tr.languages_code }))
 }
 
 // ─── Pages ────────────────────────────────────────────────────────────────────
@@ -258,66 +351,79 @@ export async function getAllPostSlugs(): Promise<{ slug: string; language: strin
 /** Fetch a published page by slug + language (falls back to English). */
 export async function getPageBySlugAndLang(
   slug: string,
-  lang: string
+  lang: string,
 ): Promise<DirectusPage | null> {
-  let rows = (await directusClient.request(
+  const rows = (await directusClient.request(
     readItems('pages', {
-      filter: {
-        slug:     { _eq: slug },
-        language: { _eq: lang },
-        status:   { _eq: 'published' },
-      },
+      filter: { slug: { _eq: slug }, status: { _eq: 'published' } } as never,
+      fields: PAGE_PARENT_FIELDS,
       limit: 1,
     })
   )) as unknown as DirectusPageRow[]
-
-  if (!rows.length && lang !== 'en') {
-    rows = (await directusClient.request(
-      readItems('pages', {
-        filter: {
-          slug:     { _eq: slug },
-          language: { _eq: 'en' },
-          status:   { _eq: 'published' },
-        },
-        limit: 1,
-      })
-    )) as unknown as DirectusPageRow[]
-  }
-
-  return rows.length ? toPage(rows[0]) : null
+  if (!rows.length) return null
+  const full = await attachPageTranslations(rows, [lang, 'en'])
+  return mergePage(full[0], lang)
 }
 
 /** All published page slugs + languages (for generateStaticParams). */
 export async function getAllPageSlugs(): Promise<{ slug: string; language: string }[]> {
   const rows = (await directusClient.request(
     readItems('pages', {
-      filter: { status: { _eq: 'published' } },
-      fields: ['slug', 'language'] as never,
+      filter: { status: { _eq: 'published' } } as never,
+      fields: ['id', 'slug'] as never,
     })
-  )) as unknown as { slug: string; language: string }[]
-  return rows
+  )) as unknown as { id: string; slug: string }[]
+
+  if (!rows.length) return []
+  const ids = rows.map(r => r.id)
+  const trs = (await directusClient.request(
+    readItems('pages_translations', {
+      filter: { pages_id: { _in: ids } } as never,
+      fields: ['pages_id', 'languages_code'] as never,
+      limit: -1,
+    })
+  )) as unknown as { pages_id: string; languages_code: string }[]
+
+  const slugById = new Map(rows.map(r => [r.id, r.slug]))
+  if (!trs.length) return rows.map(r => ({ slug: r.slug, language: 'en' }))
+
+  return trs.map(tr => ({ slug: slugById.get(tr.pages_id) ?? '', language: tr.languages_code }))
 }
 
-/** Lightweight nav pages for Navbar construction (layout = home or auth, not the home slug). */
+/** Lightweight nav pages for Navbar construction. */
 export async function getNavPages(lang: string): Promise<DirectusNavPage[]> {
   const rows = (await directusClient.request(
     readItems('pages', {
       filter: {
-        status:   { _eq: 'published' },
-        language: { _eq: lang },
-        layout:   { _in: ['home', 'auth'] },
-        slug:     { _neq: 'home' },
-      },
-      fields: ['id', 'title', 'slug', 'access', 'layout'] as never,
+        status: { _eq: 'published' },
+        layout: { _in: ['home', 'auth'] },
+        slug:   { _neq: 'home' },
+      } as never,
+      fields: ['id', 'slug', 'access', 'layout'] as never,
     })
-  )) as unknown as Pick<DirectusPageRow, 'id' | 'title' | 'slug' | 'access' | 'layout'>[]
-  return rows.map(r => ({
-    _id:    r.id,
-    title:  r.title,
-    slug:   r.slug,
-    access: r.access,
-    layout: r.layout,
-  }))
+  )) as unknown as { id: string; slug: string; access: 'guest' | 'user' | 'admin'; layout: 'home' | 'auth' | 'dashboard' }[]
+
+  if (!rows.length) return []
+  const ids = rows.map(r => r.id)
+  const trs = (await directusClient.request(
+    readItems('pages_translations', {
+      filter: { pages_id: { _in: ids }, languages_code: { _in: [lang, 'en'] } } as never,
+      fields: ['pages_id', 'languages_code', 'title'] as never,
+      limit: -1,
+    })
+  )) as unknown as { pages_id: string; languages_code: string; title: string }[]
+
+  return rows.map(r => {
+    const rowTrs = trs.filter(t => t.pages_id === r.id)
+    const tr = rowTrs.find(t => t.languages_code === lang) ?? rowTrs.find(t => t.languages_code === 'en')
+    return {
+      _id:    r.id,
+      title:  tr?.title ?? r.slug,
+      slug:   r.slug,
+      access: r.access,
+      layout: r.layout,
+    }
+  })
 }
 
 // ─── Site config ──────────────────────────────────────────────────────────────

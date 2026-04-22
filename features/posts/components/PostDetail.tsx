@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect } from 'react'
+import { editableAttr } from '@/lib/directus/visual-editing'
 import { PortableText } from '@portabletext/react'
 import { ArrowLeft, Share2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { format } from 'date-fns'
@@ -31,6 +32,7 @@ interface PostDetailProps {
     authorAvatar?: string | null
     // keep old author for backwards compat with studio-created posts
     author?: { name: string; avatar: string | null } | null
+    translationId?: number | null
   }
   prevSlug?: string | null
   nextSlug?: string | null
@@ -187,7 +189,14 @@ export function PostDetail({
       )}
 
       {/* Title */}
-      <h1 className="text-white text-2xl lg:text-3xl font-bold tracking-tight leading-tight mb-4">
+      <h1
+        className="text-white text-2xl lg:text-3xl font-bold tracking-tight leading-tight mb-4"
+        data-directus={editableAttr({
+          collection: 'posts_translations',
+          item: post.translationId ?? null,
+          fields: 'title',
+        })}
+      >
         {post.title}
       </h1>
 

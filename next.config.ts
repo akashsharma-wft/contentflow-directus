@@ -13,7 +13,20 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
-    return []
+    return [
+      {
+        // Allow Directus to embed the frontend in its visual editor iframe.
+        // frame-ancestors replaces the deprecated X-Frame-Options header.
+        // Only the Directus origin (and self) is whitelisted.
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'self' https://contentflow.directus.app",
+          },
+        ],
+      },
+    ]
   },
   // Middleware rewrites x-pathname header — this enables layout.tsx to know
   // the current route without being a client component.

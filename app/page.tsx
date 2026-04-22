@@ -20,6 +20,7 @@ import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import type { DirectusPage } from '@/types/directus'
 import type { SiteConfig, NavPage } from '@/types/cms'
+import { editableAttr } from '@/lib/directus/visual-editing'
 
 export const revalidate = 60
 
@@ -86,12 +87,21 @@ export default async function HomePage() {
 
   const sections = page.sections ?? []
 
+  const trAttr = editableAttr({
+    collection: 'pages_translations',
+    item: page.resolvedTranslationId ?? null,
+    fields: 'sections',
+    mode: 'drawer',
+  })
+
   // ── Dashboard layout (sidebar) ─────────────────────────────────────────────
   if (access.showSidebar) {
     return (
       <DashboardLayout lang="en">
         {sections.length > 0 ? (
-          <SectionRenderer sections={sections} lang="en" />
+          <div data-directus={trAttr}>
+            <SectionRenderer sections={sections} lang="en" />
+          </div>
         ) : (
           <div className="flex items-center justify-center h-64">
             <p className="text-white/30 text-sm">This page has no sections yet.</p>
@@ -104,7 +114,7 @@ export default async function HomePage() {
   // ── Auth layout (no chrome) ────────────────────────────────────────────────
   if (access.isAuth) {
     return sections.length > 0 ? (
-      <div className="min-h-screen bg-[#0d0e14] lg:flex lg:flex-wrap">
+      <div className="min-h-screen bg-[#0d0e14] lg:flex lg:flex-wrap" data-directus={trAttr}>
         <SectionRenderer sections={sections} lang="en" />
       </div>
     ) : (
@@ -122,7 +132,9 @@ export default async function HomePage() {
     <div className="min-h-screen bg-[#0d0e14]">
       <Navbar siteConfig={siteConfig as unknown as SiteConfig} navPages={navPages as unknown as NavPage[]} lang="en" />
       {sections.length > 0 ? (
-        <SectionRenderer sections={sections} lang="en" />
+        <div data-directus={trAttr}>
+          <SectionRenderer sections={sections} lang="en" />
+        </div>
       ) : (
         <div className="flex items-center justify-center min-h-[60vh]">
           <p className="text-white/30 text-sm">No sections configured for this page.</p>

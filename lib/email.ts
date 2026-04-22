@@ -20,12 +20,12 @@ export interface SendInviteEmailOptions {
 
 export async function sendAdminInviteEmail(opts: SendInviteEmailOptions) {
   const { toEmail, invitedByName, message, appUrl } = opts
-  const loginUrl = `${appUrl}/login?redirectTo=/studio`
+  const loginUrl = `${appUrl}/login?redirectTo=/admin`
 
   const { error } = await resend.emails.send({
     from:    'ContentFlow <onboarding@resend.dev>',
     to:      toEmail,
-    subject: "You've been invited to ContentFlow Studio",
+    subject: "You've been invited to ContentFlow",
     html:    buildInviteHtml({ toEmail, invitedByName, message, loginUrl }),
   })
 
@@ -61,7 +61,7 @@ function buildInviteHtml({ toEmail, invitedByName, message, loginUrl }: Template
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>You've been invited to ContentFlow Studio</title>
+  <title>You've been invited to ContentFlow</title>
 </head>
 <body style="margin:0;padding:0;background:#0e0f14;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
   <div style="max-width:520px;margin:48px auto;background:#13141c;border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:44px 40px;box-sizing:border-box;">
@@ -71,7 +71,7 @@ function buildInviteHtml({ toEmail, invitedByName, message, loginUrl }: Template
       <span style="display:inline-flex;align-items:center;gap:8px;">
         <span style="width:28px;height:28px;background:#6366f1;border-radius:8px;display:inline-block;"></span>
         <span style="color:rgba(255,255,255,0.55);font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;">
-          ContentFlow Studio
+          ContentFlow
         </span>
       </span>
     </div>
@@ -97,7 +97,7 @@ function buildInviteHtml({ toEmail, invitedByName, message, loginUrl }: Template
       </p>
       <table cellpadding="0" cellspacing="0" style="width:100%;">
         ${['Sign up or log in using <strong style=\\"color:rgba(255,255,255,0.7);\\">' + escHtml(toEmail) + '</strong>',
-           'Visit <strong style=\\"color:rgba(255,255,255,0.7);\\">/studio</strong> from your dashboard',
+           'Visit <strong style=\\"color:rgba(255,255,255,0.7);\\">/admin</strong> from your dashboard',
            'Your invitation will be reviewed and approved by an admin']
           .map((step, i) => `
           <tr>

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@directus/sdk": "^21.2.2",
+    "@directus/visual-editing": "^2.0.0",
     "@hookform/resolvers": "^5.2.2",
     "@portabletext/react": "^6.0.3",
     "@radix-ui/react-label": "^2.1.8",

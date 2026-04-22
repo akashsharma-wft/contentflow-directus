@@ -1210,14 +1210,14 @@ export type SiteNavItem = {
 
 /** Utility CTA button used in several layout zones */
 export type SiteCtaButton = {
-  label?: string
+  label?: string | SiteNavItemLabel
   href?:  string
 }
 
 /** Generic link with optional new-tab flag */
 export type SiteLink = {
   _key:     string
-  label:    string
+  label:    string | SiteNavItemLabel
   href:     string
   external?: boolean
 }
@@ -1225,7 +1225,7 @@ export type SiteLink = {
 /** Footer link column */
 export type SiteFooterColumn = {
   _key:    string
-  heading: string
+  heading: string | SiteNavItemLabel
   links?:  SiteLink[]
 }
 
@@ -1240,7 +1240,7 @@ export type SiteSocialLink = {
 /** Sidebar footer utility link (Documentation, Support, etc.) */
 export type SiteSidebarFooterLink = {
   _key:     string
-  label:    string
+  label:    string | SiteNavItemLabel
   href:     string
   icon?:    string
   external?: boolean
@@ -1253,15 +1253,19 @@ export type SiteNavbarConfig = {
   showLanguageSwitcher?: boolean
   ctaButton?:            SiteCtaButton
   items?:                SiteNavItem[]
+  loginLabel?:           SiteNavItemLabel
+  signupLabel?:          SiteNavItemLabel
+  signoutLabel?:         SiteNavItemLabel
+  mobileLanguageLabel?:  SiteNavItemLabel
 }
 
 export type SiteFooterConfig = {
   brandName?:   string
   showBrandLogo?: boolean
-  tagline?:     string
+  tagline?:     string | SiteNavItemLabel
   socialLinks?: SiteSocialLink[]
   columns?:     SiteFooterColumn[]
-  copyright?:   string
+  copyright?:   string | SiteNavItemLabel
   bottomLinks?: SiteLink[]
 }
 

@@ -8,7 +8,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { APP_NAV_ITEMS, filterNavItems, localizeHref, getLocalizedLabel } from '@/lib/navigation'
+import { APP_NAV_ITEMS, filterNavItems, localizeHref, getLocalizedLabel, resolveLabel } from '@/lib/navigation'
 import { useUser } from '@/hooks/useUser'
 import { cn } from '@/lib/utils'
 import type { SiteConfig } from '@/types/cms'
@@ -41,12 +41,16 @@ export function Footer({ siteConfig }: Props) {
   const cfg            = siteConfig?.footerConfig
   const brandName      = cfg?.brandName ?? siteConfig?.siteName ?? 'ContentFlow'
   const showBrandLogo  = cfg?.showBrandLogo ?? true
-  const tagline        = cfg?.tagline
-                      ?? siteConfig?.footerTagline
-                      ?? 'A next-generation CMS platform dedicated to the art of storytelling and editorial excellence. Built for modern publishers.'
-  const copyright      = cfg?.copyright
-                      ?? siteConfig?.copyright
-                      ?? `© ${new Date().getFullYear()} ContentFlow. All rights reserved.`
+  const tagline        = resolveLabel(
+    cfg?.tagline ?? siteConfig?.footerTagline,
+    currentLang,
+    'A next-generation CMS platform dedicated to the art of storytelling and editorial excellence. Built for modern publishers.',
+  )
+  const copyright      = resolveLabel(
+    cfg?.copyright ?? siteConfig?.copyright,
+    currentLang,
+    `© ${new Date().getFullYear()} ContentFlow. All rights reserved.`,
+  )
   const footerColumns  = cfg?.columns ?? []
   const socialLinks    = cfg?.socialLinks ?? []
   const bottomLinks    = cfg?.bottomLinks ?? []
@@ -101,7 +105,7 @@ export function Footer({ siteConfig }: Props) {
               )}>
                 {footerColumns.map((col) => (
                   <div key={col._key} className="space-y-3">
-                    <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest">{col.heading}</p>
+                    <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest">{resolveLabel(col.heading, currentLang)}</p>
                     <ul className="space-y-2">
                       {col.links?.map((link) => (
                         <li key={link._key}>
@@ -111,7 +115,7 @@ export function Footer({ siteConfig }: Props) {
                             rel={link.external ? 'noopener noreferrer' : undefined}
                             className="text-white/50 text-sm hover:text-white transition-colors"
                           >
-                            {link.label}
+                            {resolveLabel(link.label, currentLang)}
                           </Link>
                         </li>
                       ))}
@@ -152,7 +156,7 @@ export function Footer({ siteConfig }: Props) {
                   rel={link.external ? 'noopener noreferrer' : undefined}
                   className="hover:text-white/60 transition-colors uppercase tracking-widest"
                 >
-                  {link.label}
+                  {resolveLabel(link.label, currentLang)}
                 </Link>
               ))}
             </div>

@@ -68,6 +68,20 @@ export function getNavItemLabel(label: SiteNavItemLabel, lang: string): string {
   return label.en
 }
 
+/**
+ * Resolve any CMS label that may be a plain string or a multilingual object.
+ * Plain strings pass through unchanged (backward compat with legacy seed data).
+ */
+export function resolveLabel(
+  label: string | SiteNavItemLabel | undefined,
+  lang: string,
+  fallback = '',
+): string {
+  if (!label) return fallback
+  if (typeof label === 'string') return label
+  return getNavItemLabel(label, lang)
+}
+
 // ── Legacy helpers (kept for backward compat) ─────────────────────────────────
 
 export const APP_NAV_ITEMS: SidebarNavLink[] = [

@@ -36,10 +36,9 @@ export function PostsStatsSection({ content, lang = 'en' }: Props) {
   const { data: posts = [], isLoading } = useQuery<PostMeta[]>({
     queryKey: ['posts', 'stats', lang],
     queryFn: async () => {
-      const res = await fetch('/api/posts')
+      const res = await fetch(`/api/posts?lang=${lang}`)
       if (!res.ok) throw new Error('Failed')
-      const data = (await res.json()) as PostMeta[]
-      return data.filter(p => !lang || p.language === lang || (!p.language && lang === 'en'))
+      return (await res.json()) as PostMeta[]
     },
     enabled: !!user?.id,
     staleTime: 60_000,

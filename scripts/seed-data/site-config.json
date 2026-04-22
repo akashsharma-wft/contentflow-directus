@@ -4,55 +4,76 @@
   "navbar_config": {
     "brandName": "ContentFlow",
     "showLanguageSwitcher": true,
-    "ctaButton": { "label": "Get Started", "href": "/signup" },
+    "ctaButton": {
+      "label": { "en": "Get Started", "hi": "शुरू करें", "kn": "ಪ್ರಾರಂಭಿಸಿ" },
+      "href": "/signup"
+    },
+    "loginLabel":          { "en": "Login",    "hi": "लॉगिन",     "kn": "ಲಾಗಿನ್"       },
+    "signupLabel":         { "en": "Sign up",  "hi": "साइन अप",   "kn": "ಸೈನ್ ಅಪ್"     },
+    "signoutLabel":        { "en": "Sign out", "hi": "साइन आउट",  "kn": "ಸೈನ್ ಔಟ್"     },
+    "mobileLanguageLabel": { "en": "Language", "hi": "भाषा",      "kn": "ಭಾಷೆ"          },
     "items": [
       {
-        "_key": "nav-features",
-        "label": { "en": "Features", "hi": "विशेषताएं", "kn": "ವೈಶಿಷ್ಟ್ಯಗಳು" },
-        "href": "/#features",
-        "visibleFor": ["guest"]
-      },
-      {
-        "_key": "nav-pricing",
-        "label": { "en": "Pricing", "hi": "मूल्य निर्धारण", "kn": "ಬೆಲೆ" },
-        "href": "/#pricing",
-        "visibleFor": ["guest"]
-      },
-      {
         "_key": "nav-posts",
-        "label": { "en": "Blog", "hi": "ब्लॉग", "kn": "ಬ್ಲಾಗ್" },
+        "label": { "en": "Posts", "hi": "पोस्ट", "kn": "ಪೋಸ್ಟ್‌ಗಳು" },
         "href": "/posts",
         "visibleFor": ["guest", "user", "admin"]
       },
       {
-        "_key": "nav-dashboard",
-        "label": { "en": "Dashboard", "hi": "डैशबोर्ड", "kn": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್" },
-        "href": "/posts",
+        "_key": "nav-settings",
+        "label": { "en": "Settings", "hi": "सेटिंग्स", "kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು" },
+        "href": "/settings",
         "visibleFor": ["user", "admin"]
+      },
+      {
+        "_key": "nav-billing",
+        "label": { "en": "Billing", "hi": "बिलिंग", "kn": "ಬಿಲ್ಲಿಂಗ್" },
+        "href": "/billing",
+        "visibleFor": ["user", "admin"]
+      },
+      {
+        "_key": "nav-analytics",
+        "label": { "en": "Analytics", "hi": "विश्लेषण", "kn": "ವಿಶ್ಲೇಷಣೆ" },
+        "href": "/analytics",
+        "visibleFor": ["admin"]
+      },
+      {
+        "_key": "nav-admin",
+        "label": { "en": "Admin", "hi": "एडमिन", "kn": "ಅಡ್ಮಿನ್" },
+        "href": "/admin",
+        "visibleFor": ["admin"]
       }
     ]
   },
   "footer_config": {
     "brandName": "ContentFlow",
     "showBrandLogo": true,
-    "tagline": "CMS-driven SaaS dashboard.",
-    "copyright": "© 2025 ContentFlow. All rights reserved.",
+    "tagline": {
+      "en": "CMS-driven SaaS dashboard.",
+      "hi": "CMS-संचालित SaaS डैशबोर्ड।",
+      "kn": "CMS-ಚಾಲಿತ SaaS ಡ್ಯಾಶ್‌ಬೋರ್ಡ್."
+    },
+    "copyright": {
+      "en": "© 2025 ContentFlow. All rights reserved.",
+      "hi": "© 2025 ContentFlow. सर्वाधिकार सुरक्षित।",
+      "kn": "© 2025 ContentFlow. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ."
+    },
     "socialLinks": [],
     "columns": [
       {
         "_key": "col-product",
-        "heading": "Product",
+        "heading": { "en": "Product", "hi": "उत्पाद", "kn": "ಉತ್ಪನ್ನ" },
         "links": [
-          { "_key": "l1", "label": "Features", "href": "/#features" },
-          { "_key": "l2", "label": "Pricing",  "href": "/#pricing" }
+          { "_key": "l1", "label": { "en": "Features", "hi": "विशेषताएं", "kn": "ವೈಶಿಷ್ಟ್ಯಗಳು" }, "href": "/#features" },
+          { "_key": "l2", "label": { "en": "Pricing",  "hi": "मूल्य निर्धारण", "kn": "ಬೆಲೆ ನಿಗದಿ" }, "href": "/#pricing"  }
         ]
       },
       {
         "_key": "col-account",
-        "heading": "Account",
+        "heading": { "en": "Account", "hi": "खाता", "kn": "ಖಾತೆ" },
         "links": [
-          { "_key": "l3", "label": "Log in",   "href": "/login" },
-          { "_key": "l4", "label": "Sign up",  "href": "/signup" }
+          { "_key": "l3", "label": { "en": "Log in",  "hi": "लॉग इन",  "kn": "ಲಾಗ್ ಇನ್"  }, "href": "/login"  },
+          { "_key": "l4", "label": { "en": "Sign up", "hi": "साइन अप", "kn": "ಸೈನ್ ಅಪ್"  }, "href": "/signup" }
         ]
       }
     ],
@@ -62,11 +83,11 @@
     "brandName": "ContentFlow",
     "brandSubtitle": "Dashboard",
     "navItems": [
-      { "_key": "s1", "label": { "en": "Posts" },     "href": "/posts",     "icon": "FileText",  "visibleFor": ["user", "admin"] },
-      { "_key": "s2", "label": { "en": "Analytics" }, "href": "/analytics", "icon": "BarChart2", "visibleFor": ["admin"] },
-      { "_key": "s3", "label": { "en": "Settings" },  "href": "/settings",  "icon": "Settings",  "visibleFor": ["user", "admin"] },
-      { "_key": "s4", "label": { "en": "Billing" },   "href": "/billing",   "icon": "CreditCard","visibleFor": ["user", "admin"] },
-      { "_key": "s5", "label": { "en": "Admin" },     "href": "/admin",     "icon": "Shield",    "visibleFor": ["admin"] }
+      { "_key": "s1", "label": { "en": "Posts",     "hi": "पोस्ट",       "kn": "ಪೋಸ್ಟ್‌ಗಳು"    }, "href": "/posts",     "icon": "FileText",   "visibleFor": ["user", "admin"] },
+      { "_key": "s2", "label": { "en": "Analytics", "hi": "विश्लेषण",    "kn": "ವಿಶ್ಲೇಷಣೆ"      }, "href": "/analytics", "icon": "BarChart2",  "visibleFor": ["admin"] },
+      { "_key": "s3", "label": { "en": "Settings",  "hi": "सेटिंग्स",    "kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"  }, "href": "/settings",  "icon": "Settings",   "visibleFor": ["user", "admin"] },
+      { "_key": "s4", "label": { "en": "Billing",   "hi": "बिलिंग",      "kn": "ಬಿಲ್ಲಿಂಗ್"      }, "href": "/billing",   "icon": "CreditCard", "visibleFor": ["user", "admin"] },
+      { "_key": "s5", "label": { "en": "Admin",     "hi": "एडमिन",       "kn": "ಅಡ್ಮಿನ್"        }, "href": "/admin",     "icon": "Shield",     "visibleFor": ["admin"] }
     ],
     "footerLinks": [],
     "statusText": "All systems operational",
@@ -75,11 +96,11 @@
   "mobile_nav_config": {
     "showLabels": true,
     "items": [
-      { "_key": "m1", "label": { "en": "Posts" },     "href": "/posts",     "icon": "FileText",  "visibleFor": ["user", "admin"] },
-      { "_key": "m2", "label": { "en": "Analytics" }, "href": "/analytics", "icon": "BarChart2", "visibleFor": ["admin"] },
-      { "_key": "m3", "label": { "en": "Settings" },  "href": "/settings",  "icon": "Settings",  "visibleFor": ["user", "admin"] },
-      { "_key": "m4", "label": { "en": "Billing" },   "href": "/billing",   "icon": "CreditCard","visibleFor": ["user", "admin"] },
-      { "_key": "m5", "label": { "en": "Admin" },     "href": "/admin",     "icon": "Shield",    "visibleFor": ["admin"] }
+      { "_key": "m1", "label": { "en": "Posts",     "hi": "पोस्ट",       "kn": "ಪೋಸ್ಟ್‌ಗಳು"    }, "href": "/posts",     "icon": "FileText",   "visibleFor": ["user", "admin"] },
+      { "_key": "m2", "label": { "en": "Analytics", "hi": "विश्लेषण",    "kn": "ವಿಶ್ಲೇಷಣೆ"      }, "href": "/analytics", "icon": "BarChart2",  "visibleFor": ["admin"] },
+      { "_key": "m3", "label": { "en": "Settings",  "hi": "सेटिंग्स",    "kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು"  }, "href": "/settings",  "icon": "Settings",   "visibleFor": ["user", "admin"] },
+      { "_key": "m4", "label": { "en": "Billing",   "hi": "बिलिंग",      "kn": "ಬಿಲ್ಲಿಂಗ್"      }, "href": "/billing",   "icon": "CreditCard", "visibleFor": ["user", "admin"] },
+      { "_key": "m5", "label": { "en": "Admin",     "hi": "एडमिन",       "kn": "ಅಡ್ಮಿನ್"        }, "href": "/admin",     "icon": "Shield",     "visibleFor": ["admin"] }
     ]
   }
 }

@@ -16,7 +16,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { LanguageSwitcher } from './LanguageSwitcher'
-import { localizeHref, filterByVisibility, getNavItemLabel, getNavRole } from '@/lib/navigation'
+import { localizeHref, filterByVisibility, getNavItemLabel, getNavRole, resolveLabel } from '@/lib/navigation'
 import { useUser } from '@/hooks/useUser'
 import { createClient } from '@/lib/supabase/client'
 import type { SiteConfig, NavPage } from '@/types/cms'
@@ -48,7 +48,7 @@ export function Navbar({ siteConfig }: Props) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { user, profile, isLoading } = useUser()
 
-  // Don't render on studio / login / signup routes
+  // Don't render on login / signup routes
   if (SUPPRESS_ROUTES.some((route) => pathname.startsWith(route))) return null
 
   // Only render on home page (/ or /{lang})
@@ -61,6 +61,10 @@ export function Navbar({ siteConfig }: Props) {
   const brandName            = cfg?.brandName ?? siteConfig?.siteName ?? 'ContentFlow'
   const ctaButton            = cfg?.ctaButton
   const showLanguageSwitcher = cfg?.showLanguageSwitcher ?? true
+  const loginLabel           = resolveLabel(cfg?.loginLabel, currentLang, 'Login')
+  const signupLabel          = resolveLabel(cfg?.signupLabel, currentLang, 'Sign up')
+  const signoutLabel         = resolveLabel(cfg?.signoutLabel, currentLang, 'Sign out')
+  const mobileLanguageLabel  = resolveLabel(cfg?.mobileLanguageLabel, currentLang, 'Language')
 
   // Nav items from siteConfig, filtered by the visitor's current role.
   // Role resolves immediately from user object — no need to wait for profile for
@@ -157,21 +161,21 @@ export function Navbar({ siteConfig }: Props) {
                   href={localizeHref('/login', currentLang)}
                   className="px-3 py-1.5 text-sm text-white/60 hover:text-white transition-colors"
                 >
-                  Login
+                  {loginLabel}
                 </Link>
                 {ctaButton?.label && ctaButton?.href ? (
                   <Link
                     href={localizeHref(ctaButton.href, currentLang)}
                     className="hidden sm:inline-flex px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg transition-colors"
                   >
-                    {ctaButton.label}
+                    {resolveLabel(ctaButton.label, currentLang)}
                   </Link>
                 ) : (
                   <Link
                     href={localizeHref('/signup', currentLang)}
                     className="hidden sm:inline-flex px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg transition-colors"
                   >
-                    Sign up
+                    {signupLabel}
                   </Link>
                 )}
               </>
@@ -219,7 +223,7 @@ export function Navbar({ siteConfig }: Props) {
 
               {/* Language section */}
               <div className="px-2 py-3 mb-2 border-b border-white/6">
-                <p className="text-white/30 text-[10px] font-semibold uppercase tracking-widest mb-2">Language</p>
+                <p className="text-white/30 text-[10px] font-semibold uppercase tracking-widest mb-2">{mobileLanguageLabel}</p>
                 <LanguageSwitcher />
               </div>
 
@@ -246,10 +250,10 @@ export function Navbar({ siteConfig }: Props) {
               {isGuest && (
                 <>
                   <Link href={localizeHref('/login', currentLang)} onClick={closeMobile} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors">
-                    Login
+                    {loginLabel}
                   </Link>
                   <Link href={localizeHref('/signup', currentLang)} onClick={closeMobile} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors">
-                    Sign up
+                    {signupLabel}
                   </Link>
                 </>
               )}
@@ -260,7 +264,7 @@ export function Navbar({ siteConfig }: Props) {
                   onClick={handleSignOut}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/30 hover:text-red-400 hover:bg-red-500/5 transition-colors text-left"
                 >
-                  Sign out
+                  {signoutLabel}
                 </button>
               )}
             </nav>

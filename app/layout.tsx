@@ -5,9 +5,11 @@
 
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Suspense } from 'react'
 import './globals.css'
 import { Providers } from '@/components/providers'
 import { Toaster } from '@/components/ui/sonner'
+import { VisualEditingBridge } from '@/components/directus/VisualEditingBridge'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -40,6 +42,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           {children}
+          <Suspense fallback={null}>
+            <VisualEditingBridge />
+          </Suspense>
         </Providers>
 
         <Toaster richColors position="top-right" />
