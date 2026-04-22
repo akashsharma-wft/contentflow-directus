@@ -40,7 +40,7 @@ import type {
   SectionPostDetailBackLinkContent,
 } from '@/types/cms'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 interface Props {
   params: Promise<{ lang: string; slug: string }>

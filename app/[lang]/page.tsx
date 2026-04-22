@@ -36,7 +36,6 @@ import {
   SUPPORTED_LANGUAGES,
   LANG_LABELS,
   type SupportedLang,
-  type SlugEntry,
 } from '@/lib/directus/pageResolver'
 import { buildMetadata } from '@/lib/seo'
 import { SectionRenderer } from '@/sections/SectionRenderer'
@@ -44,7 +43,7 @@ import { DashboardLayout } from '@/features/dashboard/components/DashboardLayout
 import { PostDetail } from '@/features/posts/components/PostDetail'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
-import type { DirectusPage, DirectusPost } from '@/types/directus'
+import type { DirectusPage } from '@/types/directus'
 import { editableAttr } from '@/lib/directus/visual-editing'
 import type {
   SiteConfig,
@@ -57,7 +56,7 @@ import type {
   SectionPostDetailBackLinkContent,
 } from '@/types/cms'
 
-export const revalidate = 60
+export const dynamic = 'force-dynamic'
 
 interface Props {
   params: Promise<{ lang: string }>
