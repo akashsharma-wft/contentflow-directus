@@ -230,7 +230,15 @@ export function PostDetail({
       )}
 
       {/* Body content */}
-      <article className="prose prose-invert max-w-none">
+      <article 
+        className="prose prose-invert max-w-none"
+        data-directus={editableAttr({
+          collection: 'posts_translations',
+          item: post.translationId ?? null,
+          fields: 'body',
+          mode: 'drawer',
+        })}
+      >
         {post.body ? (
           <PortableText value={post.body as Parameters<typeof PortableText>[0]['value']} components={portableTextComponents} />
         ) : (
