@@ -1,23 +1,10 @@
-// app/api/admin/invite/route.ts
-// POST — admin promotes an existing user to the admin role.
-//
-// Auth:   must be authenticated + role === 'admin'
-// Body:   { email: string; message?: string }
-//
-// Flow:
-//   1. Target profile must already exist (user must have signed up first).
-//   2. If the target is already admin → 409.
-//   3. Promote profiles.role = 'admin' immediately (direct grant).
-//   4. Insert an approved audit row in admin_invites for the audit trail.
-//
-// If the target has not signed up yet → 404 with a clear message.
-// Duplicate pending-invite check is kept so the invites panel stays coherent
-// (e.g., if an old pending row exists from a previous run).
-
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { createClient as createUserClient } from '@/lib/supabase/server'
 import type { AdminDatabase } from '@/types/admin'
+
+// ── Paste your Directus Editor role ID here after creating it ──
+const DIRECTUS_ADMIN_TOKEN = process.env.DIRECTUS_ADMIN_TOKEN ?? ''
 
 function adminDb() {
   return createClient<AdminDatabase>(
@@ -25,6 +12,42 @@ function adminDb() {
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } }
   )
+}
+
+async function inviteToDirectus(email: string): Promise<{ ok: boolean; error?: string }> {
+  if (!DIRECTUS_ADMIN_TOKEN) {
+    console.warn('[admin/invite] DIRECTUS_ADMIN_TOKEN not set — skipping Directus invite')
+    return { ok: true }
+  }
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_DIRECTUS_URL}/users/invite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DIRECTUS_ADMIN_TOKEN}`,
+      },
+      body: JSON.stringify({
+        email,
+        role: DIRECTUS_ADMIN_TOKEN,
+      }),
+    })
+
+    // 200 = invited, 400 with "already exists" = already a Directus user — both fine
+    if (res.ok) return { ok: true }
+
+    const body = await res.json().catch(() => ({}))
+    const msg: string = body?.errors?.[0]?.message ?? ''
+
+    // User already exists in Directus — not an error
+    if (res.status === 400 && msg.toLowerCase().includes('already')) return { ok: true }
+
+    console.error('[admin/invite] Directus invite failed:', res.status, msg)
+    return { ok: false, error: msg || `Directus returned ${res.status}` }
+  } catch (err) {
+    console.error('[admin/invite] Directus invite fetch error:', err)
+    return { ok: false, error: 'Could not reach Directus' }
+  }
 }
 
 export async function POST(request: NextRequest) {
@@ -58,7 +81,6 @@ export async function POST(request: NextRequest) {
     const db = adminDb()
 
     // ── 3. Require the target to have an existing profile ────────────────────
-    // Admin promotion is a direct grant — the user must already have an account.
     const { data: targetProfile } = await db
       .from('profiles')
       .select('id, role')
@@ -79,7 +101,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // ── 4. Promote role ──────────────────────────────────────────────────────
+    // ── 4. Promote Supabase role ─────────────────────────────────────────────
     const { error: roleError } = await db
       .from('profiles')
       .update({ role: 'admin' })
@@ -90,7 +112,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to promote user to admin' }, { status: 500 })
     }
 
-    // ── 5. Insert approved audit record ─────────────────────────────────────
+    // ── 5. Invite to Directus ────────────────────────────────────────────────
+    const directusResult = await inviteToDirectus(email)
+    if (!directusResult.ok) {
+      // Supabase promotion succeeded — don't fail the whole request,
+      // just warn so the admin knows to invite manually
+      console.warn('[admin/invite] Directus invite failed but Supabase promotion succeeded')
+    }
+
+    // ── 6. Insert audit record ───────────────────────────────────────────────
     await db.from('admin_invites').insert({
       email,
       user_id:     targetProfile.id,
@@ -102,7 +132,12 @@ export async function POST(request: NextRequest) {
       reviewed_at: new Date().toISOString(),
     })
 
-    return NextResponse.json({ success: true, directGrant: true })
+    return NextResponse.json({
+      success: true,
+      directGrant: true,
+      directusInvited: directusResult.ok,
+      ...(directusResult.ok ? {} : { directusWarning: directusResult.error }),
+    })
   } catch (err) {
     console.error('admin/invite unexpected error:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
