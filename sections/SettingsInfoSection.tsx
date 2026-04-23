@@ -13,9 +13,12 @@ import { useUser } from '@/hooks/useUser'
 import { ProfileAvatar } from '@/features/settings/components/ProfileAvatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SectionSettingsInfoContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionSettingsInfoContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function SettingsInfoSection({ content }: Props) {

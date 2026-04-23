@@ -7,9 +7,12 @@
 import Link from 'next/link'
 import { ArrowRight, CreditCard } from 'lucide-react'
 import type { SectionBillingSuccessActionsContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionBillingSuccessActionsContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function BillingSuccessActionsSection({ content }: Props) {

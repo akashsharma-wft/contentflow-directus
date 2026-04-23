@@ -4,9 +4,12 @@
 // Receives content from the `settingsHeader` CMS section config.
 
 import type { SectionSettingsHeaderContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionSettingsHeaderContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function SettingsHeaderSection({ content }: Props) {

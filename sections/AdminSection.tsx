@@ -6,10 +6,13 @@ import type { SectionAdminContent } from '@/types/cms'
 import { AdminUsersTable } from '@/features/admin/components/AdminUsersTable'
 import { AdminInvitePanel } from '@/features/admin/components/AdminInvitePanel'
 import { DirectusCredentialsCard } from '@/features/admin/components/DirectusCredentialsCard'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   lang?:    string
   content?: SectionAdminContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 function adminDb() {

@@ -15,12 +15,15 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { toast } from 'sonner'
 import { usePostHog } from 'posthog-js/react'
 import type { SectionBillingPlansGridContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!
 
 interface Props {
   content: SectionBillingPlansGridContent
   lang?: string
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function BillingPlansGridSection({ content, lang = 'en' }: Props) {

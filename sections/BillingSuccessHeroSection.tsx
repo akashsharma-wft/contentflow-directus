@@ -9,6 +9,7 @@ import {
 } from 'lucide-react'
 import type { LucideProps } from 'lucide-react'
 import type { SectionBillingSuccessHeroContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 type IconFC = React.FC<LucideProps>
 
@@ -18,6 +19,8 @@ const ICON_MAP: Record<string, IconFC> = {
 
 interface Props {
   content: SectionBillingSuccessHeroContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function BillingSuccessHeroSection({ content }: Props) {

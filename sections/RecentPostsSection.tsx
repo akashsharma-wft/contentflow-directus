@@ -1,10 +1,13 @@
 import { getRecentPosts } from '@/lib/directus/queries'
 import { PostFilterGrid } from '@/components/PostFilterGrid'
 import type { RecentPostsSection as RecentPostsSectionType, PostCard } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   section: RecentPostsSectionType
   lang?: string
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export async function RecentPostsSection({ section, lang = 'en' }: Props) {

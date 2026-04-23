@@ -1,10 +1,9 @@
 // features/auth/components/AuthShell.tsx
 //
 // Layout shell for login + signup pages.
-// Split layout: left panel (branding/features) + right panel (form).
-//
 // All text comes from props — no hardcoded English strings.
-// LoginSection and SignupSection provide all display text as props.
+// Attr props (headlineAttr, badgeAttr, footerNoteAttr) carry data-directus values
+// so every visible text element is visual-editing-bindable.
 
 import type { ReactNode } from 'react'
 
@@ -16,11 +15,14 @@ interface Feature {
 interface AuthShellProps {
   children: ReactNode
   mode: 'signin' | 'signup'
+  headlineAttr: string | null
   headline: string
   subheadline: string
+  badgeAttr: string | null
   badge: string | null
   features?: Feature[]
   footerNote?: string
+  footerNoteAttr?: string | null
 }
 
 export function AuthShell({
@@ -30,6 +32,9 @@ export function AuthShell({
   badge,
   features = [],
   footerNote,
+  headlineAttr,
+  badgeAttr,
+  footerNoteAttr,
 }: AuthShellProps) {
   return (
     <div className="min-h-screen bg-[#0d0e14] flex flex-col lg:flex-row">
@@ -67,23 +72,33 @@ export function AuthShell({
         <div className="space-y-10">
           {/* Badge */}
           {badge && (
-            <span className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
+            <span
+              {...(badgeAttr ? { 'data-directus': badgeAttr } : {})}
+              className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full"
+            >
               {badge}
             </span>
           )}
 
           {/* Headline */}
-          <h1 className="text-white text-5xl font-bold leading-tight tracking-tight">
+          <h1
+            {...(headlineAttr ? { 'data-directus': headlineAttr } : {})}
+            className="text-white text-5xl font-bold leading-tight tracking-tight"
+          >
             {headline}
           </h1>
 
-          {/* Feature bullets — all text from authConfig in the right language */}
+          {/* Subheadline — visible on left panel for context */}
+          <p className="text-white/50 text-base leading-relaxed">
+            {subheadline}
+          </p>
+
+          {/* Feature bullets */}
           {features.length > 0 && (
             <ul className="space-y-4">
               {features.map((feature, i) => (
                 <li key={i} className="flex items-center gap-4">
                   <div className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
-                    {/* Lucide icon by name — just show a dot if icon is unknown */}
                     <span className="text-white/50 text-xs font-mono">
                       {feature.icon ? feature.icon.slice(0, 2) : '✦'}
                     </span>
@@ -95,72 +110,20 @@ export function AuthShell({
           )}
         </div>
 
-        {/* Footer note — e.g. "Powered by Supabase Auth" */}
-        <div className="flex items-center gap-2">
-          <span className="text-white/25 text-xs uppercase tracking-widest">
-            {footerNote ?? 'Powered by Supabase Auth'}
-          </span>
-        </div>
+        {/* Footer note */}
+        {footerNote && (
+          <p
+            {...(footerNoteAttr ? { 'data-directus': footerNoteAttr } : {})}
+            className="text-white/20 text-xs font-mono"
+          >
+            {footerNote}
+          </p>
+        )}
       </div>
 
-      {/* ── Right panel ─────────────────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col lg:justify-between lg:items-center lg:px-6 lg:py-12">
-
-        {/* Mobile hero — only on small screens */}
-        <div className="lg:hidden px-5 pt-4 pb-6 space-y-3">
-          {badge && (
-            <span className="inline-block bg-indigo-500/20 text-indigo-400 text-[11px] font-semibold uppercase tracking-widest px-3 py-1 rounded-full border border-indigo-500/30">
-              {badge}
-            </span>
-          )}
-          <h1 className="text-white text-3xl font-bold leading-tight tracking-tight">
-            {headline}
-          </h1>
-          <p className="text-white/40 text-sm">{subheadline}</p>
-        </div>
-
-        {/* Desktop spacer */}
-        <div className="hidden lg:block" />
-
-        {/* The form card — passed as children */}
-        <div className="w-full lg:max-w-md px-4 lg:px-0">
-          {children}
-        </div>
-
-        {/* Mobile feature bullets — below form on mobile */}
-        {features.length > 0 && (
-          <div className="lg:hidden px-4 pt-8 pb-4 space-y-4">
-            {features.slice(0, 2).map((feature, i) => (
-              <div key={i} className="flex gap-4">
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 mt-0.5">
-                  <span className="text-indigo-400 text-xs">{feature.icon?.slice(0, 2) ?? '✦'}</span>
-                </div>
-                <div>
-                  <p className="text-white text-sm font-semibold">{feature.text}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Footer links */}
-        <div className="flex flex-col items-center gap-3 py-8 lg:py-0">
-          <div className="flex items-center gap-5">
-            {/* These are legal links — kept in English as they're typically not translated */}
-            {['Terms of Service', 'Privacy Policy', 'Security'].map((link) => (
-              <a
-                key={link}
-                href="#"
-                className="text-white/20 text-[10px] uppercase tracking-widest hover:text-white/40 transition-colors"
-              >
-                {link}
-              </a>
-            ))}
-          </div>
-          <p className="text-white/15 text-[10px] uppercase tracking-widest lg:hidden">
-            © {new Date().getFullYear()} ContentFlow Engineering
-          </p>
-        </div>
+      {/* ── Right panel — form ───────────────────────────────────────────── */}
+      <div className="flex-1 flex flex-col items-center justify-center px-5 py-12 lg:px-16">
+        {children}
       </div>
     </div>
   )

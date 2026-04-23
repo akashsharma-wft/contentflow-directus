@@ -11,9 +11,12 @@ import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/uiStore'
 import type { SectionPostsSearchContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionPostsSearchContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function PostsSearchSection({ content }: Props) {

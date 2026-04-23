@@ -12,10 +12,13 @@ import { RefreshCw, Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { CreatePostModal } from '@/features/posts/components/CreatePostModal'
 import type { SectionPostsActionsContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionPostsActionsContent
   lang?: string
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function PostsActionsSection({ content, lang = 'en' }: Props) {

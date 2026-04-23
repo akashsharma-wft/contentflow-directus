@@ -17,10 +17,13 @@ import { useUser } from '@/hooks/useUser'
 import { PostsStatsBar } from '@/features/posts/components/PostsStatsBar'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SectionPostsStatsContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionPostsStatsContent
   lang?: string
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 interface PostMeta {

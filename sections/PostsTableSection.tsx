@@ -23,10 +23,13 @@ import { PostsEmptyState } from '@/features/posts/components/PostsEmptyState'
 import { PostsTableSkeleton } from '@/features/posts/components/PostsTableSkeleton'
 import { FeaturedBanner } from '@/features/posts/components/FeaturedBanner'
 import type { SectionPostsTableContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionPostsTableContent
   lang?: string
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export interface PostItem {

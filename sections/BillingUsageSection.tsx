@@ -11,9 +11,12 @@ import { useUser } from '@/hooks/useUser'
 import { UsageCard } from '@/features/billing/components/UsageCard'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SectionBillingUsageContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionBillingUsageContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function BillingUsageSection({ content }: Props) {

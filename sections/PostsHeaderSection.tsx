@@ -4,9 +4,12 @@
 // Receives CMS labels from the postsHeader section config.
 
 import type { SectionPostsHeaderContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionPostsHeaderContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function PostsHeaderSection({ content }: Props) {

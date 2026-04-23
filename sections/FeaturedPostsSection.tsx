@@ -2,10 +2,13 @@ import Link from 'next/link'
 import { getFeaturedPosts } from '@/lib/directus/queries'
 import { FeaturedPostsCarousel } from './FeaturedPostsCarousel'
 import type { FeaturedPostsSection as FeaturedPostsSectionType, PostCard } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   section: FeaturedPostsSectionType
   lang?: string
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export async function FeaturedPostsSection({ section, lang = 'en' }: Props) {

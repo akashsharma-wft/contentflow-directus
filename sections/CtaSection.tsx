@@ -1,9 +1,12 @@
 ﻿import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import type { CtaSection as CtaSectionType } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   section: CtaSectionType
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function CtaSection({ section }: Props) {

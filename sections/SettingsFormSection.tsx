@@ -30,9 +30,12 @@ import { CheckCircle2, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { usePostHog } from 'posthog-js/react'
 import type { SectionSettingsFormContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionSettingsFormContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 const profileSchema = z.object({

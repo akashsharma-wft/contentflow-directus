@@ -5,9 +5,12 @@
 
 import { Shield } from 'lucide-react'
 import type { SectionBillingFooterContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionBillingFooterContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function BillingFooterSection({ content }: Props) {

@@ -16,9 +16,12 @@ import { Suspense } from 'react'
 import type { AuthSection as AuthSectionType } from '@/types/cms'
 import { LoginForm }  from '@/features/auth/components/LoginForm'
 import { SignupForm } from '@/features/auth/components/SignupForm'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   section: AuthSectionType
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function AuthFormSection({ section }: Props) {

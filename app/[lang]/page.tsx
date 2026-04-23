@@ -295,7 +295,7 @@ async function RenderPage({ page, lang }: { page: DirectusPage; lang: string }) 
       <DashboardLayout lang={typedLang}>
         {sections.length > 0 ? (
           <div data-directus={trAttr}>
-            <SectionRenderer sections={sections} lang={typedLang} />
+            <SectionRenderer sections={sections} lang={typedLang} translationId={page.resolvedTranslationId} translationRow={page.translationRow} />
           </div>
         ) : (
           <div className="flex items-center justify-center h-64">
@@ -311,7 +311,7 @@ async function RenderPage({ page, lang }: { page: DirectusPage; lang: string }) 
   if (access.isAuth) {
     return sections.length > 0 ? (
       <div className="min-h-screen bg-[#0d0e14] lg:flex lg:flex-wrap" data-directus={trAttr}>
-        <SectionRenderer sections={sections} lang={typedLang} />
+        <SectionRenderer sections={sections} lang={typedLang} translationId={page.resolvedTranslationId} translationRow={page.translationRow} />
       </div>
     ) : (
       <div className="min-h-screen bg-[#0d0e14]" />
@@ -329,7 +329,7 @@ async function RenderPage({ page, lang }: { page: DirectusPage; lang: string }) 
       <Navbar siteConfig={siteConfig as unknown as SiteConfig} navPages={navPages as unknown as NavPage[]} lang={typedLang} />
       {sections.length > 0 ? (
         <div data-directus={trAttr}>
-          <SectionRenderer sections={sections} lang={typedLang} />
+          <SectionRenderer sections={sections} lang={typedLang} translationId={page.resolvedTranslationId} translationRow={page.translationRow} />
         </div>
       ) : (
         <div className="flex items-center justify-center min-h-[60vh]">

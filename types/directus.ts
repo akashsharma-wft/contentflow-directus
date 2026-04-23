@@ -1,28 +1,12 @@
 /**
  * types/directus.ts
  *
- * TypeScript types for the Directus CMS layer.
- *
- * Strategy:
- *  - DirectusPost / DirectusPage / DirectusSiteConfig are the normalised shapes
- *    returned by lib/directus/queries.ts — same field names consumers expect.
- *  - All section/component content sub-types are RE-EXPORTED from types/cms.ts —
- *    they describe JSON blob shapes stored in pages_translations.sections and are CMS-agnostic.
- *  - DirectusSchema powers the @directus/sdk generic so the client is typed.
- *
- * Multilingual architecture (Phase A — Directus-native translations):
- *  - posts / pages hold non-translatable fields (slug, author_*, layout, access, …)
- *  - posts_translations / pages_translations hold per-language content (title, body, sections, …)
- *  - mergePost(row, preferLang) / mergePage(row, preferLang) pick the best translation
- *    and return the flat normalised shape consumers already expect.
- *  - During the transition period the old root-level title/language/body/sections fields
- *    are still present on rows (hidden in UI) — the merge helpers fall back to them so
- *    legacy seeded content continues to work before re-seeding.
+ * Updated after field-based migration.
+ * pages_translations and site_config now have individual string fields
+ * instead of JSON blobs. mergePage() / toSiteConfig() read the new fields
+ * with fallback to the old sections/config JSON for backward compat.
  */
 
-// ─── Re-export all section & component content types (unchanged) ──────────────
-// These types describe the shape of the JSON stored inside pages_translations.sections —
-// they are independent of which CMS delivers that JSON.
 export type {
   PortableTextBlock,
   CtaButton,
@@ -125,22 +109,25 @@ export type {
   SidebarNavLink,
 } from '@/types/cms'
 
-// ─── Directus-native types ────────────────────────────────────────────────────
-
-import type { CmsSection, SiteNavbarConfig, SiteFooterConfig, SiteSidebarConfig, SiteMobileNavConfig } from '@/types/cms'
+import type {
+  CmsSection,
+  SiteNavbarConfig,
+  SiteFooterConfig,
+  SiteSidebarConfig,
+  SiteMobileNavConfig,
+} from '@/types/cms'
 import { resolveTranslation } from '@/lib/directus/translations'
 
 // ─── Languages ────────────────────────────────────────────────────────────────
 
 export type DirectusLanguageRow = {
-  code:      string   // 'en' | 'hi' | 'kn'
+  code:      string
   name:      string
   direction: 'ltr' | 'rtl'
 }
 
 // ─── Posts translations ───────────────────────────────────────────────────────
 
-/** One language variant of a post — lives in posts_translations. */
 export type DirectusPostTranslationRow = {
   id:              number
   posts_id:        string
@@ -152,14 +139,6 @@ export type DirectusPostTranslationRow = {
   seo_description: string | null
 }
 
-/**
- * Row returned by Directus `posts` collection (with optional nested translations).
- *
- * Non-translatable fields (slug, author_*, cover_image, …) live here.
- * Translatable fields (title, excerpt, body) have been moved to posts_translations;
- * the optional root-level copies below are kept for backward compat with legacy rows
- * that were seeded before the translations migration.
- */
 export type DirectusPostRow = {
   id:           string
   slug:         string
@@ -173,19 +152,14 @@ export type DirectusPostRow = {
   author_avatar:string | null
   date_created: string
   date_updated: string
-  // Nested translations (populated when fields=['*','translations.*'])
   translations?: DirectusPostTranslationRow[]
-  // Legacy root-level fields (hidden in UI; kept for backward compat)
+  // Legacy
   title?:    string
   language?: string
   excerpt?:  string | null
   body?:     unknown[] | null
 }
 
-/**
- * Normalised post shape consumed by PostsTable, PostDetail, PostsListing, etc.
- * Field names unchanged from before so no consumer changes are needed.
- */
 export type DirectusPost = {
   _id:                   string
   _type:                 'post'
@@ -204,17 +178,11 @@ export type DirectusPost = {
   authorName?:           string
   authorEmail?:          string
   authorAvatar?:         string
-  /** ID of the matched posts_translations row — used for visual editing data-directus attrs. */
   resolvedTranslationId?: number
 }
 
-/**
- * Merge a post parent row with its nested translations, preferring `preferLang`
- * then falling back to 'en', then to root-level legacy fields.
- */
 export function mergePost(row: DirectusPostRow, preferLang = 'en'): DirectusPost {
   const tr = resolveTranslation(row.translations ?? [], preferLang)
-
   return {
     _id:                   row.id,
     _type:                 'post',
@@ -223,8 +191,8 @@ export function mergePost(row: DirectusPostRow, preferLang = 'en'): DirectusPost
     title:                 tr?.title        ?? row.title    ?? '',
     slug:                  row.slug,
     language:              tr?.languages_code ?? row.language ?? 'en',
-    excerpt:               (tr?.excerpt     ?? row.excerpt  ?? undefined) ?? undefined,
-    body:                  (tr?.body        ?? row.body     ?? undefined) ?? undefined,
+    excerpt:               tr?.excerpt     ?? row.excerpt  ?? undefined,
+    body:                  tr?.body        ?? row.body     ?? undefined,
     coverImage:            row.cover_image  ?? undefined,
     publishedAt:           row.published_at ?? undefined,
     featured:              row.featured,
@@ -237,30 +205,185 @@ export function mergePost(row: DirectusPostRow, preferLang = 'en'): DirectusPost
   }
 }
 
-/** Backward-compat alias — picks English translation. */
 export function toPost(row: DirectusPostRow): DirectusPost {
   return mergePost(row, 'en')
 }
 
 // ─── Pages translations ───────────────────────────────────────────────────────
 
-/** One language variant of a page — lives in pages_translations. */
+/** Full field-based translation row — all content fields are now individual strings. */
 export type DirectusPageTranslationRow = {
   id:              number
   pages_id:        string
   languages_code:  string
   title:           string
+  // Legacy JSON fallback (hidden in UI, kept for backward compat)
   sections:        CmsSection[] | null
   seo_title:       string | null
   seo_description: string | null
+
+  // ── Hero ──────────────────────────────────────────────────────────────────
+  hero_heading?:             string | null
+  hero_subheading?:          string | null
+  hero_badge?:               string | null
+  hero_community_text?:      string | null
+  hero_primary_cta_label?:   string | null
+  hero_primary_cta_href?:    string | null
+  hero_secondary_cta_label?: string | null
+  hero_secondary_cta_href?:  string | null
+
+  // ── Featured posts ────────────────────────────────────────────────────────
+  featured_posts_heading?:    string | null
+  featured_posts_subheading?: string | null
+  featured_posts_view_all?:   string | null
+
+  // ── Recent posts ──────────────────────────────────────────────────────────
+  recent_posts_heading?:    string | null
+  recent_posts_subheading?: string | null
+  recent_posts_view_all?:   string | null
+
+  // ── CTA ───────────────────────────────────────────────────────────────────
+  cta_heading?:       string | null
+  cta_body?:          string | null
+  cta_primary_label?: string | null
+  cta_primary_href?:  string | null
+
+  // ── Auth hero ─────────────────────────────────────────────────────────────
+  auth_hero_badge?:       string | null
+  auth_hero_headline?:    string | null
+  auth_hero_footer_note?: string | null
+
+  // ── Auth form ─────────────────────────────────────────────────────────────
+  auth_heading?:              string | null
+  auth_google_label?:         string | null
+  auth_divider_label?:        string | null
+  auth_name_label?:           string | null
+  auth_name_placeholder?:     string | null
+  auth_email_label?:          string | null
+  auth_email_placeholder?:    string | null
+  auth_password_label?:       string | null
+  auth_password_placeholder?: string | null
+  auth_submit_label?:         string | null
+  auth_footer_text?:          string | null
+  auth_footer_link_label?:    string | null
+  auth_footer_link_href?:     string | null
+
+  // ── Posts page ────────────────────────────────────────────────────────────
+  posts_heading?:             string | null
+  posts_subheading?:          string | null
+  posts_api_badge?:           string | null
+  posts_my_label?:            string | null
+  posts_published_label?:     string | null
+  posts_drafts_label?:        string | null
+  posts_sync_label?:          string | null
+  posts_new_label?:           string | null
+  posts_search_placeholder?:  string | null
+  posts_col_title?:           string | null
+  posts_col_status?:          string | null
+  posts_col_tags?:            string | null
+  posts_col_modified?:        string | null
+  posts_empty_title?:         string | null
+  posts_empty_body?:          string | null
+  posts_empty_cta?:           string | null
+  posts_load_more?:           string | null
+  posts_view_label?:          string | null
+  posts_edit_label?:          string | null
+  posts_delete_label?:        string | null
+  posts_delete_dialog_title?: string | null
+  posts_delete_dialog_body?:  string | null
+  posts_delete_confirm?:      string | null
+  posts_delete_cancel?:       string | null
+
+  // ── Billing ───────────────────────────────────────────────────────────────
+  billing_heading?:            string | null
+  billing_subheading?:         string | null
+  billing_current_plan_label?: string | null
+  billing_active_badge?:       string | null
+  billing_cancelling_badge?:   string | null
+  billing_free_badge?:         string | null
+  billing_manage_label?:       string | null
+  billing_cancel_label?:       string | null
+  billing_reactivate_label?:   string | null
+  billing_upgrade_label?:      string | null
+  billing_cancelling_note?:    string | null
+  billing_usage_heading?:      string | null
+  billing_posts_label?:        string | null
+  billing_api_label?:          string | null
+  billing_storage_label?:      string | null
+  billing_seats_label?:        string | null
+  billing_plans_heading?:      string | null
+  billing_free_name?:          string | null
+  billing_free_tagline?:       string | null
+  billing_free_price?:         string | null
+  billing_pro_name?:           string | null
+  billing_pro_tagline?:        string | null
+  billing_pro_badge?:          string | null
+  billing_upgrade_cta?:        string | null
+  billing_downgrade_cta?:      string | null
+  billing_current_plan_btn?:   string | null
+  billing_stripe_note?:        string | null
+  billing_webhook_note?:       string | null
+
+  // ── Billing success ───────────────────────────────────────────────────────
+  billing_success_heading?:         string | null
+  billing_success_subheading?:      string | null
+  billing_success_body?:            string | null
+  billing_success_primary_label?:   string | null
+  billing_success_primary_href?:    string | null
+  billing_success_secondary_label?: string | null
+  billing_success_secondary_href?:  string | null
+
+  // ── Settings ──────────────────────────────────────────────────────────────
+  settings_heading?:              string | null
+  settings_subheading?:           string | null
+  settings_upload_photo_label?:   string | null
+  settings_display_name_label?:   string | null
+  settings_email_label?:          string | null
+  settings_email_helper?:         string | null
+  settings_bio_label?:            string | null
+  settings_bio_placeholder?:      string | null
+  settings_website_label?:        string | null
+  settings_website_placeholder?:  string | null
+  settings_website_error?:        string | null
+  settings_save_label?:           string | null
+  settings_discard_label?:        string | null
+  settings_danger_heading?:       string | null
+  settings_danger_body?:          string | null
+  settings_danger_warning?:       string | null
+  settings_delete_label?:         string | null
+
+  // ── Admin ─────────────────────────────────────────────────────────────────
+  admin_heading?:                   string | null
+  admin_subheading?:                string | null
+  admin_total_users_label?:         string | null
+  admin_pro_label?:                 string | null
+  admin_free_label?:                string | null
+  admin_col_user?:                  string | null
+  admin_col_plan?:                  string | null
+  admin_col_role?:                  string | null
+  admin_col_joined?:                string | null
+  admin_empty_label?:               string | null
+  admin_invite_heading?:            string | null
+  admin_invite_form_title?:         string | null
+  admin_invite_email_label?:        string | null
+  admin_invite_email_placeholder?:  string | null
+  admin_invite_message_label?:      string | null
+  admin_invite_send_label?:         string | null
+
+  // ── Analytics ─────────────────────────────────────────────────────────────
+  analytics_heading?:        string | null
+  analytics_subheading?:     string | null
+  analytics_events_label?:   string | null
+  analytics_users_label?:    string | null
+  analytics_empty_title?:    string | null
+  analytics_empty_body?:     string | null
+  analytics_refresh_label?:  string | null
+  analytics_prev_label?:     string | null
+  analytics_next_label?:     string | null
 }
 
-/**
- * Row returned by Directus `pages` collection (with optional nested translations).
- *
- * Non-translatable fields live here; translatable fields moved to pages_translations.
- * Legacy root-level copies kept for backward compat.
- */
+// ─── DirectusPage ─────────────────────────────────────────────────────────────
+
 export type DirectusPageRow = {
   id:       string
   slug:     string
@@ -268,9 +391,8 @@ export type DirectusPageRow = {
   access:   'guest' | 'user' | 'admin'
   layout:   'home' | 'dashboard' | 'auth'
   og_image: string | null
-  // Nested translations (populated when fields=['*','translations.*'])
   translations?: DirectusPageTranslationRow[]
-  // Legacy root-level fields (hidden in UI; kept for backward compat)
+  // Legacy
   title?:           string
   language?:        string
   sections?:        CmsSection[] | null
@@ -279,7 +401,9 @@ export type DirectusPageRow = {
 }
 
 /**
- * Normalised page shape consumed by page routes and SectionRenderer.
+ * Normalised page shape — now carries the full translation row alongside
+ * the merged sections, so section components can read individual fields
+ * directly and add granular data-directus bindings.
  */
 export type DirectusPage = {
   _id:                   string
@@ -293,14 +417,11 @@ export type DirectusPage = {
   seoTitle?:             string
   seoDescription?:       string
   ogImage?:              string
-  /** ID of the matched pages_translations row — used for visual editing data-directus attrs. */
   resolvedTranslationId?: number
+  /** Full translation row — available to section components for field-level visual editing bindings */
+  translationRow?:        DirectusPageTranslationRow
 }
 
-/**
- * Merge a page parent row with its nested translations, preferring `preferLang`
- * then falling back to 'en', then to root-level legacy fields.
- */
 export function mergePage(row: DirectusPageRow, preferLang = 'en'): DirectusPage {
   const tr = resolveTranslation(row.translations ?? [], preferLang)
 
@@ -317,15 +438,14 @@ export function mergePage(row: DirectusPageRow, preferLang = 'en'): DirectusPage
     seoDescription:        tr?.seo_description ?? row.seo_description  ?? undefined,
     ogImage:               row.og_image        ?? undefined,
     resolvedTranslationId: tr?.id,
+    translationRow:        tr ?? undefined,
   }
 }
 
-/** Backward-compat alias — picks English translation. */
 export function toPage(row: DirectusPageRow): DirectusPage {
   return mergePage(row, 'en')
 }
 
-/** Lightweight nav page stub for Navbar generation. */
 export type DirectusNavPage = {
   _id:    string
   title:  string
@@ -336,17 +456,48 @@ export type DirectusNavPage = {
 
 // ─── Site config ──────────────────────────────────────────────────────────────
 
-/** Row returned by Directus `site_config` singleton (id = 'site-config'). */
+/** Full field-based site_config row. */
 export type DirectusSiteConfigRow = {
   id:                string
   site_name:         string
-  navbar_config:     SiteNavbarConfig | null
-  footer_config:     SiteFooterConfig | null
-  sidebar_config:    SiteSidebarConfig | null
-  mobile_nav_config: SiteMobileNavConfig | null
+  // Legacy JSON fields (hidden in UI, kept for backward compat)
+  navbar_config?:     SiteNavbarConfig | null
+  footer_config?:     SiteFooterConfig | null
+  sidebar_config?:    SiteSidebarConfig | null
+  mobile_nav_config?: SiteMobileNavConfig | null
+
+  // ── Navbar flat fields ────────────────────────────────────────────────────
+  navbar_brand_name?:       string | null
+  navbar_cta_label_en?:     string | null
+  navbar_cta_label_hi?:     string | null
+  navbar_cta_label_kn?:     string | null
+  navbar_cta_href?:         string | null
+  navbar_login_label_en?:   string | null
+  navbar_login_label_hi?:   string | null
+  navbar_login_label_kn?:   string | null
+  navbar_signup_label_en?:  string | null
+  navbar_signup_label_hi?:  string | null
+  navbar_signup_label_kn?:  string | null
+  navbar_signout_label_en?: string | null
+  navbar_signout_label_hi?: string | null
+  navbar_signout_label_kn?: string | null
+
+  // ── Footer flat fields ────────────────────────────────────────────────────
+  footer_brand_name?:    string | null
+  footer_tagline_en?:    string | null
+  footer_tagline_hi?:    string | null
+  footer_tagline_kn?:    string | null
+  footer_copyright_en?:  string | null
+  footer_copyright_hi?:  string | null
+  footer_copyright_kn?:  string | null
+
+  // ── Sidebar flat fields ───────────────────────────────────────────────────
+  sidebar_brand_name?:     string | null
+  sidebar_brand_subtitle?: string | null
+  sidebar_status_text?:    string | null
+  sidebar_status_badge?:   string | null
 }
 
-/** Normalised site config consumed by Navbar, Footer, and Sidebar components. */
 export type DirectusSiteConfig = {
   _id:              string
   _type:            'siteConfig'
@@ -356,22 +507,116 @@ export type DirectusSiteConfig = {
   footerConfig?:    SiteFooterConfig
   sidebarConfig?:   SiteSidebarConfig
   mobileNavConfig?: SiteMobileNavConfig
+  // Flat fields for visual editing bindings
+  navbarBrandName?:      string
+  navbarCtaLabelEn?:     string
+  navbarCtaLabelHi?:     string
+  navbarCtaLabelKn?:     string
+  navbarCtaHref?:        string
+  navbarLoginLabelEn?:   string
+  navbarLoginLabelHi?:   string
+  navbarLoginLabelKn?:   string
+  navbarSignupLabelEn?:  string
+  navbarSignupLabelHi?:  string
+  navbarSignupLabelKn?:  string
+  navbarSignoutLabelEn?: string
+  navbarSignoutLabelHi?: string
+  navbarSignoutLabelKn?: string
+  footerBrandName?:      string
+  footerTaglineEn?:      string
+  footerTaglineHi?:      string
+  footerTaglineKn?:      string
+  footerCopyrightEn?:    string
+  footerCopyrightHi?:    string
+  footerCopyrightKn?:    string
+  sidebarBrandName?:     string
+  sidebarBrandSubtitle?: string
+  sidebarStatusText?:    string
+  sidebarStatusBadge?:   string
 }
 
 export function toSiteConfig(row: DirectusSiteConfigRow): DirectusSiteConfig {
+  // Build navbarConfig — prefer flat fields, fall back to legacy JSON
+  const legacyNavbar = row.navbar_config ?? undefined
+  const navbarConfig: SiteNavbarConfig = {
+    ...legacyNavbar,
+    brandName: row.navbar_brand_name ?? legacyNavbar?.brandName,
+    ctaButton: {
+      label: {
+        en: row.navbar_cta_label_en ?? (typeof legacyNavbar?.ctaButton?.label === 'object' ? (legacyNavbar.ctaButton.label as Record<string,string>).en : legacyNavbar?.ctaButton?.label as string) ?? 'Get Started',
+        hi: row.navbar_cta_label_hi ?? (typeof legacyNavbar?.ctaButton?.label === 'object' ? (legacyNavbar.ctaButton.label as Record<string,string>).hi : undefined) ?? undefined,
+        kn: row.navbar_cta_label_kn ?? (typeof legacyNavbar?.ctaButton?.label === 'object' ? (legacyNavbar.ctaButton.label as Record<string,string>).kn : undefined) ?? undefined,
+      },
+      href: row.navbar_cta_href ?? legacyNavbar?.ctaButton?.href,
+    },
+    loginLabel:   { en: row.navbar_login_label_en   ?? 'Login',    hi: row.navbar_login_label_hi   ?? undefined, kn: row.navbar_login_label_kn   ?? undefined },
+    signupLabel:  { en: row.navbar_signup_label_en  ?? 'Sign up',  hi: row.navbar_signup_label_hi  ?? undefined, kn: row.navbar_signup_label_kn  ?? undefined },
+    signoutLabel: { en: row.navbar_signout_label_en ?? 'Sign out', hi: row.navbar_signout_label_hi ?? undefined, kn: row.navbar_signout_label_kn ?? undefined },
+  }
+
+  const legacyFooter = row.footer_config ?? undefined
+  const footerConfig: SiteFooterConfig = {
+    ...legacyFooter,
+    brandName: row.footer_brand_name ?? legacyFooter?.brandName,
+    tagline: {
+      en: row.footer_tagline_en ?? (typeof legacyFooter?.tagline === 'string' ? legacyFooter.tagline : (legacyFooter?.tagline as Record<string,string>)?.en) ?? '',
+      hi: row.footer_tagline_hi ?? (typeof legacyFooter?.tagline === 'object' ? (legacyFooter.tagline as Record<string,string>)?.hi : undefined) ?? undefined,
+      kn: row.footer_tagline_kn ?? (typeof legacyFooter?.tagline === 'object' ? (legacyFooter.tagline as Record<string,string>)?.kn : undefined) ?? undefined,
+    },
+    copyright: {
+      en: row.footer_copyright_en ?? (typeof legacyFooter?.copyright === 'string' ? legacyFooter.copyright : (legacyFooter?.copyright as Record<string,string>)?.en) ?? '',
+      hi: row.footer_copyright_hi ?? (typeof legacyFooter?.copyright === 'object' ? (legacyFooter.copyright as Record<string,string>)?.hi : undefined) ?? undefined,
+      kn: row.footer_copyright_kn ?? (typeof legacyFooter?.copyright === 'object' ? (legacyFooter.copyright as Record<string,string>)?.kn : undefined) ?? undefined,
+    },
+  }
+
+  const legacySidebar = row.sidebar_config ?? undefined
+  const sidebarConfig: SiteSidebarConfig = {
+    ...legacySidebar,
+    brandName:     row.sidebar_brand_name     ?? legacySidebar?.brandName,
+    brandSubtitle: row.sidebar_brand_subtitle ?? legacySidebar?.brandSubtitle,
+    statusText:    row.sidebar_status_text    ?? legacySidebar?.statusText,
+    statusBadge:   row.sidebar_status_badge   ?? legacySidebar?.statusBadge,
+  }
+
   return {
     _id:             row.id,
     _type:           'siteConfig',
     title:           row.site_name,
     siteName:        row.site_name,
-    navbarConfig:    row.navbar_config    ?? undefined,
-    footerConfig:    row.footer_config    ?? undefined,
-    sidebarConfig:   row.sidebar_config   ?? undefined,
+    navbarConfig,
+    footerConfig,
+    sidebarConfig,
     mobileNavConfig: row.mobile_nav_config ?? undefined,
+    // Flat fields passed through for visual editing bindings in components
+    navbarBrandName:      row.navbar_brand_name      ?? undefined,
+    navbarCtaLabelEn:     row.navbar_cta_label_en    ?? undefined,
+    navbarCtaLabelHi:     row.navbar_cta_label_hi    ?? undefined,
+    navbarCtaLabelKn:     row.navbar_cta_label_kn    ?? undefined,
+    navbarCtaHref:        row.navbar_cta_href         ?? undefined,
+    navbarLoginLabelEn:   row.navbar_login_label_en   ?? undefined,
+    navbarLoginLabelHi:   row.navbar_login_label_hi   ?? undefined,
+    navbarLoginLabelKn:   row.navbar_login_label_kn   ?? undefined,
+    navbarSignupLabelEn:  row.navbar_signup_label_en  ?? undefined,
+    navbarSignupLabelHi:  row.navbar_signup_label_hi  ?? undefined,
+    navbarSignupLabelKn:  row.navbar_signup_label_kn  ?? undefined,
+    navbarSignoutLabelEn: row.navbar_signout_label_en ?? undefined,
+    navbarSignoutLabelHi: row.navbar_signout_label_hi ?? undefined,
+    navbarSignoutLabelKn: row.navbar_signout_label_kn ?? undefined,
+    footerBrandName:      row.footer_brand_name       ?? undefined,
+    footerTaglineEn:      row.footer_tagline_en        ?? undefined,
+    footerTaglineHi:      row.footer_tagline_hi        ?? undefined,
+    footerTaglineKn:      row.footer_tagline_kn        ?? undefined,
+    footerCopyrightEn:    row.footer_copyright_en      ?? undefined,
+    footerCopyrightHi:    row.footer_copyright_hi      ?? undefined,
+    footerCopyrightKn:    row.footer_copyright_kn      ?? undefined,
+    sidebarBrandName:     row.sidebar_brand_name        ?? undefined,
+    sidebarBrandSubtitle: row.sidebar_brand_subtitle    ?? undefined,
+    sidebarStatusText:    row.sidebar_status_text        ?? undefined,
+    sidebarStatusBadge:   row.sidebar_status_badge       ?? undefined,
   }
 }
 
-// ─── Directus SDK schema (used for client generic) ────────────────────────────
 export type DirectusSchema = {
   posts:               DirectusPostRow[]
   posts_translations:  DirectusPostTranslationRow[]

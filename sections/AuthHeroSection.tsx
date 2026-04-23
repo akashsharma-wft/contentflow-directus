@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import type { AuthHeroSection as AuthHeroSectionType } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 // Map CMS icon field values → Lucide components.
 // Only icons actually used by auth hero features need to be here.
@@ -22,6 +23,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 interface Props {
   section: AuthHeroSectionType
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function AuthHeroSection({ section }: Props) {

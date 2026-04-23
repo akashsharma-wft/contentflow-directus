@@ -12,9 +12,12 @@ import { createClient } from '@/lib/supabase/client'
 import { DeleteAccountDialog } from '@/features/settings/components/DeleteAccountDialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SectionSettingsDangerContent } from '@/types/cms'
+import type { DirectusPageTranslationRow } from '@/types/directus'
 
 interface Props {
   content: SectionSettingsDangerContent
+  translationId?:  number
+  translationRow?: DirectusPageTranslationRow
 }
 
 export function SettingsDangerSection({ content }: Props) {
