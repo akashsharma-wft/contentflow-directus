@@ -2,7 +2,7 @@
 //
 // Preview redirect for the parent `pages` collection.
 // Directus calls this when an editor clicks "Preview" on a page item.
-// {{id}} here is the page UUID (e.g. 6f7e709d-ab77-408c-8f93-ea99813b7437).
+// {{id}} here is the page UUID.
 //
 // Paste into Directus → Settings → Data Model → pages → Preview URL:
 //   {{NEXT_PUBLIC_SITE_URL}}/api/directus-preview/page/{{id}}
@@ -34,14 +34,18 @@ export async function GET(
       return NextResponse.json({ error: 'Page not found' }, { status: 404 })
     }
 
-    // Default to English preview — slug 'home' lives at /
     const path = slug === 'home' ? '/' : `/${slug}`
 
     const siteUrl = (
       process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
     ).replace(/\/$/, '')
 
-    return NextResponse.redirect(`${siteUrl}${path}?visual-editing=true`)
+    const previewSecret = process.env.DIRECTUS_PREVIEW_SECRET ?? ''
+    const url = new URL(`${siteUrl}${path}`)
+    url.searchParams.set('visual-editing', 'true')
+    if (previewSecret) url.searchParams.set('preview_token', previewSecret)
+
+    return NextResponse.redirect(url.toString())
   } catch {
     return NextResponse.json({ error: 'Page not found' }, { status: 404 })
   }

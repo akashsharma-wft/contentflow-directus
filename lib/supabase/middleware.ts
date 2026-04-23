@@ -18,9 +18,19 @@ const ADMIN_PATHS = ['/admin', '/analytics']
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
-  // When inside Directus preview iframe, cookies must be SameSite=None;Secure
-  // so the browser sends them in the cross-origin iframe context.
-  const isPreview = request.nextUrl.searchParams.get('visual-editing') === 'true'
+  const searchParams = request.nextUrl.searchParams
+  const isVisualEditing = searchParams.get('visual-editing') === 'true'
+  const previewToken    = searchParams.get('preview_token') ?? ''
+  const validSecret     = process.env.DIRECTUS_PREVIEW_SECRET ?? ''
+
+  // A request is a valid Directus preview if:
+  //  - ?visual-editing=true is present AND
+  //  - ?preview_token matches DIRECTUS_PREVIEW_SECRET (set in Vercel env)
+  // This lets the iframe bypass auth without relying on cross-origin cookies.
+  const isPreview =
+    isVisualEditing &&
+    validSecret.length > 0 &&
+    previewToken === validSecret
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -47,8 +57,8 @@ export async function updateSession(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   const { pathname } = request.nextUrl
 
-  // Don't redirect to login when in visual editing preview — let the page render
-  // as guest rather than breaking the iframe with a redirect loop.
+  // In preview mode: skip all auth redirects so the iframe can render
+  // protected pages without being logged in.
   if (!isPreview) {
     if (user && isAuthPagePath(pathname)) {
       const url = request.nextUrl.clone()

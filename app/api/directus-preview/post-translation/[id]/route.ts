@@ -5,7 +5,7 @@
 // Directus calls this URL when an editor clicks "Preview" in the
 // posts_translations collection. The route reads the translation row,
 // looks up the parent post slug, then redirects to the correct
-// localised frontend URL with ?visual-editing=true appended.
+// localised frontend URL with ?visual-editing=true and ?preview_token appended.
 //
 // Preview URL to paste into Directus (posts_translations collection):
 //   {{NEXT_PUBLIC_SITE_URL}}/api/directus-preview/post-translation/{{id}}
@@ -27,12 +27,10 @@ export async function GET(
   }
 
   try {
-    // 1. Fetch the translation row
     const tr = (await directusAdminClient.request(
       readItem('posts_translations' as keyof DirectusSchema, numId),
     )) as unknown as DirectusPostTranslationRow
 
-    // 2. Fetch the parent post slug
     const posts = (await directusAdminClient.request(
       readItems('posts' as keyof DirectusSchema, {
         filter: { id: { _eq: tr.posts_id } } as never,
@@ -46,8 +44,6 @@ export async function GET(
       return NextResponse.json({ error: 'Parent post not found' }, { status: 404 })
     }
 
-    // 3. Build the localised frontend path
-    // Posts live at /[slug] (English) or /[lang]/[slug] (hi/kn)
     const lang = tr.languages_code
     const path = lang === 'en' ? `/${slug}` : `/${lang}/${slug}`
 
@@ -55,7 +51,12 @@ export async function GET(
       process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
     ).replace(/\/$/, '')
 
-    return NextResponse.redirect(`${siteUrl}${path}?visual-editing=true`)
+    const previewSecret = process.env.DIRECTUS_PREVIEW_SECRET ?? ''
+    const url = new URL(`${siteUrl}${path}`)
+    url.searchParams.set('visual-editing', 'true')
+    if (previewSecret) url.searchParams.set('preview_token', previewSecret)
+
+    return NextResponse.redirect(url.toString())
   } catch {
     return NextResponse.json({ error: 'Translation not found' }, { status: 404 })
   }

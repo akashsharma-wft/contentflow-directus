@@ -34,14 +34,18 @@ export async function GET(
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
     }
 
-    // Posts live at /[slug] in English
     const path = `/${slug}`
 
     const siteUrl = (
       process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
     ).replace(/\/$/, '')
 
-    return NextResponse.redirect(`${siteUrl}${path}?visual-editing=true`)
+    const previewSecret = process.env.DIRECTUS_PREVIEW_SECRET ?? ''
+    const url = new URL(`${siteUrl}${path}`)
+    url.searchParams.set('visual-editing', 'true')
+    if (previewSecret) url.searchParams.set('preview_token', previewSecret)
+
+    return NextResponse.redirect(url.toString())
   } catch {
     return NextResponse.json({ error: 'Post not found' }, { status: 404 })
   }
