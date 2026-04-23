@@ -1,9 +1,3 @@
-// sections/BillingCurrentPlanSection.tsx
-//
-// Client component — renders the current plan card for /billing.
-// Receives CMS labels from the `billingCurrentPlan` CMS section config
-// and manages its own profile query + upgrade/manage handlers.
-
 'use client'
 
 import { useState } from 'react'
@@ -17,6 +11,7 @@ import { toast } from 'sonner'
 import { usePostHog } from 'posthog-js/react'
 import type { SectionBillingCurrentPlanContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!
 
@@ -26,7 +21,7 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function BillingCurrentPlanSection({ content }: Props) {
+export function BillingCurrentPlanSection({ content, translationId, translationRow }: Props) {
   const router = useRouter()
   const posthog = usePostHog()
   const { user } = useUser()
@@ -76,27 +71,42 @@ export function BillingCurrentPlanSection({ content }: Props) {
     }
   }
 
+  // Resolve labels: translationRow fields take priority, fall back to content blob, then hardcoded default
+  const currentPlanLabel      = translationRow?.billing_current_plan_label   ?? content.currentPlanLabel
+  const manageLabel           = translationRow?.billing_manage_label          ?? content.manageLabel
+  const cancelLabel           = translationRow?.billing_cancel_label          ?? content.cancelLabel
+  const reactivateLabel       = translationRow?.billing_reactivate_label      ?? content.reactivateLabel
+  const upgradeLabel          = translationRow?.billing_upgrade_label         ?? content.upgradeLabel
+  const activeBadgeLabel      = translationRow?.billing_active_badge          ?? content.activeBadgeLabel
+  const cancellingBadgeLabel  = translationRow?.billing_cancelling_badge      ?? content.cancellingBadgeLabel
+  const freeTierBadgeLabel    = translationRow?.billing_free_badge            ?? content.freeTierBadgeLabel
+  const cancellingNote        = translationRow?.billing_cancelling_note       ?? content.cancellingNote
+
   if (isLoading) {
     return <div className="mb-5"><Skeleton className="h-24 w-full rounded-2xl bg-white/5" /></div>
   }
 
   return (
-    <div className="mb-5">
+    <div
+      className="mb-5"
+      // Wrap the whole card so hovering shows the binding overlay for the plan labels
+      data-directus={pageAttr(translationId, 'billing_current_plan_label')}
+    >
       <CurrentPlanCard
         tier={currentTier}
         isCancelling={isCancelling}
         cancelAt={cancelAt}
         onUpgrade={handleUpgrade}
         isLoading={isCheckoutLoading}
-        currentPlanLabel={content.currentPlanLabel}
-        manageLabel={content.manageLabel}
-        cancelLabel={content.cancelLabel}
-        reactivateLabel={content.reactivateLabel}
-        upgradeLabel={content.upgradeLabel}
-        activeBadgeLabel={content.activeBadgeLabel}
-        cancellingBadgeLabel={content.cancellingBadgeLabel}
-        freeTierBadgeLabel={content.freeTierBadgeLabel}
-        cancellingNote={content.cancellingNote}
+        currentPlanLabel={currentPlanLabel}
+        manageLabel={manageLabel}
+        cancelLabel={cancelLabel}
+        reactivateLabel={reactivateLabel}
+        upgradeLabel={upgradeLabel}
+        activeBadgeLabel={activeBadgeLabel}
+        cancellingBadgeLabel={cancellingBadgeLabel}
+        freeTierBadgeLabel={freeTierBadgeLabel}
+        cancellingNote={cancellingNote}
       />
     </div>
   )

@@ -896,6 +896,9 @@ export type SectionBillingPlansGridContent = {
   proPlanBadge?:           string
   proPlanFeatures?:        string[]
   upgradeLabel?:           string
+  upgradeCta?:             string
+  downgradeCta?:           string
+  currentPlanBtn?:         string
   downgradeLabel?:         string
   downgradeScheduledLabel?: string
   currentPlanButtonLabel?: string

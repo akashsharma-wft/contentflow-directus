@@ -1,8 +1,3 @@
-// sections/BillingUsageSection.tsx
-//
-// Client component — renders the usage metrics card for /billing.
-// Receives CMS labels from the `billingUsage` CMS section config.
-
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
@@ -12,6 +7,7 @@ import { UsageCard } from '@/features/billing/components/UsageCard'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SectionBillingUsageContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 interface Props {
   content: SectionBillingUsageContent
@@ -19,7 +15,7 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function BillingUsageSection({ content }: Props) {
+export function BillingUsageSection({ content, translationId, translationRow }: Props) {
   const { user } = useUser()
   const supabase = createClient()
 
@@ -55,11 +51,17 @@ export function BillingUsageSection({ content }: Props) {
 
   const isPro = (profile?.subscription_tier as string) === 'pro'
 
+  const postsUsageLabel   = translationRow?.billing_posts_label    ?? content.postsUsageLabel   ?? 'Posts Published'
+  const apiUsageLabel     = translationRow?.billing_api_label      ?? content.apiUsageLabel     ?? 'API Requests'
+  const storageUsageLabel = translationRow?.billing_storage_label  ?? content.storageUsageLabel ?? 'Storage Utilization'
+  const seatsUsageLabel   = translationRow?.billing_seats_label    ?? content.seatsUsageLabel   ?? 'Team Seats'
+  const usageHeading      = translationRow?.billing_usage_heading  ?? content.usageHeading
+
   const usageItems = [
-    { label: content.postsUsageLabel    ?? 'Posts Published',       current: postStats?.published ?? 0, max: isPro ? 999999 : 5 },
-    { label: content.apiUsageLabel      ?? 'API Requests',          current: 0, max: isPro ? 10000 : 1000 },
-    { label: content.storageUsageLabel  ?? 'Storage Utilization',   current: 0, max: isPro ? 5 : 1, unit: 'GB' as const },
-    { label: content.seatsUsageLabel    ?? 'Team Seats',            current: 1, max: isPro ? 5 : 1 },
+    { label: postsUsageLabel,   current: postStats?.published ?? 0, max: isPro ? 999999 : 5 },
+    { label: apiUsageLabel,     current: 0, max: isPro ? 10000 : 1000 },
+    { label: storageUsageLabel, current: 0, max: isPro ? 5 : 1, unit: 'GB' as const },
+    { label: seatsUsageLabel,   current: 1, max: isPro ? 5 : 1 },
   ]
 
   if (isLoading) {
@@ -67,10 +69,13 @@ export function BillingUsageSection({ content }: Props) {
   }
 
   return (
-    <div className="mb-5">
+    <div
+      className="mb-5"
+      data-directus={pageAttr(translationId, 'billing_usage_heading')}
+    >
       <UsageCard
         items={usageItems}
-        heading={content.usageHeading}
+        heading={usageHeading}
       />
     </div>
   )

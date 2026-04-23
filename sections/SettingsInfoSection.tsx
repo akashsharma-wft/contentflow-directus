@@ -1,10 +1,3 @@
-// sections/SettingsInfoSection.tsx
-//
-// Client component — renders the profile avatar / photo card for /settings.
-// ProfileAvatar auto-saves avatar_url directly to Supabase, so it is fully
-// detached from the profile form below it.
-// Receives CMS labels from the `settingsInfo` CMS section config.
-
 'use client'
 
 import { useQuery, useQueryClient } from '@tanstack/react-query'
@@ -14,6 +7,7 @@ import { ProfileAvatar } from '@/features/settings/components/ProfileAvatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SectionSettingsInfoContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 interface Props {
   content: SectionSettingsInfoContent
@@ -21,7 +15,7 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function SettingsInfoSection({ content }: Props) {
+export function SettingsInfoSection({ content, translationId, translationRow }: Props) {
   const { user, isLoading: isAuthLoading } = useUser()
   const queryClient = useQueryClient()
   const supabase = createClient()
@@ -35,18 +29,22 @@ export function SettingsInfoSection({ content }: Props) {
         .eq('id', user!.id)
         .single()
       if (error) throw error
-      console.log('[SettingsInfoSection] query fetched:', data)
       return data
     },
     enabled: !!user?.id,
   })
+
+  const uploadLabel = translationRow?.settings_upload_photo_label ?? content.uploadPhotoLabel
 
   if (isAuthLoading || isLoading) {
     return <div className="mb-5"><Skeleton className="h-24 w-full rounded-2xl bg-white/5" /></div>
   }
 
   return (
-    <div className="mb-5">
+    <div
+      className="mb-5"
+      data-directus={pageAttr(translationId, 'settings_upload_photo_label')}
+    >
       <ProfileAvatar
         avatarUrl={profile?.avatar_url ?? null}
         displayName={profile?.display_name ?? null}
@@ -58,7 +56,7 @@ export function SettingsInfoSection({ content }: Props) {
             queryClient.invalidateQueries({ queryKey: ['profile', user?.id] })
           }
         }}
-        uploadLabel={content.uploadPhotoLabel}
+        uploadLabel={uploadLabel}
       />
     </div>
   )

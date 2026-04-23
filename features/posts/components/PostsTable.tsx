@@ -58,6 +58,12 @@ interface PostsTableProps {
   deleteDialogBody?: string
   deleteDialogConfirmLabel?: string
   deleteDialogCancelLabel?: string
+  colTitleAttr?: string
+  colStatusAttr?: string
+  colImageAttr?: string
+  colTagsAttr?: string
+  colLastModifiedAttr?: string
+  loadMoreAttr?: string
 }
 
 const STATUS_STYLES = {

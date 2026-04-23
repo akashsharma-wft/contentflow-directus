@@ -1,13 +1,9 @@
 // sections/BillingSuccessActionsSection.tsx
-//
-// Server component — renders the CTA buttons for /billing-success.
-// Primary and secondary button labels and hrefs are fully configurable
-// from the `billingSuccessActions` CMS section config.
-
 import Link from 'next/link'
 import { ArrowRight, CreditCard } from 'lucide-react'
 import type { SectionBillingSuccessActionsContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 interface Props {
   content: SectionBillingSuccessActionsContent
@@ -15,16 +11,17 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function BillingSuccessActionsSection({ content }: Props) {
-  const primaryLabel   = content.primaryLabel   ?? 'Go to Posts'
-  const primaryHref    = content.primaryHref    ?? '/posts'
-  const secondaryLabel = content.secondaryLabel ?? 'Manage Subscription'
-  const secondaryHref  = content.secondaryHref  ?? '/billing'
+export function BillingSuccessActionsSection({ content, translationId, translationRow }: Props) {
+  const primaryLabel   = translationRow?.billing_success_primary_label   ?? content.primaryLabel   ?? 'Go to Posts'
+  const primaryHref    = translationRow?.billing_success_primary_href    ?? content.primaryHref    ?? '/posts'
+  const secondaryLabel = translationRow?.billing_success_secondary_label ?? content.secondaryLabel ?? 'Manage Subscription'
+  const secondaryHref  = translationRow?.billing_success_secondary_href  ?? content.secondaryHref  ?? '/billing'
 
   return (
     <div className="flex items-center justify-center gap-3 flex-wrap pb-10 px-4">
       <Link
         href={primaryHref}
+        data-directus={pageAttr(translationId, 'billing_success_primary_label,billing_success_primary_href')}
         className="flex items-center gap-2 px-5 py-2.5 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold rounded-xl transition-colors"
       >
         {primaryLabel}
@@ -32,6 +29,7 @@ export function BillingSuccessActionsSection({ content }: Props) {
       </Link>
       <Link
         href={secondaryHref}
+        data-directus={pageAttr(translationId, 'billing_success_secondary_label,billing_success_secondary_href')}
         className="flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white text-sm font-semibold rounded-xl transition-colors"
       >
         <CreditCard size={15} />

@@ -1,8 +1,3 @@
-// sections/BillingPlansGridSection.tsx
-//
-// Client component — renders the plans comparison grid for /billing.
-// Receives CMS labels from the `billingPlansGrid` CMS section config.
-
 'use client'
 
 import { useState } from 'react'
@@ -16,6 +11,7 @@ import { toast } from 'sonner'
 import { usePostHog } from 'posthog-js/react'
 import type { SectionBillingPlansGridContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!
 
@@ -26,7 +22,7 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function BillingPlansGridSection({ content, lang = 'en' }: Props) {
+export function BillingPlansGridSection({ content, lang = 'en', translationId, translationRow }: Props) {
   const router = useRouter()
   const posthog = usePostHog()
   const { user } = useUser()
@@ -83,12 +79,32 @@ export function BillingPlansGridSection({ content, lang = 'en' }: Props) {
     }
   }
 
+  // Merge translationRow fields over content blob
+  const resolvedContent: SectionBillingPlansGridContent = {
+    ...content,
+    plansHeading:       translationRow?.billing_plans_heading   ?? content.plansHeading,
+    freePlanName:       translationRow?.billing_free_name       ?? content.freePlanName,
+    freePlanTagline:    translationRow?.billing_free_tagline    ?? content.freePlanTagline,
+    freePlanPrice:      translationRow?.billing_free_price      ?? content.freePlanPrice,
+    freePlanFeatures:   (translationRow?.billing_free_features  as string[] | undefined) ?? content.freePlanFeatures,
+    proPlanName:        translationRow?.billing_pro_name        ?? content.proPlanName,
+    proPlanTagline:     translationRow?.billing_pro_tagline     ?? content.proPlanTagline,
+    proPlanBadge:       translationRow?.billing_pro_badge       ?? content.proPlanBadge,
+    proPlanFeatures:    (translationRow?.billing_pro_features   as string[] | undefined) ?? content.proPlanFeatures,
+    upgradeCta:         translationRow?.billing_upgrade_cta     ?? content.upgradeCta,
+    downgradeCta:       translationRow?.billing_downgrade_cta   ?? content.downgradeCta,
+    currentPlanBtn:     translationRow?.billing_current_plan_btn ?? content.currentPlanBtn,
+  }
+
   if (isLoading) {
     return <div className="mb-5"><Skeleton className="h-64 w-full rounded-2xl bg-white/5" /></div>
   }
 
   return (
-    <div className="mb-5">
+    <div
+      className="mb-5"
+      data-directus={pageAttr(translationId, 'billing_plans_heading')}
+    >
       <PlansGrid
         currentTier={currentTier}
         proPriceId={PRO_PRICE_ID}
@@ -96,7 +112,7 @@ export function BillingPlansGridSection({ content, lang = 'en' }: Props) {
         onDowngrade={handleDowngrade}
         isLoading={isCheckoutLoading}
         isCancelling={isCancelling}
-        config={content}
+        config={resolvedContent}
       />
     </div>
   )

@@ -23,8 +23,30 @@ function adminDb() {
   )
 }
 
-export async function AdminSection({ content = {} }: Props) {
+export async function AdminSection({ content = {}, translationRow }: Props) {
   const users = await getAllUsers()
+
+  // Merge translationRow fields over the content blob so child components
+  // get the CMS-driven strings without knowing about translationRow directly.
+  const resolvedContent: SectionAdminContent = {
+    ...content,
+    heading:                translationRow?.admin_heading                  ?? content.heading,
+    subheading:             translationRow?.admin_subheading               ?? content.subheading,
+    totalUsersLabel:        translationRow?.admin_total_users_label        ?? content.totalUsersLabel,
+    proLabel:               translationRow?.admin_pro_label                ?? content.proLabel,
+    freeLabel:              translationRow?.admin_free_label               ?? content.freeLabel,
+    colUser:                translationRow?.admin_col_user                 ?? content.colUser,
+    colPlan:                translationRow?.admin_col_plan                 ?? content.colPlan,
+    colRole:                translationRow?.admin_col_role                 ?? content.colRole,
+    colJoined:              translationRow?.admin_col_joined               ?? content.colJoined,
+    emptyLabel:             translationRow?.admin_empty_label              ?? content.emptyLabel,
+    inviteSectionHeading:   translationRow?.admin_invite_heading          ?? content.inviteSectionHeading,
+    inviteFormTitle:        translationRow?.admin_invite_form_title       ?? content.inviteFormTitle,
+    inviteEmailLabel:       translationRow?.admin_invite_email_label      ?? content.inviteEmailLabel,
+    inviteEmailPlaceholder: translationRow?.admin_invite_email_placeholder ?? content.inviteEmailPlaceholder,
+    inviteMessageLabel:     translationRow?.admin_invite_message_label    ?? content.inviteMessageLabel,
+    inviteSendLabel:        translationRow?.admin_invite_send_label       ?? content.inviteSendLabel,
+  }
 
   return (
     <div className="space-y-8">
@@ -32,10 +54,10 @@ export async function AdminSection({ content = {} }: Props) {
       <DirectusCredentialsCard />
 
       {/* Users table */}
-      <AdminUsersTable users={users} config={content} />
+      <AdminUsersTable users={users} config={resolvedContent} />
 
       {/* Invite panel — only the invite form, no pending/requests sections */}
-      <AdminInvitePanel config={content} />
+      <AdminInvitePanel config={resolvedContent} />
     </div>
   )
 }

@@ -12,9 +12,17 @@ interface ServerFlags {
   showFeaturedBanner: boolean
 }
 
+interface AttrMap {
+  headingAttr?:    string
+  subheadingAttr?: string
+  emptyTitleAttr?: string
+  emptyBodyAttr?:  string
+}
+
 interface PostHogEventsClientProps {
   config: SectionAnalyticsContent
   serverFlags: ServerFlags
+  attrMap?: AttrMap
 }
 
 interface LiveEvent {
@@ -47,7 +55,7 @@ function getEventStyle(event: string) {
 
 function timeAgo(timestamp: string): string {
   const seconds = Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000)
-  if (seconds < 60)  return `${seconds}s ago`
+  if (seconds < 60)   return `${seconds}s ago`
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
   return `${Math.floor(seconds / 3600)}h ago`
 }
@@ -63,20 +71,20 @@ function formatProps(properties: Record<string, unknown>): string {
 const PAGE_SIZE     = 10
 const MAX_PAGE_BTNS = 5
 
-export function PostHogEventsClient({ config, serverFlags }: PostHogEventsClientProps) {
+export function PostHogEventsClient({ config, serverFlags, attrMap = {} }: PostHogEventsClientProps) {
   const posthog = usePostHog()
   const { user } = useUser()
-  const [events, setEvents] = useState<LiveEvent[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [configured, setConfigured] = useState(true)
-  const [apiError, setApiError] = useState<string | null>(null)
+  const [events, setEvents]                   = useState<LiveEvent[]>([])
+  const [isLoading, setIsLoading]             = useState(true)
+  const [configured, setConfigured]           = useState(true)
+  const [apiError, setApiError]               = useState<string | null>(null)
   const [featureFlagEnabled, setFeatureFlagEnabled] = useState(serverFlags.showFeaturedBanner)
-  const [stats, setStats] = useState({ eventsToday: 0, uniqueUsers: 0, avgSession: '—' })
-  const [sortMode, setSortMode] = useState<SortMode>('time')
-  const [customEvents, setCustomEvents] = useState<LiveEvent[]>([])
-  const [systemEvents, setSystemEvents] = useState<LiveEvent[]>([])
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const [page, setPage] = useState(1)
+  const [stats, setStats]                     = useState({ eventsToday: 0, uniqueUsers: 0, avgSession: '—' })
+  const [sortMode, setSortMode]               = useState<SortMode>('time')
+  const [customEvents, setCustomEvents]       = useState<LiveEvent[]>([])
+  const [systemEvents, setSystemEvents]       = useState<LiveEvent[]>([])
+  const [isRefreshing, setIsRefreshing]       = useState(false)
+  const [page, setPage]                       = useState(1)
 
   function applyData(data: Record<string, unknown>) {
     const isConfigured = data.configured !== false
@@ -135,15 +143,12 @@ export function PostHogEventsClient({ config, serverFlags }: PostHogEventsClient
     ? [...customEvents, ...systemEvents]
     : events
 
-  // Reset to page 1 whenever the event list or sort mode changes
-  // Use events.length (stable state) — not displayedEvents.length (derived, new ref every render)
   const resetPage = useCallback(() => setPage(1), [])
   useEffect(() => { resetPage() }, [sortMode, events.length, resetPage])
 
-  // Pagination calculations (same pattern as PostsTable)
-  const totalPages   = Math.max(1, Math.ceil(displayedEvents.length / PAGE_SIZE))
-  const safePage     = Math.min(page, totalPages)
-  const pageStart    = (safePage - 1) * PAGE_SIZE
+  const totalPages    = Math.max(1, Math.ceil(displayedEvents.length / PAGE_SIZE))
+  const safePage      = Math.min(page, totalPages)
+  const pageStart     = (safePage - 1) * PAGE_SIZE
   const visibleEvents = displayedEvents.slice(pageStart, pageStart + PAGE_SIZE)
 
   const halfWindow  = Math.floor(MAX_PAGE_BTNS / 2)
@@ -151,28 +156,32 @@ export function PostHogEventsClient({ config, serverFlags }: PostHogEventsClient
   const winEnd      = Math.min(totalPages, winStart + MAX_PAGE_BTNS - 1)
   const pageButtons = Array.from({ length: winEnd - winStart + 1 }, (_, i) => winStart + i)
 
-  // CMS pagination labels
   const showingLabel = config.showingLabel ?? 'Showing'
   const prevLabel    = config.prevLabel    ?? 'Prev'
   const nextLabel    = config.nextLabel    ?? 'Next'
 
-  // Compute eventsToday from the full events array (not the paginated slice)
-  const todayStr = new Date().toDateString()
+  const todayStr    = new Date().toDateString()
   const eventsToday = events.filter(e => new Date(e.timestamp).toDateString() === todayStr).length
 
   const statCards = [
-    { label: config.eventsLabel ?? 'Events Today', value: isLoading ? '—' : `${eventsToday}+` },
-    { label: config.usersLabel ?? 'Unique Users', value: isLoading ? '—' : stats.uniqueUsers.toString() },
+    { label: config.eventsLabel ?? 'Events Today',  value: isLoading ? '—' : `${eventsToday}+` },
+    { label: config.usersLabel  ?? 'Unique Users',  value: isLoading ? '—' : stats.uniqueUsers.toString() },
     { label: config.avgSessionLabel ?? 'Avg. Session', value: isLoading ? '—' : stats.avgSession },
   ]
 
   return (
     <div className="space-y-5 max-w-[900px]">
       <div>
-        <h1 className="text-white text-2xl font-bold tracking-tight">
+        <h1
+          {...(attrMap.headingAttr ? { 'data-directus': attrMap.headingAttr } : {})}
+          className="text-white text-2xl font-bold tracking-tight"
+        >
           {config.heading ?? 'PostHog Events'}
         </h1>
-        <p className="text-white/30 text-[10px] uppercase tracking-widest font-mono mt-1">
+        <p
+          {...(attrMap.subheadingAttr ? { 'data-directus': attrMap.subheadingAttr } : {})}
+          className="text-white/30 text-[10px] uppercase tracking-widest font-mono mt-1"
+        >
           {config.subheading ?? 'Real-time Telemetry / Production Pipeline'}
         </p>
       </div>
@@ -240,8 +249,16 @@ export function PostHogEventsClient({ config, serverFlags }: PostHogEventsClient
             <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
               <Activity size={18} className="text-white/20" />
             </div>
-            <p className="text-white/30 text-sm">{config.emptyTitle ?? 'No events yet'}</p>
-            <p className="text-white/20 text-xs max-w-xs text-center">
+            <p
+              {...(attrMap.emptyTitleAttr ? { 'data-directus': attrMap.emptyTitleAttr } : {})}
+              className="text-white/30 text-sm"
+            >
+              {config.emptyTitle ?? 'No events yet'}
+            </p>
+            <p
+              {...(attrMap.emptyBodyAttr ? { 'data-directus': attrMap.emptyBodyAttr } : {})}
+              className="text-white/20 text-xs max-w-xs text-center"
+            >
               {config.emptyBody ?? 'Events will appear here as users interact with your app.'}
             </p>
           </div>
@@ -280,7 +297,7 @@ export function PostHogEventsClient({ config, serverFlags }: PostHogEventsClient
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={safePage === 1}
                     className="p-1 rounded text-white/30 hover:text-white/70 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                    aria-label="Previous page"
+                    aria-label={prevLabel}
                   >
                     <ChevronLeft size={13} />
                   </button>
@@ -304,7 +321,7 @@ export function PostHogEventsClient({ config, serverFlags }: PostHogEventsClient
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                     disabled={safePage === totalPages}
                     className="p-1 rounded text-white/30 hover:text-white/70 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
-                    aria-label="Next page"
+                    aria-label={nextLabel}
                   >
                     <ChevronRight size={13} />
                   </button>
@@ -337,7 +354,7 @@ export function PostHogEventsClient({ config, serverFlags }: PostHogEventsClient
           >
             <span className={cn(
               'absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow-sm',
-              featureFlagEnabled ? 'left-6' : 'left-1'
+              featureFlagEnabled ? 'left-6' : 'left-1',
             )} />
           </div>
         </div>

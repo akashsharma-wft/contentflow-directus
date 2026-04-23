@@ -1,10 +1,4 @@
-﻿// sections/PostsSearchSection.tsx
-//
-// Client component — renders the search input for the posts table.
-// Writes to Zustand `postsSearchQuery` so PostsTableSection can read and filter.
-// Clears search on unmount to avoid stale state when navigating away.
-
-'use client'
+﻿'use client'
 
 import { useEffect } from 'react'
 import { Search } from 'lucide-react'
@@ -12,6 +6,7 @@ import { cn } from '@/lib/utils'
 import { useUIStore } from '@/stores/uiStore'
 import type { SectionPostsSearchContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 interface Props {
   content: SectionPostsSearchContent
@@ -19,20 +14,22 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function PostsSearchSection({ content }: Props) {
+export function PostsSearchSection({ content, translationId, translationRow }: Props) {
   const { postsSearchQuery, setPostsSearchQuery } = useUIStore()
 
-  // Clear search when component unmounts (navigating away)
   useEffect(() => {
     return () => setPostsSearchQuery('')
   }, [setPostsSearchQuery])
+
+  const placeholder = translationRow?.posts_search_placeholder ?? content.searchPlaceholder ?? 'Search posts...'
 
   return (
     <div className="relative mb-5">
       <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/25 pointer-events-none" />
       <input
         type="text"
-        placeholder={content.searchPlaceholder ?? 'Search posts...'}
+        placeholder={placeholder}
+        data-directus={pageAttr(translationId, 'posts_search_placeholder')}
         value={postsSearchQuery}
         onChange={(e) => setPostsSearchQuery(e.target.value)}
         className={cn(

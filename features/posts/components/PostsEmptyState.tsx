@@ -4,6 +4,9 @@ import { RefreshCw, FolderOpen } from 'lucide-react'
 interface PostsEmptyStateProps {
   title?: string
   body?: string
+  titleAttr?: string
+  bodyAttr?: string
+  ctaAttr?: string
   ctaLabel?: string
   onSync?: () => void
   isSyncing?: boolean
@@ -13,6 +16,9 @@ export function PostsEmptyState({
   title = 'No posts found',
   body = 'Try adjusting your search or refresh to populate your workspace.',
   ctaLabel = 'Refresh',
+  titleAttr,
+  bodyAttr,
+  ctaAttr,
   onSync,
   isSyncing = false,
 }: PostsEmptyStateProps) {
@@ -23,13 +29,24 @@ export function PostsEmptyState({
           <FolderOpen size={24} className="text-white/20" />
         </div>
         <div className="text-center space-y-1">
-          <p className="text-white/60 text-sm font-medium">{title}</p>
-          <p className="text-white/25 text-xs max-w-xs leading-relaxed">{body}</p>
+          <p
+            {...(titleAttr ? { 'data-directus': titleAttr } : {})}
+            className="text-white/60 text-sm font-medium"
+          >
+            {title}
+          </p>
+          <p
+            {...(bodyAttr ? { 'data-directus': bodyAttr } : {})}
+            className="text-white/25 text-xs max-w-xs leading-relaxed"
+          >
+            {body}
+          </p>
         </div>
         {onSync && (
           <button
             onClick={onSync}
             disabled={isSyncing}
+            {...(ctaAttr ? { 'data-directus': ctaAttr } : {})}
             className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/8 border border-white/10 text-white/50 hover:text-white text-sm rounded-lg transition-all cursor-pointer disabled:opacity-50"
           >
             <RefreshCw size={13} className={isSyncing ? 'animate-spin' : ''} />

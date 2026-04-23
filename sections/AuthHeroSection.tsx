@@ -1,12 +1,7 @@
 // sections/AuthHeroSection.tsx
 //
 // LEFT branding panel for login / signup pages.
-// Rendered as a sticky, full-height column on desktop (lg+).
-// Hidden on mobile — the AuthFormSection handles the mobile experience.
-//
-// With the auth layout wrapper being `min-h-screen bg-[#0d0e14] lg:flex lg:flex-wrap`,
-// this section occupies the left 45 % on desktop and is invisible on mobile.
-// AuthFormSection (right panel) takes flex-1 alongside it.
+// Now reads copy from translationRow with data-directus on every text element.
 
 import {
   Zap, LayoutGrid, GitBranch, Globe, Eye,
@@ -14,9 +9,8 @@ import {
 } from 'lucide-react'
 import type { AuthHeroSection as AuthHeroSectionType } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
-// Map CMS icon field values → Lucide components.
-// Only icons actually used by auth hero features need to be here.
 const ICON_MAP: Record<string, LucideIcon> = {
   Zap, LayoutGrid, GitBranch, Globe, Eye,
 }
@@ -27,15 +21,15 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function AuthHeroSection({ section }: Props) {
+export function AuthHeroSection({ section, translationId, translationRow }: Props) {
   if (!section) return null
 
-  const {
-    headline  = 'CMS-driven publishing for engineering teams.',
-    badge,
-    features  = [],
-    footerNote = 'Powered by Supabase Auth',
-  } = section
+  const tr = translationRow
+
+  const headline  = tr?.auth_hero_headline    ?? section.headline   ?? 'CMS-driven publishing for engineering teams.'
+  const badge     = tr?.auth_hero_badge       ?? section.badge
+  const footerNote = tr?.auth_hero_footer_note ?? section.footerNote ?? 'Powered by Supabase Auth'
+  const features  = section.features ?? []
 
   return (
     <div className="hidden lg:flex lg:w-[45%] flex-col justify-between p-12 border-r border-white/5 sticky top-0 h-screen bg-[#0d0e14]">
@@ -56,12 +50,18 @@ export function AuthHeroSection({ section }: Props) {
       {/* ── Hero content ──────────────────────────────────────────────────── */}
       <div className="space-y-10">
         {badge && (
-          <span className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
+          <span
+            data-directus={pageAttr(translationId, 'auth_hero_badge')}
+            className="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full"
+          >
             {badge}
           </span>
         )}
 
-        <h1 className="text-white text-5xl font-bold leading-tight tracking-tight">
+        <h1
+          data-directus={pageAttr(translationId, 'auth_hero_headline')}
+          className="text-white text-5xl font-bold leading-tight tracking-tight"
+        >
           {headline}
         </h1>
 
@@ -87,7 +87,10 @@ export function AuthHeroSection({ section }: Props) {
 
       {/* ── Footer note ───────────────────────────────────────────────────── */}
       <div className="flex items-center gap-2">
-        <span className="text-white/25 text-xs uppercase tracking-widest">
+        <span
+          data-directus={pageAttr(translationId, 'auth_hero_footer_note')}
+          className="text-white/25 text-xs uppercase tracking-widest"
+        >
           {footerNote}
         </span>
       </div>

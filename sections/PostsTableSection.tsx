@@ -1,17 +1,3 @@
-// sections/PostsTableSection.tsx
-//
-// Client component — fetches posts (language-filtered), reads search from Zustand,
-// and renders PostsTable with pagination and image column support.
-//
-// Query key: ['posts', 'all', lang]
-//   Owned exclusively by this section. PostsStatsSection uses ['posts', 'stats', lang].
-//   Both share the prefix ['posts'] so a single invalidateQueries({ queryKey: ['posts'] })
-//   hits both — used by Sync, create, edit, delete.
-//
-// Auth-loading guard: React Query v5 returns isLoading=false when enabled=false, so
-// we check authLoading separately to show the skeleton while Supabase resolves the
-// session rather than flashing the empty state before the fetch even starts.
-
 'use client'
 
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
@@ -24,6 +10,7 @@ import { PostsTableSkeleton } from '@/features/posts/components/PostsTableSkelet
 import { FeaturedBanner } from '@/features/posts/components/FeaturedBanner'
 import type { SectionPostsTableContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 interface Props {
   content: SectionPostsTableContent
@@ -46,16 +33,14 @@ export interface PostItem {
   language?: string
 }
 
-// Stable query key for this section. Exported so PostsTable can receive it as a prop.
 export function postsTableQueryKey(lang: string) {
   return ['posts', 'all', lang] as const
 }
 
-export function PostsTableSection({ content, lang = 'en' }: Props) {
+export function PostsTableSection({ content, lang = 'en', translationId, translationRow }: Props) {
   const { user, isLoading: authLoading } = useUser()
   const { postsSearchQuery } = useUIStore()
   const debouncedSearch = useDebounce(postsSearchQuery, 300)
-
   const queryKey = postsTableQueryKey(lang)
 
   const { data: allPosts, isLoading, isError, refetch } = useQuery<PostItem[]>({
@@ -85,15 +70,20 @@ export function PostsTableSection({ content, lang = 'en' }: Props) {
     : posts
 
   const featuredPosts = posts.filter((p) => p.featured)
-
-  // Show skeleton while auth is resolving (user not yet known) OR while first fetch runs.
-  // Without this guard, React Query v5 returns isLoading=false when enabled=false,
-  // which would immediately render the empty state before the session is even checked.
   const showSkeleton = authLoading || isLoading
+
+  // Resolve all label strings: translationRow > content blob > undefined (child uses its own default)
+  const colTitle     = translationRow?.posts_col_title   ?? content.colTitle
+  const colStatus    = translationRow?.posts_col_status  ?? content.colStatus
+  const colTags      = translationRow?.posts_col_tags    ?? content.colTags
+  const colLastMod   = translationRow?.posts_col_modified ?? content.colLastModified
+  const emptyTitle   = translationRow?.posts_empty_title ?? content.emptyTitle
+  const emptyBody    = translationRow?.posts_empty_body  ?? content.emptyBody
+  const emptyCtaLabel = translationRow?.posts_empty_cta  ?? content.emptyCtaLabel
+  const loadMoreLabel = translationRow?.posts_load_more  ?? content.loadMoreLabel
 
   return (
     <div>
-      {/* Featured banner — mb-4 provides consistent gap before the table */}
       {featuredPosts.length > 0 && (
         <div className="mb-4">
           <FeaturedBanner
@@ -114,23 +104,27 @@ export function PostsTableSection({ content, lang = 'en' }: Props) {
         </div>
       ) : filteredPosts.length === 0 ? (
         <PostsEmptyState
-          title={content.emptyTitle}
-          body={content.emptyBody}
-          ctaLabel={content.emptyCtaLabel}
+          title={emptyTitle}
+          body={emptyBody}
+          ctaLabel={emptyCtaLabel}
           onSync={() => refetch()}
+          // Bind empty state heading so editor can click it in visual editing
+          titleAttr={pageAttr(translationId, 'posts_empty_title')}
+          bodyAttr={pageAttr(translationId, 'posts_empty_body')}
+          ctaAttr={pageAttr(translationId, 'posts_empty_cta')}
         />
       ) : (
         <PostsTable
           posts={filteredPosts}
           lang={lang}
           queryKey={[...queryKey]}
-          colTitle={content.colTitle}
-          colStatus={content.colStatus}
+          colTitle={colTitle}
+          colStatus={colStatus}
           colImage={content.colImage}
-          colTags={content.colTags}
-          colLastModified={content.colLastModified}
+          colTags={colTags}
+          colLastModified={colLastMod}
           showingLabel={content.showingLabel}
-          loadMoreLabel={content.loadMoreLabel}
+          loadMoreLabel={loadMoreLabel}
           connectedLabel={content.connectedLabel}
           viewPostLabel={content.viewPostLabel}
           editPostLabel={content.editPostLabel}
@@ -139,6 +133,12 @@ export function PostsTableSection({ content, lang = 'en' }: Props) {
           deleteDialogBody={content.deleteDialogBody}
           deleteDialogConfirmLabel={content.deleteDialogConfirmLabel}
           deleteDialogCancelLabel={content.deleteDialogCancelLabel}
+          // Column header bindings so hovering them opens the exact field
+          colTitleAttr={pageAttr(translationId, 'posts_col_title')}
+          colStatusAttr={pageAttr(translationId, 'posts_col_status')}
+          colTagsAttr={pageAttr(translationId, 'posts_col_tags')}
+          colLastModifiedAttr={pageAttr(translationId, 'posts_col_modified')}
+          loadMoreAttr={pageAttr(translationId, 'posts_load_more')}
         />
       )}
     </div>

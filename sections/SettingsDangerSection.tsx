@@ -1,8 +1,3 @@
-// sections/SettingsDangerSection.tsx
-//
-// Client component — renders the danger zone card for /settings.
-// Receives CMS labels from the `settingsDanger` CMS section config.
-
 'use client'
 
 import { useState } from 'react'
@@ -13,6 +8,7 @@ import { DeleteAccountDialog } from '@/features/settings/components/DeleteAccoun
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SectionSettingsDangerContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 interface Props {
   content: SectionSettingsDangerContent
@@ -20,7 +16,7 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function SettingsDangerSection({ content }: Props) {
+export function SettingsDangerSection({ content, translationId, translationRow }: Props) {
   const { user, isLoading: isAuthLoading } = useUser()
   const supabase = createClient()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -34,6 +30,11 @@ export function SettingsDangerSection({ content }: Props) {
     },
     enabled: !!user?.id,
   })
+
+  const heading     = translationRow?.settings_danger_heading  ?? content.heading     ?? 'Danger Zone'
+  const body        = translationRow?.settings_danger_body     ?? content.body        ?? 'Permanently delete your account and all associated architectural data. This action cannot be undone.'
+  const warningText = translationRow?.settings_danger_warning  ?? content.warningText ?? 'Warning: All API keys will be invalidated.'
+  const deleteLabel = translationRow?.settings_delete_label    ?? content.deleteLabel  ?? 'Delete Account'
 
   if (isAuthLoading || isProfileLoading) {
     return (
@@ -49,21 +50,31 @@ export function SettingsDangerSection({ content }: Props) {
   return (
     <>
       <div className="bg-[#13141c] border border-red-500/20 rounded-2xl p-5 space-y-3">
-        <h3 className="text-red-400 text-sm font-semibold">
-          {content.heading ?? 'Danger Zone'}
+        <h3
+          data-directus={pageAttr(translationId, 'settings_danger_heading')}
+          className="text-red-400 text-sm font-semibold"
+        >
+          {heading}
         </h3>
-        <p className="text-white/35 text-xs leading-relaxed">
-          {content.body ?? 'Permanently delete your account and all associated architectural data. This action cannot be undone.'}
+        <p
+          data-directus={pageAttr(translationId, 'settings_danger_body')}
+          className="text-white/35 text-xs leading-relaxed"
+        >
+          {body}
         </p>
-        <p className="text-red-400/50 text-[10px] uppercase tracking-widest font-mono">
-          {content.warningText ?? 'Warning: All API keys will be invalidated.'}
+        <p
+          data-directus={pageAttr(translationId, 'settings_danger_warning')}
+          className="text-red-400/50 text-[10px] uppercase tracking-widest font-mono"
+        >
+          {warningText}
         </p>
         <button
           type="button"
           onClick={() => setDeleteDialogOpen(true)}
+          data-directus={pageAttr(translationId, 'settings_delete_label')}
           className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 hover:text-red-300 text-sm font-medium rounded-lg transition-all cursor-pointer"
         >
-          {content.deleteLabel ?? 'Delete Account'}
+          {deleteLabel}
         </button>
       </div>
 

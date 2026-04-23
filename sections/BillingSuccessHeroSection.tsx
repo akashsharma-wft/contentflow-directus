@@ -1,15 +1,11 @@
 // sections/BillingSuccessHeroSection.tsx
-//
-// Server component — renders the hero block for /billing-success.
-// Displays an icon badge, heading, subheading, and body text.
-// Content is fully configurable from the `billingSuccessHero` CMS section config.
-
 import {
   CheckCircle, Sparkles, Trophy, Crown, Star, Zap, Award, Flame,
 } from 'lucide-react'
 import type { LucideProps } from 'lucide-react'
 import type { SectionBillingSuccessHeroContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 type IconFC = React.FC<LucideProps>
 
@@ -23,24 +19,37 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function BillingSuccessHeroSection({ content }: Props) {
+export function BillingSuccessHeroSection({ content, translationId, translationRow }: Props) {
   const IconComponent: IconFC =
     (content.icon && ICON_MAP[content.icon]) ? ICON_MAP[content.icon] : CheckCircle
+
+  const heading    = translationRow?.billing_success_heading    ?? content.heading    ?? 'Subscription Activated!'
+  const subheading = translationRow?.billing_success_subheading ?? content.subheading ?? 'Your Pro plan is now active.'
+  const body       = translationRow?.billing_success_body       ?? content.body
 
   return (
     <div className="flex flex-col items-center text-center py-10 px-4">
       <div className="w-16 h-16 rounded-2xl bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center mb-5">
         <IconComponent size={32} className="text-emerald-400" />
       </div>
-      <h1 className="text-white text-2xl font-bold tracking-tight mb-2">
-        {content.heading ?? 'Subscription Activated!'}
+      <h1
+        data-directus={pageAttr(translationId, 'billing_success_heading')}
+        className="text-white text-2xl font-bold tracking-tight mb-2"
+      >
+        {heading}
       </h1>
-      <p className="text-white/60 text-sm font-medium mb-3">
-        {content.subheading ?? 'Your Pro plan is now active.'}
+      <p
+        data-directus={pageAttr(translationId, 'billing_success_subheading')}
+        className="text-white/60 text-sm font-medium mb-3"
+      >
+        {subheading}
       </p>
-      {content.body && (
-        <p className="text-white/35 text-sm max-w-md leading-relaxed">
-          {content.body}
+      {body && (
+        <p
+          data-directus={pageAttr(translationId, 'billing_success_body')}
+          className="text-white/35 text-sm max-w-md leading-relaxed"
+        >
+          {body}
         </p>
       )}
     </div>

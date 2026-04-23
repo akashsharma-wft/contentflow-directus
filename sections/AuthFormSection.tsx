@@ -1,22 +1,16 @@
 // sections/AuthFormSection.tsx
 //
 // RIGHT panel for auth pages — rendered for the `authSection` schema type.
-// Contains:
-//   - Mobile-only top bar  (logo)
-//   - Mobile-only heading  (authSection.heading)
-//   - Centered form card   (LoginForm or SignupForm, all copy from CMS config)
-//
-// On desktop this is a flex-1 column that sits next to AuthHeroSection.
-// On mobile this is full-width (AuthHeroSection is hidden on mobile).
-//
-// AUTH LOGIC is NOT rewritten — LoginForm / SignupForm are reused as-is.
-// Only the COPY (labels, placeholders, button text) is CMS-driven via section props.
+// Reads all copy from translationRow (field-based) with fallback to section config.
+// data-directus is applied on the mobile heading rendered here.
+// LoginForm / SignupForm receive the resolved strings as props (no TS changes needed).
 
 import { Suspense } from 'react'
 import type { AuthSection as AuthSectionType } from '@/types/cms'
 import { LoginForm }  from '@/features/auth/components/LoginForm'
 import { SignupForm } from '@/features/auth/components/SignupForm'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 interface Props {
   section: AuthSectionType
@@ -24,32 +18,33 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function AuthFormSection({ section }: Props) {
+export function AuthFormSection({ section, translationId, translationRow }: Props) {
   if (!section) return null
 
-  const {
-    mode               = 'login',
-    heading,
-    googleLabel        = 'Continue with Google',
-    dividerLabel       = 'or',
-    nameLabel          = 'Name',
-    namePlaceholder    = 'Your full name',
-    emailLabel         = 'Email',
-    emailPlaceholder   = 'you@example.com',
-    passwordLabel      = 'Password',
-    passwordPlaceholder = mode === 'login' ? 'Your password' : 'Min 8 characters',
-    submitLabel        = mode === 'login' ? 'Sign in' : 'Create account',
-    footerText         = mode === 'login' ? "Don't have an account?" : 'Already have an account?',
-    footerLinkLabel    = mode === 'login' ? 'Request access' : 'Sign in',
-    footerLinkHref     = mode === 'login' ? '/signup' : '/login',
-    showGoogleOAuth    = true,
-    showEmailPassword  = true,
-  } = section
+  const tr = translationRow
+  const mode = section.mode ?? 'login'
+
+  // All copy: translationRow > section config > hardcoded default
+  const heading             = tr?.auth_heading             ?? section.heading
+  const googleLabel         = tr?.auth_google_label        ?? section.googleLabel        ?? 'Continue with Google'
+  const dividerLabel        = tr?.auth_divider_label       ?? section.dividerLabel       ?? 'or'
+  const nameLabel           = tr?.auth_name_label          ?? section.nameLabel          ?? 'Name'
+  const namePlaceholder     = tr?.auth_name_placeholder    ?? section.namePlaceholder    ?? 'Your full name'
+  const emailLabel          = tr?.auth_email_label         ?? section.emailLabel         ?? 'Email'
+  const emailPlaceholder    = tr?.auth_email_placeholder   ?? section.emailPlaceholder   ?? 'you@example.com'
+  const passwordLabel       = tr?.auth_password_label      ?? section.passwordLabel      ?? 'Password'
+  const passwordPlaceholder = tr?.auth_password_placeholder ?? section.passwordPlaceholder ?? (mode === 'login' ? 'Your password' : 'Min 8 characters')
+  const submitLabel         = tr?.auth_submit_label        ?? section.submitLabel        ?? (mode === 'login' ? 'Sign in' : 'Create account')
+  const footerText          = tr?.auth_footer_text         ?? section.footerText         ?? (mode === 'login' ? "Don't have an account?" : 'Already have an account?')
+  const footerLinkLabel     = tr?.auth_footer_link_label   ?? section.footerLinkLabel    ?? (mode === 'login' ? 'Request access' : 'Sign in')
+  const footerLinkHref      = tr?.auth_footer_link_href    ?? section.footerLinkHref     ?? (mode === 'login' ? '/signup' : '/login')
+  const showGoogleOAuth     = section.showGoogleOAuth    ?? true
+  const showEmailPassword   = section.showEmailPassword  ?? true
 
   return (
     <div className="flex-1 flex flex-col min-h-screen">
 
-      {/* ── Mobile-only top bar ───────────────────────────────────────────── */}
+      {/* ── Mobile-only top bar ─────────────────────────────────────────────── */}
       <div className="flex lg:hidden items-center gap-2.5 px-5 pt-5 pb-2">
         <div className="w-7 h-7 rounded-md bg-indigo-500 flex items-center justify-center shrink-0">
           <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
@@ -62,19 +57,22 @@ export function AuthFormSection({ section }: Props) {
         <span className="text-white font-semibold text-base tracking-tight">ContentFlow</span>
       </div>
 
-      {/* ── Mobile-only heading ───────────────────────────────────────────── */}
+      {/* ── Mobile-only heading ─────────────────────────────────────────────── */}
       {heading && (
         <div className="lg:hidden px-5 pt-4 pb-6">
-          <h1 className="text-white text-3xl font-bold leading-tight tracking-tight">
+          <h1
+            data-directus={pageAttr(translationId, 'auth_heading')}
+            className="text-white text-3xl font-bold leading-tight tracking-tight"
+          >
             {heading}
           </h1>
         </div>
       )}
 
-      {/* ── Desktop spacer (pushes form to vertical center) ──────────────── */}
+      {/* ── Desktop spacer ───────────────────────────────────────────────────── */}
       <div className="hidden lg:block flex-1" />
 
-      {/* ── Form card ─────────────────────────────────────────────────────── */}
+      {/* ── Form card ─────────────────────────────────────────────────────────── */}
       <div className="w-full lg:max-w-md lg:mx-auto px-4 lg:px-0">
         <Suspense
           fallback={
@@ -119,7 +117,7 @@ export function AuthFormSection({ section }: Props) {
         </Suspense>
       </div>
 
-      {/* ── Desktop spacer ────────────────────────────────────────────────── */}
+      {/* ── Desktop spacer ────────────────────────────────────────────────────── */}
       <div className="hidden lg:block flex-1" />
     </div>
   )

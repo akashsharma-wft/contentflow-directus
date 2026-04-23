@@ -315,9 +315,11 @@ export type DirectusPageTranslationRow = {
   billing_free_name?:          string | null
   billing_free_tagline?:       string | null
   billing_free_price?:         string | null
+  billing_free_features?:      string[] | null
   billing_pro_name?:           string | null
   billing_pro_tagline?:        string | null
   billing_pro_badge?:          string | null
+  billing_pro_features?:       string[] | null
   billing_upgrade_cta?:        string | null
   billing_downgrade_cta?:      string | null
   billing_current_plan_btn?:   string | null

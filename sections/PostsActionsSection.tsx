@@ -1,10 +1,4 @@
-﻿// sections/PostsActionsSection.tsx
-//
-// Client component — renders the Sync and New Post action buttons for /posts.
-// Sync invalidates the shared ['posts-all'] React Query key so all sections refresh.
-// CreatePostModal is mounted here so the New Post button works correctly.
-
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
@@ -13,6 +7,7 @@ import { toast } from 'sonner'
 import { CreatePostModal } from '@/features/posts/components/CreatePostModal'
 import type { SectionPostsActionsContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 interface Props {
   content: SectionPostsActionsContent
@@ -21,15 +16,17 @@ interface Props {
   translationRow?: DirectusPageTranslationRow
 }
 
-export function PostsActionsSection({ content, lang = 'en' }: Props) {
+export function PostsActionsSection({ content, lang = 'en', translationId, translationRow }: Props) {
   const queryClient = useQueryClient()
   const [isSyncing, setIsSyncing]   = useState(false)
   const [modalOpen, setModalOpen]   = useState(false)
 
+  const syncLabel    = translationRow?.posts_sync_label ?? content.syncButtonLabel  ?? 'Sync'
+  const newPostLabel = translationRow?.posts_new_label  ?? content.newPostButtonLabel ?? 'New Post'
+
   async function handleSync() {
     setIsSyncing(true)
     try {
-      // ['posts'] prefix matches both ['posts','all',lang] and ['posts','stats',lang].
       await queryClient.invalidateQueries({ queryKey: ['posts'] })
       toast.success('Posts refreshed')
     } catch {
@@ -45,17 +42,19 @@ export function PostsActionsSection({ content, lang = 'en' }: Props) {
         <button
           onClick={handleSync}
           disabled={isSyncing}
+          data-directus={pageAttr(translationId, 'posts_sync_label')}
           className="flex items-center gap-2 px-3 py-2 bg-white/5 hover:bg-white/8 border border-white/10 text-white/60 hover:text-white text-sm rounded-lg transition-all cursor-pointer disabled:opacity-50"
         >
           <RefreshCw size={13} className={isSyncing ? 'animate-spin' : ''} />
-          {isSyncing ? 'Syncing...' : (content.syncButtonLabel ?? 'Sync')}
+          {isSyncing ? 'Syncing...' : syncLabel}
         </button>
         <button
           onClick={() => setModalOpen(true)}
+          data-directus={pageAttr(translationId, 'posts_new_label')}
           className="flex items-center gap-2 px-3 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold rounded-lg transition-colors cursor-pointer"
         >
           <Plus size={13} />
-          {content.newPostButtonLabel ?? 'New Post'}
+          {newPostLabel}
         </button>
       </div>
 
