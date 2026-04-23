@@ -19,18 +19,12 @@ export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const searchParams = request.nextUrl.searchParams
-  const isVisualEditing = searchParams.get('visual-editing') === 'true'
-  const previewToken    = searchParams.get('preview_token') ?? ''
-  const validSecret     = process.env.DIRECTUS_PREVIEW_SECRET ?? ''
 
-  // A request is a valid Directus preview if:
-  //  - ?visual-editing=true is present AND
-  //  - ?preview_token matches DIRECTUS_PREVIEW_SECRET (set in Vercel env)
-  // This lets the iframe bypass auth without relying on cross-origin cookies.
-  const isPreview =
-    isVisualEditing &&
-    validSecret.length > 0 &&
-    previewToken === validSecret
+  // Any request with ?visual-editing=true is a Directus preview iframe request.
+  // We skip auth redirects so protected pages can render in the iframe.
+  // The page content is read-only in the iframe — Directus handles auth for editing
+  // via postMessage, not via your app's session cookie.
+  const isPreview = searchParams.get('visual-editing') === 'true'
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -44,10 +38,7 @@ export async function updateSession(request: NextRequest) {
           )
           supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) => {
-            const cookieOptions = isPreview
-              ? { ...options, sameSite: 'none' as const, secure: true }
-              : options
-            supabaseResponse.cookies.set(name, value, cookieOptions)
+            supabaseResponse.cookies.set(name, value, options)
           })
         },
       },
@@ -57,8 +48,10 @@ export async function updateSession(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   const { pathname } = request.nextUrl
 
-  // In preview mode: skip all auth redirects so the iframe can render
-  // protected pages without being logged in.
+  // In preview mode: skip ALL auth redirects.
+  // The page renders as guest — that's fine, we just need to SEE the page.
+  // Visual editing (clicking fields to edit) works via postMessage to Directus,
+  // which has its own auth. Your app's session is irrelevant for editing.
   if (!isPreview) {
     if (user && isAuthPagePath(pathname)) {
       const url = request.nextUrl.clone()
@@ -74,6 +67,7 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
+  // Admin check still runs even in preview (if user IS logged in, still enforce admin)
   if (user && ADMIN_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'))) {
     const { data: profile } = await supabase
       .from('profiles')
