@@ -66,7 +66,10 @@ export function AuthHeroSection({ section, translationId, translationRow }: Prop
         </h1>
 
         {features.length > 0 && (
-          <ul className="space-y-4">
+          <ul
+            data-directus={pageAttr(translationId, 'sections')}
+            className="space-y-4"
+          >
             {features.map((f, i) => {
               const IconComp = f.icon ? ICON_MAP[f.icon] : null
               return (

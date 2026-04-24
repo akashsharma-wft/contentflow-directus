@@ -13,8 +13,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { pageAttr, pageAttrs } from '@/lib/directus/section-binding'
 
 interface SignupFormProps {
+  translationId?: number
   subheading?: string
   submitLabel?: string
   nameLabel?: string
@@ -33,6 +35,7 @@ interface SignupFormProps {
 }
 
 export function SignupForm({
+  translationId,
   subheading = 'Join the ContentFlow workspace',
   submitLabel = 'Create account',
   nameLabel = 'Name',
@@ -108,7 +111,12 @@ export function SignupForm({
           </svg>
         </div>
         <div className="text-center">
-          <p className="text-white/35 text-sm mt-0.5">{subheading}</p>
+          <p
+            data-directus={pageAttr(translationId, 'auth_heading')}
+            className="text-white/35 text-sm mt-0.5"
+          >
+            {subheading}
+          </p>
         </div>
       </div>
 
@@ -118,6 +126,7 @@ export function SignupForm({
           type="button"
           onClick={handleGoogleLogin}
           disabled={isGoogleLoading || isLoading}
+          data-directus={pageAttr(translationId, 'auth_google_label')}
           className={cn(
             'w-full flex items-center justify-center gap-3 h-11 px-4',
             'bg-[#0d0e14] border border-white/10 rounded-xl',
@@ -143,7 +152,10 @@ export function SignupForm({
             <div className="w-full border-t border-white/8" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-[#13141c] px-3 text-white/20 text-[11px] uppercase tracking-widest">
+            <span
+              data-directus={pageAttr(translationId, 'auth_divider_label')}
+              className="bg-[#13141c] px-3 text-white/20 text-[11px] uppercase tracking-widest"
+            >
               {dividerLabel}
             </span>
           </div>
@@ -156,7 +168,10 @@ export function SignupForm({
 
           {/* Full name */}
           <div className="space-y-1.5">
-            <Label className="text-white/45 text-[11px] font-semibold uppercase tracking-wider">
+            <Label
+              data-directus={pageAttrs(translationId, 'auth_name_label', 'auth_name_placeholder')}
+              className="text-white/45 text-[11px] font-semibold uppercase tracking-wider"
+            >
               {nameLabel}
             </Label>
             <Input
@@ -172,7 +187,10 @@ export function SignupForm({
 
           {/* Email */}
           <div className="space-y-1.5">
-            <Label className="text-white/45 text-[11px] font-semibold uppercase tracking-wider">
+            <Label
+              data-directus={pageAttrs(translationId, 'auth_email_label', 'auth_email_placeholder')}
+              className="text-white/45 text-[11px] font-semibold uppercase tracking-wider"
+            >
               {emailLabel}
             </Label>
             <Input
@@ -188,7 +206,10 @@ export function SignupForm({
 
           {/* Password */}
           <div className="space-y-1.5">
-            <Label className="text-white/45 text-[11px] font-semibold uppercase tracking-wider">
+            <Label
+              data-directus={pageAttrs(translationId, 'auth_password_label', 'auth_password_placeholder')}
+              className="text-white/45 text-[11px] font-semibold uppercase tracking-wider"
+            >
               {passwordLabel}
             </Label>
             <div className="relative">
@@ -216,6 +237,7 @@ export function SignupForm({
           <button
             type="submit"
             disabled={isLoading || isGoogleLoading}
+            data-directus={pageAttr(translationId, 'auth_submit_label')}
             className={cn(
               'w-full h-11 rounded-xl font-semibold text-sm',
               'bg-indigo-500 hover:bg-indigo-600 text-white',
@@ -227,8 +249,11 @@ export function SignupForm({
         </form>
       )}
 
-      {/* Footer link */}
-      <p className="text-center text-white/30 text-sm">
+      {/* Footer */}
+      <p
+        data-directus={pageAttrs(translationId, 'auth_footer_text', 'auth_footer_link_label', 'auth_footer_link_href')}
+        className="text-center text-white/30 text-sm"
+      >
         {footerText}{' '}
         <a
           href={footerLinkHref}

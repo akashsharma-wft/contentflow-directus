@@ -14,8 +14,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
+import { pageAttr, pageAttrs } from '@/lib/directus/section-binding'
 
 interface LoginFormProps {
+  translationId?: number
   // All strings from CMS in the correct language
   subheading?: string
   submitLabel?: string
@@ -33,6 +35,7 @@ interface LoginFormProps {
 }
 
 export function LoginForm({
+  translationId,
   subheading = 'Sign in to your workspace',
   submitLabel = 'Sign in',
   emailLabel = 'Email',
@@ -120,8 +123,12 @@ export function LoginForm({
           </svg>
         </div>
         <div className="text-center">
-          {/* subheading = "Sign in to your workspace" or translated equivalent */}
-          <p className="text-white/35 text-sm mt-0.5">{subheading}</p>
+          <p
+            data-directus={pageAttr(translationId, 'auth_heading')}
+            className="text-white/35 text-sm mt-0.5"
+          >
+            {subheading}
+          </p>
         </div>
       </div>
 
@@ -131,6 +138,7 @@ export function LoginForm({
           type="button"
           onClick={handleGoogleLogin}
           disabled={isGoogleLoading || isLoading}
+          data-directus={pageAttr(translationId, 'auth_google_label')}
           className={cn(
             'w-full flex items-center justify-center gap-3 h-11 px-4',
             'bg-white/5 border border-white/10 rounded-xl',
@@ -158,7 +166,10 @@ export function LoginForm({
             <div className="w-full border-t border-white/8" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-[#13141c] px-3 text-white/20 text-[11px] uppercase tracking-widest">
+            <span
+              data-directus={pageAttr(translationId, 'auth_divider_label')}
+              className="bg-[#13141c] px-3 text-white/20 text-[11px] uppercase tracking-widest"
+            >
               {dividerLabel}
             </span>
           </div>
@@ -170,7 +181,10 @@ export function LoginForm({
         <form onSubmit={handleSignIn} className="space-y-4">
           {/* Email */}
           <div className="space-y-1.5">
-            <Label className="text-white/45 text-[11px] font-semibold uppercase tracking-wider">
+            <Label
+              data-directus={pageAttrs(translationId, 'auth_email_label', 'auth_email_placeholder')}
+              className="text-white/45 text-[11px] font-semibold uppercase tracking-wider"
+            >
               {emailLabel}
             </Label>
             <Input
@@ -186,7 +200,10 @@ export function LoginForm({
 
           {/* Password */}
           <div className="space-y-1.5">
-            <Label className="text-white/45 text-[11px] font-semibold uppercase tracking-wider">
+            <Label
+              data-directus={pageAttrs(translationId, 'auth_password_label', 'auth_password_placeholder')}
+              className="text-white/45 text-[11px] font-semibold uppercase tracking-wider"
+            >
               {passwordLabel}
             </Label>
             <div className="relative">
@@ -210,10 +227,11 @@ export function LoginForm({
             </div>
           </div>
 
-          {/* Submit — translated label */}
+          {/* Submit */}
           <button
             type="submit"
             disabled={isLoading || isGoogleLoading}
+            data-directus={pageAttr(translationId, 'auth_submit_label')}
             className={cn(
               'w-full h-11 rounded-xl font-semibold text-sm',
               'bg-indigo-500 hover:bg-indigo-600 text-white',
@@ -225,8 +243,11 @@ export function LoginForm({
         </form>
       )}
 
-      {/* Footer link — "Don't have an account? Request access" — both translated */}
-      <p className="text-center text-white/30 text-sm">
+      {/* Footer */}
+      <p
+        data-directus={pageAttrs(translationId, 'auth_footer_text', 'auth_footer_link_label', 'auth_footer_link_href')}
+        className="text-center text-white/30 text-sm"
+      >
         {footerText}{' '}
         <a
           href={footerLinkHref}

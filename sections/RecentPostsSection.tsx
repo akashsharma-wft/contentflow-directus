@@ -15,12 +15,13 @@ interface Props {
 export async function RecentPostsSection({ section, lang = 'en', translationId, translationRow }: Props) {
   const { count = 12 } = section
 
-  const heading      = translationRow?.recent_posts_heading    ?? section.heading    ?? 'Recent Publications'
-  const subheading   = translationRow?.recent_posts_subheading ?? section.subheading
-  const viewAllLabel = translationRow?.recent_posts_view_all   ?? section.viewAllLabel
-  const viewAllHref  = translationRow?.recent_posts_view_all_href ?? (lang === 'en' ? '/posts' : `/${lang}/posts`)
+  const heading        = translationRow?.recent_posts_heading    ?? section.heading    ?? 'Recent Publications'
+  const subheading     = translationRow?.recent_posts_subheading ?? section.subheading
+  const viewAllLabel   = translationRow?.recent_posts_view_all   ?? section.viewAllLabel
+  const viewAllHref    = translationRow?.recent_posts_view_all_href ?? (lang === 'en' ? '/posts' : `/${lang}/posts`)
 
-  const posts = (await getRecentPosts(lang, Math.max(count, 24))) as unknown as PostCard[]
+  // Fetch enough posts to support several Load More clicks
+  const posts = (await getRecentPosts(lang, Math.max(count, 30))) as unknown as PostCard[]
   if (posts.length === 0) return null
 
   return (
