@@ -45,7 +45,7 @@ const POST_PARENT_FIELDS = [
 ] as never
 
 const POST_TR_FIELDS = [
-  'id', 'posts_id', 'languages_code', 'title', 'excerpt', 'body',
+  'id', 'posts_id', 'languages_code', 'title', 'excerpt', 'body', 'body_html',
   'seo_title', 'seo_description',
 ] as never
 

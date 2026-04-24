@@ -624,10 +624,10 @@ async function bootstrapPagesTranslations() {
         field: 'sections', type: 'json',
         meta: {
           interface: 'input-code',
-          options:   { language: 'json' },
+          options:   { language: 'json', template: '[\n  {\n    "sectionType": "hero",\n    "hero": {\n      "heading": "Hello World",\n      "subheading": "Your subtitle here",\n      "layout": "centered"\n    }\n  }\n]' },
           width:     'full',
-          hidden:    true,
-          note:      '[migrated — data now in individual fields below. Do not edit this JSON directly.]',
+          hidden:    false,
+          note:      'Page sections JSON array. Each item needs a "sectionType" key. Supported types: hero, cta, featuredPosts, recentPosts, stats, richText, grid, image, gallery, video, tabs, carousel, table, pricing, faq, testimonials, banner, newsletter, team, logoBar, timeline, heading, featureList, columns, spacer, divider.',
         },
         schema: { is_nullable: true },
       },
@@ -888,15 +888,20 @@ async function bootstrapPagesTranslations() {
     console.log(`  ${TAG} alias field created: pages.translations`)
   }
 
-  // Hide the sections JSON blob so editors see the individual fields
+  // Ensure sections JSON field is visible and has a helpful editor note
   if (await fieldExists('pages_translations', 'sections')) {
     await api('PATCH', '/fields/pages_translations/sections', {
       meta: {
-        hidden: true,
-        note: '[migrated — data now in individual fields above. Do not edit this JSON directly.]',
+        hidden: false,
+        interface: 'input-code',
+        options: {
+          language: 'json',
+          template: '[\n  {\n    "sectionType": "hero",\n    "hero": {\n      "heading": "Hello World",\n      "subheading": "Your subtitle here",\n      "layout": "centered"\n    }\n  }\n]',
+        },
+        note: 'Page sections JSON array. Each item needs a "sectionType" key. Supported types: hero, cta, featuredPosts, recentPosts, stats, richText, grid, image, gallery, video, tabs, carousel, table, pricing, faq, testimonials, banner, newsletter, team, logoBar, timeline, heading, featureList, columns, spacer, divider.',
       },
     })
-    console.log(`  ${TAG} sections JSON field hidden`)
+    console.log(`  ${TAG} sections JSON field made visible`)
   }
 }
 
@@ -1156,25 +1161,28 @@ async function bootstrapSiteConfigTranslations() {
     console.log(`  ${TAG} relation languages_code → languages created`)
   }
 
-  // Add translations alias field to site_config (shows translation tabs)
+  // Add translations alias field to site_config (o2m list — avoids SQL SELECT errors)
+  const scTranslationsAlias = {
+    field: 'translations',
+    type: 'alias',
+    meta: {
+      interface: 'list-o2m',
+      special: ['o2m'],
+      options: { enableCreate: true, enableSelect: false },
+      display: 'related-values',
+      display_options: { template: '{{languages_code}}' },
+      width: 'full',
+      readonly: false,
+      hidden: false,
+    },
+    schema: null,
+  }
   if (!(await fieldExists('site_config', 'translations'))) {
-    await api('POST', '/fields/site_config', {
-      field: 'translations',
-      type: 'alias',
-      meta: {
-        interface: 'translations',
-        special: ['translations'],
-        options: {
-          languageField: 'languages_code',
-          defaultLanguage: 'en',
-          userLanguage: true,
-        },
-        width: 'full',
-        translations: [{ language: 'en-US', t: 'Translations' }],
-      },
-      schema: null,
-    })
+    await api('POST', '/fields/site_config', scTranslationsAlias)
     console.log(`  ${TAG} translations alias field added to site_config`)
+  } else {
+    await api('PATCH', '/fields/site_config/translations', { meta: scTranslationsAlias.meta })
+    console.log(`  ${TAG} translations alias field patched to o2m`)
   }
 
   // Set collection preview URL
@@ -1226,20 +1234,29 @@ async function main() {
   console.log('\n📦  site_config_translations…')
   await bootstrapSiteConfigTranslations()
 
-  // Patch posts body to rich-text HTML editor
-  if (await fieldExists('posts_translations', 'body')) {
-    await api('PATCH', '/fields/posts_translations/body', {
-      type: 'text',
+  // Add body_html as a proper text column with rich-text HTML editor
+  // (cannot change existing `body` JSON column type on Directus Cloud)
+  if (!(await fieldExists('posts_translations', 'body_html'))) {
+    await api('POST', '/fields/posts_translations', {
+      field: 'body_html', type: 'text',
       meta: {
         interface: 'input-rich-text-html',
         options: {
           toolbar: ['bold','italic','underline','strike','h1','h2','h3','blockquote','code','link','ordered','bullet','image','clear'],
         },
         width: 'full',
-        note: 'Post body (HTML rich text). Use the editor toolbar to format content.',
+        note: 'Post body (HTML rich text). Use the toolbar to format content.',
       },
+      schema: { is_nullable: true },
     })
-    console.log('  ✓ posts_translations.body → input-rich-text-html')
+    console.log('  ✓ posts_translations.body_html added (rich text HTML)')
+  }
+  // Hide the old JSON body field so editors don't accidentally edit it
+  if (await fieldExists('posts_translations', 'body')) {
+    await api('PATCH', '/fields/posts_translations/body', {
+      meta: { hidden: true, note: '[deprecated — use body_html]' },
+    })
+    console.log('  ✓ posts_translations.body hidden (deprecated, use body_html)')
   }
 
   console.log('\n✅  Bootstrap complete!')

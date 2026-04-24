@@ -60,6 +60,7 @@ export const dynamic = 'force-dynamic'
 
 interface Props {
   params: Promise<{ lang: string }>
+  searchParams?: Promise<Record<string, string>>
 }
 
 // ── Access control helper ──────────────────────────────────────────────────────
@@ -123,28 +124,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 
-export default async function LangOrSlugPage({ params }: Props) {
+export default async function LangOrSlugPage({ params, searchParams }: Props) {
   const { lang } = await params
+  const sp = searchParams ? await searchParams : {}
+  const isPreview = sp?.['visual-editing'] === 'true'
 
   // /en/* → always redirect to canonical English URL (no prefix)
   if (lang === 'en') redirect('/')
 
   // /hi or /kn → language homepage
   if (isSupportedLang(lang)) {
-    return <LanguageHomePage lang={lang as SupportedLang} />
+    return <LanguageHomePage lang={lang as SupportedLang} isPreview={isPreview} />
   }
 
   // /login, /signup, /posts, /settings, /billing, /admin, /analytics, /[post-slug]
   // lang param IS the slug here (English routes don't have a lang prefix)
-  return <EnglishSlugPage slug={lang} />
+  return <EnglishSlugPage slug={lang} isPreview={isPreview} />
 }
 
 // ── Language homepage (/hi or /kn) ────────────────────────────────────────────
 
-async function LanguageHomePage({ lang }: { lang: SupportedLang }) {
+async function LanguageHomePage({ lang, isPreview }: { lang: SupportedLang; isPreview?: boolean }) {
   const page = await getPageBySlugAndLang('home', lang)
   if (!page) notFound()
-  return <RenderPage page={page} lang={lang} />
+  return <RenderPage page={page} lang={lang} isPreview={isPreview} />
 }
 
 // ── Post detail config assembler ──────────────────────────────────────────────
@@ -172,10 +175,10 @@ function assemblePostDetailConfig(sections: PageSection[]) {
 
 // ── English slug page (/login, /signup, /posts, etc.) ─────────────────────────
 
-async function EnglishSlugPage({ slug }: { slug: string }) {
+async function EnglishSlugPage({ slug, isPreview }: { slug: string; isPreview?: boolean }) {
   // Try page first
   const page = await getPageBySlugAndLang(slug, 'en')
-  if (page) return <RenderPage page={page} lang="en" />
+  if (page) return <RenderPage page={page} lang="en" isPreview={isPreview} />
 
   // Try post
   const post = await getPostBySlugAndLang(slug, 'en')
@@ -254,11 +257,11 @@ async function EnglishSlugPage({ slug }: { slug: string }) {
 
 // ── Render page — shared by all page types ─────────────────────────────────────
 
-async function RenderPage({ page, lang }: { page: DirectusPage; lang: string }) {
+async function RenderPage({ page, lang, isPreview }: { page: DirectusPage; lang: string; isPreview?: boolean }) {
   const access = getPageAccess(page)
 
-  // Auth check
-  if (access.requireAuth) {
+  // Auth check — skip when Directus visual editor is previewing (isPreview=true)
+  if (access.requireAuth && !isPreview) {
     const supabase = await createSupabaseServer()
     const { data: { user } } = await supabase.auth.getUser()
 

@@ -134,7 +134,8 @@ export type DirectusPostTranslationRow = {
   languages_code:  string
   title:           string
   excerpt:         string | null
-  body:            string | null
+  body:            string | null      // legacy json column — hidden in editor
+  body_html:       string | null      // new text column — HTML rich text editor
   seo_title:       string | null
   seo_description: string | null
 }
@@ -192,7 +193,7 @@ export function mergePost(row: DirectusPostRow, preferLang = 'en'): DirectusPost
     slug:                  row.slug,
     language:              tr?.languages_code ?? row.language ?? 'en',
     excerpt:               tr?.excerpt     ?? row.excerpt  ?? undefined,
-    body:                  tr?.body        ?? row.body     ?? undefined,
+    body:                  tr?.body_html   ?? tr?.body     ?? row.body ?? undefined,
     coverImage:            row.cover_image  ?? undefined,
     publishedAt:           row.published_at ?? undefined,
     featured:              row.featured,

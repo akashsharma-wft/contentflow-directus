@@ -352,14 +352,14 @@ async function seedPages() {
 // ── posts ─────────────────────────────────────────────────────────────────────
 //
 // Posts seed-data format (posts.json):
-//   { slug, cover_image, published_at, featured, tags, author_*, translations: [{ languages_code, title, excerpt, body, seo_title, seo_description }] }
+//   { slug, cover_image, published_at, featured, tags, author_*, translations: [{ languages_code, title, excerpt, body, body_html, seo_title, seo_description }] }
 //
 // Strategy: same as pages — upsert parent, then upsert each translation row.
 
 const POSTS_PARENT_POST_FIELDS  = new Set(['slug', 'cover_image', 'published_at', 'featured', 'tags', 'author_id', 'author_name', 'author_email', 'author_avatar'])
 const POSTS_PARENT_PATCH_FIELDS = new Set(['cover_image', 'published_at', 'featured', 'tags', 'author_id', 'author_name', 'author_email', 'author_avatar'])
-const POSTS_TR_POST_FIELDS  = new Set(['posts_id', 'languages_code', 'title', 'excerpt', 'body', 'seo_title', 'seo_description'])
-const POSTS_TR_PATCH_FIELDS = new Set(['title', 'excerpt', 'body', 'seo_title', 'seo_description'])
+const POSTS_TR_POST_FIELDS  = new Set(['posts_id', 'languages_code', 'title', 'excerpt', 'body', 'body_html', 'seo_title', 'seo_description'])
+const POSTS_TR_PATCH_FIELDS = new Set(['title', 'excerpt', 'body', 'body_html', 'seo_title', 'seo_description'])
 
 async function seedPosts() {
   console.log('\n📝  Seeding posts…')

@@ -58,7 +58,7 @@ export function Footer({ siteConfig }: Props) {
   const navItems       = filterNavItems(APP_NAV_ITEMS, profile?.role)
 
   return (
-    <footer className="w-full border-t border-white/6 bg-[#0d0e14] mb-16 md:mb-0">
+    <footer className="w-full border-t border-white/6 bg-[#0d0e14]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
 
         {/* Top row */}
