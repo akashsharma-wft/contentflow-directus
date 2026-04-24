@@ -235,7 +235,23 @@ export function PostDetail({
 
       {/* Body content */}
       <article
-        className="max-w-none"
+        className="max-w-none
+          [&_h1]:text-white [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-4
+          [&_h2]:text-white [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:mt-6 [&_h2]:mb-3
+          [&_h3]:text-white [&_h3]:text-lg [&_h3]:font-medium [&_h3]:mt-5 [&_h3]:mb-2
+          [&_p]:text-white/60 [&_p]:text-sm [&_p]:leading-relaxed [&_p]:mb-4
+          [&_strong]:text-white [&_strong]:font-semibold
+          [&_em]:italic [&_em]:text-white/70
+          [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4
+          [&_ul_li]:text-white/60 [&_ul_li]:text-sm [&_ul_li]:mb-1
+          [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4
+          [&_ol_li]:text-white/60 [&_ol_li]:text-sm [&_ol_li]:mb-1
+          [&_blockquote]:border-l-2 [&_blockquote]:border-indigo-500 [&_blockquote]:pl-4 [&_blockquote]:my-4 [&_blockquote]:text-white/40 [&_blockquote]:italic
+          [&_pre]:bg-[#0d0e14] [&_pre]:p-4 [&_pre]:rounded-xl [&_pre]:overflow-x-auto [&_pre]:my-4 [&_pre]:border [&_pre]:border-white/10
+          [&_code]:bg-white/5 [&_code]:border [&_code]:border-white/10 [&_code]:text-indigo-300 [&_code]:text-xs [&_code]:font-mono [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded
+          [&_pre_code]:bg-transparent [&_pre_code]:border-0 [&_pre_code]:text-white/70 [&_pre_code]:text-sm [&_pre_code]:px-0 [&_pre_code]:py-0 [&_pre_code]:rounded-none
+          [&_a]:text-indigo-400 [&_a]:underline
+          [&_img]:rounded-xl [&_img]:my-6 [&_img]:w-full [&_img]:border [&_img]:border-white/5"
         data-directus={editableAttr({
           collection: 'posts_translations',
           item: post.translationId ?? null,
@@ -244,26 +260,10 @@ export function PostDetail({
         })}
       >
         {post.body ? (
-          typeof post.body === 'string' ? (
-            post.body.startsWith('[') ? (
-              (() => {
-                try {
-                  const blocks = JSON.parse(post.body as string) as Parameters<typeof PortableText>[0]['value']
-                  return <PortableText value={blocks} components={portableTextComponents} />
-                } catch {
-                  return <p className="text-white/60 text-sm leading-relaxed">{post.body}</p>
-                }
-              })()
-            ) : (
-              // Plain text — split double newlines into paragraphs
-              <div className="space-y-4">
-                {(post.body as string).split(/\n\n+/).map((para, i) => (
-                  <p key={i} className="text-white/60 text-sm leading-relaxed whitespace-pre-wrap">{para}</p>
-                ))}
-              </div>
-            )
-          ) : (
+          Array.isArray(post.body) ? (
             <PortableText value={post.body as Parameters<typeof PortableText>[0]['value']} components={portableTextComponents} />
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: post.body as string }} />
           )
         ) : (
           <p className="text-white/30 text-sm italic">{emptyBodyText}</p>

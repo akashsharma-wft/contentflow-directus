@@ -1276,29 +1276,30 @@ async function main() {
   console.log('\n📦  site_config_translations…')
   await bootstrapSiteConfigTranslations()
 
-  // body_html — plain multiline text (description / body of the post)
+  // body_html — HTML rich text editor
   if (!(await fieldExists('posts_translations', 'body_html'))) {
     await api('POST', '/fields/posts_translations', {
       field: 'body_html', type: 'text',
       meta: {
-        interface: 'input-multiline',
-        display_name: 'Description',
+        interface: 'input-rich-text-html',
+        display_name: 'Body',
         width: 'full',
-        note: 'Post body / description. Plain text.',
+        note: 'Post body. Use the rich text editor to format content.',
       },
       schema: { is_nullable: true },
     })
-    console.log('  ✓ posts_translations.body_html added (Description)')
+    console.log('  ✓ posts_translations.body_html added (rich text HTML)')
   } else {
     await api('PATCH', '/fields/posts_translations/body_html', {
       meta: {
-        interface: 'input-multiline',
-        display_name: 'Description',
+        interface: 'input-rich-text-html',
+        display_name: 'Body',
         options: null,
-        note: 'Post body / description. Plain text.',
+        note: 'Post body. Use the rich text editor to format content.',
+        hidden: false,
       },
     })
-    console.log('  ✓ posts_translations.body_html changed to plain multiline')
+    console.log('  ✓ posts_translations.body_html set to rich text HTML editor')
   }
   // Hide excerpt — title + image + description is enough
   if (await fieldExists('posts_translations', 'excerpt')) {
