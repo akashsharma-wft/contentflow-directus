@@ -34,6 +34,7 @@ import {
   type DirectusSiteConfigRow,
   type DirectusPostTranslationRow,
   type DirectusPageTranslationRow,
+  type DirectusSiteConfigTranslationRow,
 } from '@/types/directus'
 
 // ─── Post parent fields (non-translatable) ────────────────────────────────────
@@ -428,13 +429,24 @@ export async function getNavPages(lang: string): Promise<DirectusNavPage[]> {
 
 // ─── Site config ──────────────────────────────────────────────────────────────
 
-/** Fetch the site-wide config singleton (id = 'site-config'). */
+/** Fetch the site-wide config singleton (id = 'site-config').
+ *  Translations are fetched separately to avoid the alias SQL bug on hosted Directus.
+ */
 export async function getSiteConfig(lang = 'en'): Promise<DirectusSiteConfig | null> {
   try {
-    const row = (await directusClient.request(
-      readItem('site_config', 'site-config', { fields: ['*', { translations: ['*'] }] })
-    )) as unknown as DirectusSiteConfigRow
-    return toSiteConfig(row, lang)
+    const [row, trs] = await Promise.all([
+      directusClient.request(
+        readItem('site_config', 'site-config', { fields: ['*'] as never })
+      ) as Promise<DirectusSiteConfigRow>,
+      directusAdminClient.request(
+        readItems('site_config_translations', {
+          filter: { site_config_id: { _eq: 'site-config' } } as never,
+          fields: ['*'] as never,
+          limit: 10,
+        })
+      ).catch(() => []) as Promise<DirectusSiteConfigTranslationRow[]>,
+    ])
+    return toSiteConfig({ ...row, translations: trs }, lang)
   } catch {
     return null
   }

@@ -624,10 +624,10 @@ async function bootstrapPagesTranslations() {
         field: 'sections', type: 'json',
         meta: {
           interface: 'input-code',
-          options:   { language: 'json', template: '[\n  {\n    "sectionType": "hero",\n    "hero": {\n      "heading": "Hello World",\n      "subheading": "Your subtitle here",\n      "layout": "centered"\n    }\n  }\n]' },
+          options:   { language: 'json' },
           width:     'full',
-          hidden:    false,
-          note:      'Page sections JSON array. Each item needs a "sectionType" key. Supported types: hero, cta, featuredPosts, recentPosts, stats, richText, grid, image, gallery, video, tabs, carousel, table, pricing, faq, testimonials, banner, newsletter, team, logoBar, timeline, heading, featureList, columns, spacer, divider.',
+          hidden:    true,
+          note:      'Internal render source. Edit content via the individual fields below or the visual editor.',
         },
         schema: { is_nullable: true },
       },
@@ -888,20 +888,15 @@ async function bootstrapPagesTranslations() {
     console.log(`  ${TAG} alias field created: pages.translations`)
   }
 
-  // Ensure sections JSON field is visible and has a helpful editor note
+  // Keep sections JSON hidden — editors use individual fields; JSON is the render source
   if (await fieldExists('pages_translations', 'sections')) {
     await api('PATCH', '/fields/pages_translations/sections', {
       meta: {
-        hidden: false,
-        interface: 'input-code',
-        options: {
-          language: 'json',
-          template: '[\n  {\n    "sectionType": "hero",\n    "hero": {\n      "heading": "Hello World",\n      "subheading": "Your subtitle here",\n      "layout": "centered"\n    }\n  }\n]',
-        },
-        note: 'Page sections JSON array. Each item needs a "sectionType" key. Supported types: hero, cta, featuredPosts, recentPosts, stats, richText, grid, image, gallery, video, tabs, carousel, table, pricing, faq, testimonials, banner, newsletter, team, logoBar, timeline, heading, featureList, columns, spacer, divider.',
+        hidden: true,
+        note: 'Internal render source. Edit content via the individual fields below or the visual editor.',
       },
     })
-    console.log(`  ${TAG} sections JSON field made visible`)
+    console.log(`  ${TAG} sections JSON field hidden`)
   }
 }
 
@@ -1076,7 +1071,7 @@ async function bootstrapSiteConfigTranslations() {
       meta: {
         icon: 'translate',
         display_template: '{{languages_code}}',
-        hidden: true,
+        hidden: false,
         sort_field: null,
       },
       schema: {},
@@ -1091,7 +1086,9 @@ async function bootstrapSiteConfigTranslations() {
     })
     console.log(`  ${TAG} collection created`)
   } else {
-    console.log(`  ${TAG} already exists — checking fields…`)
+    // Ensure it's visible in admin sidebar
+    await api('PATCH', '/collections/site_config_translations', { meta: { hidden: false } })
+    console.log(`  ${TAG} already exists — un-hidden in admin`)
   }
 
   await ensureFields('site_config_translations', [
@@ -1137,7 +1134,7 @@ async function bootstrapSiteConfigTranslations() {
     strField('sidebar_nav_5_label', 'Nav 5 label', 'half'),
   ])
 
-  // FK: site_config_id → site_config
+  // FK: site_config_id → site_config (no one_field — alias removed to avoid SQL SELECT bug)
   if (!(await relationExists('site_config_translations', 'site_config_id'))) {
     await api('POST', '/relations', {
       collection: 'site_config_translations',
@@ -1161,28 +1158,15 @@ async function bootstrapSiteConfigTranslations() {
     console.log(`  ${TAG} relation languages_code → languages created`)
   }
 
-  // Add translations alias field to site_config (o2m list — avoids SQL SELECT errors)
-  const scTranslationsAlias = {
-    field: 'translations',
-    type: 'alias',
-    meta: {
-      interface: 'list-o2m',
-      special: ['o2m'],
-      options: { enableCreate: true, enableSelect: false },
-      display: 'related-values',
-      display_options: { template: '{{languages_code}}' },
-      width: 'full',
-      readonly: false,
-      hidden: false,
-    },
-    schema: null,
-  }
-  if (!(await fieldExists('site_config', 'translations'))) {
-    await api('POST', '/fields/site_config', scTranslationsAlias)
-    console.log(`  ${TAG} translations alias field added to site_config`)
-  } else {
-    await api('PATCH', '/fields/site_config/translations', { meta: scTranslationsAlias.meta })
-    console.log(`  ${TAG} translations alias field patched to o2m`)
+  // Note: site_config.translations alias intentionally NOT created.
+  // The alias caused "column site_config.translations does not exist" SQL errors in Directus admin.
+  // Translations are fetched separately via site_config_translations collection (getSiteConfig() in queries.ts).
+  // Editors can access translations through Content → site_config_translations in the admin sidebar.
+  if (await fieldExists('site_config', 'translations')) {
+    try {
+      await fetch(`${BASE_URL}/fields/site_config/translations`, { method: 'DELETE', headers: HEADERS })
+      console.log(`  ${TAG} removed legacy translations alias from site_config`)
+    } catch { /* ignore */ }
   }
 
   // Set collection preview URL
