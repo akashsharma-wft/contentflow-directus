@@ -251,19 +251,16 @@ export function PostDetail({
                   const blocks = JSON.parse(post.body as string) as Parameters<typeof PortableText>[0]['value']
                   return <PortableText value={blocks} components={portableTextComponents} />
                 } catch {
-                  return (
-                    <div
-                      className="[&_p]:text-white/60 [&_p]:text-sm [&_p]:leading-relaxed [&_p]:mb-4 [&_h1]:text-white [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-4 [&_h2]:text-white [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-white [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_blockquote]:border-l-2 [&_blockquote]:border-indigo-500 [&_blockquote]:pl-4 [&_blockquote]:my-4 [&_blockquote]:text-white/40 [&_blockquote]:text-sm [&_code]:bg-white/5 [&_code]:text-indigo-300 [&_code]:text-xs [&_code]:font-mono [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:text-white/60 [&_ul]:text-sm [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:text-white/60 [&_ol]:text-sm [&_ol]:mb-4 [&_a]:text-indigo-400 [&_a]:underline"
-                      dangerouslySetInnerHTML={{ __html: post.body as string }}
-                    />
-                  )
+                  return <p className="text-white/60 text-sm leading-relaxed">{post.body}</p>
                 }
               })()
             ) : (
-              <div
-                className="[&_p]:text-white/60 [&_p]:text-sm [&_p]:leading-relaxed [&_p]:mb-4 [&_h1]:text-white [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-4 [&_h2]:text-white [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-white [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_blockquote]:border-l-2 [&_blockquote]:border-indigo-500 [&_blockquote]:pl-4 [&_blockquote]:my-4 [&_blockquote]:text-white/40 [&_blockquote]:text-sm [&_code]:bg-white/5 [&_code]:text-indigo-300 [&_code]:text-xs [&_code]:font-mono [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:text-white/60 [&_ul]:text-sm [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:text-white/60 [&_ol]:text-sm [&_ol]:mb-4 [&_a]:text-indigo-400 [&_a]:underline"
-                dangerouslySetInnerHTML={{ __html: post.body as string }}
-              />
+              // Plain text — split double newlines into paragraphs
+              <div className="space-y-4">
+                {(post.body as string).split(/\n\n+/).map((para, i) => (
+                  <p key={i} className="text-white/60 text-sm leading-relaxed whitespace-pre-wrap">{para}</p>
+                ))}
+              </div>
             )
           ) : (
             <PortableText value={post.body as Parameters<typeof PortableText>[0]['value']} components={portableTextComponents} />

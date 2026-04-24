@@ -12,6 +12,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { readItem, readItems } from '@directus/sdk'
 import { directusAdminClient } from '@/lib/directus/client'
+import { generatePreviewMagicLink } from '@/lib/directus/previewAuth'
 import type { DirectusSchema, DirectusPageTranslationRow } from '@/types/directus'
 
 export async function GET(
@@ -60,7 +61,8 @@ export async function GET(
     url.searchParams.set('visual-editing', 'true')
     if (previewSecret) url.searchParams.set('preview_token', previewSecret)
 
-    return NextResponse.redirect(url.toString())
+    const dest = (await generatePreviewMagicLink(url.toString())) ?? url.toString()
+    return NextResponse.redirect(dest)
   } catch {
     return NextResponse.json({ error: 'Translation not found' }, { status: 404 })
   }

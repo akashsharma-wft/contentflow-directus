@@ -1276,26 +1276,29 @@ async function main() {
   console.log('\n📦  site_config_translations…')
   await bootstrapSiteConfigTranslations()
 
-  // Add body_html (Description) as a proper text column with rich-text HTML editor
-  // (cannot change existing `body` JSON column type on Directus Cloud)
+  // body_html — plain multiline text (description / body of the post)
   if (!(await fieldExists('posts_translations', 'body_html'))) {
     await api('POST', '/fields/posts_translations', {
       field: 'body_html', type: 'text',
       meta: {
-        interface: 'input-rich-text-html',
-        options: {
-          toolbar: ['bold','italic','underline','strike','h1','h2','h3','blockquote','code','link','ordered','bullet','image','clear'],
-        },
+        interface: 'input-multiline',
+        display_name: 'Description',
         width: 'full',
-        note: 'Post description / body content.',
+        note: 'Post body / description. Plain text.',
       },
       schema: { is_nullable: true },
     })
     console.log('  ✓ posts_translations.body_html added (Description)')
   } else {
     await api('PATCH', '/fields/posts_translations/body_html', {
-      meta: { note: 'Post description / body content.' },
+      meta: {
+        interface: 'input-multiline',
+        display_name: 'Description',
+        options: null,
+        note: 'Post body / description. Plain text.',
+      },
     })
+    console.log('  ✓ posts_translations.body_html changed to plain multiline')
   }
   // Hide excerpt — title + image + description is enough
   if (await fieldExists('posts_translations', 'excerpt')) {
