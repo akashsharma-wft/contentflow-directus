@@ -40,6 +40,16 @@ export function HeroSection({ section, translationId, translationRow }: Props) {
     })
   }
 
+  // Helper for multiple fields shown together in one drawer (label + href)
+  function attrs(...fields: (keyof DirectusPageTranslationRow)[]) {
+    return editableAttr({
+      collection: 'pages_translations',
+      item: translationId ?? null,
+      fields: fields.join(','),
+      mode: 'drawer',
+    })
+  }
+
   if (layout === 'split') {
     return (
       <section className="relative w-full bg-[#0d0e14] overflow-hidden">
@@ -82,7 +92,7 @@ export function HeroSection({ section, translationId, translationRow }: Props) {
             {(primaryLabel || secondaryLabel) && (
               <div className="flex items-center gap-3 flex-wrap">
                 {primaryLabel && primaryHref && (
-                  <span data-directus={attr('hero_primary_cta_label')}>
+                  <span data-directus={attrs('hero_primary_cta_label', 'hero_primary_cta_href')}>
                     <HeroPrimaryCta
                       label={primaryLabel}
                       href={primaryHref}
@@ -93,7 +103,7 @@ export function HeroSection({ section, translationId, translationRow }: Props) {
                 {secondaryLabel && secondaryHref && (
                   <Link
                     href={secondaryHref}
-                    data-directus={attr('hero_secondary_cta_label')}
+                    data-directus={attrs('hero_secondary_cta_label', 'hero_secondary_cta_href')}
                     className="px-5 py-2.5 border border-white/15 text-white/70 hover:border-white/30 hover:text-white font-semibold rounded-xl transition-colors text-sm inline-flex items-center gap-1.5"
                   >
                     {secondaryLabel}
@@ -198,7 +208,7 @@ export function HeroSection({ section, translationId, translationRow }: Props) {
         {(primaryLabel || secondaryLabel) && (
           <div className="flex items-center justify-center gap-4 flex-wrap pt-2">
             {primaryLabel && (
-              <span data-directus={attr('hero_primary_cta_label')}>
+              <span data-directus={attrs('hero_primary_cta_label', 'hero_primary_cta_href')}>
                 <HeroPrimaryCta
                   label={primaryLabel}
                   href={primaryHref}
@@ -209,7 +219,7 @@ export function HeroSection({ section, translationId, translationRow }: Props) {
             {secondaryLabel && (
               <Link
                 href={secondaryHref}
-                data-directus={attr('hero_secondary_cta_label')}
+                data-directus={attrs('hero_secondary_cta_label', 'hero_secondary_cta_href')}
                 className="px-6 py-3 font-semibold rounded-xl transition-colors text-sm border border-white/15 text-white/70 hover:border-white/30 hover:text-white"
               >
                 {secondaryLabel}

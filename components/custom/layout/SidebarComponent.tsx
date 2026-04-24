@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import type { ComponentSidebarContent } from '@/types/cms'
+import { siteAttr, siteAttrs } from '@/lib/directus/section-binding'
 
 interface Props {
   component: ComponentSidebarContent
@@ -33,6 +34,7 @@ export function SidebarComponent({ component, collapsed = false, onToggle }: Pro
       <div className="h-14 flex items-center px-4 border-b border-white/8 shrink-0">
         <Link
           href={logoHref}
+          data-directus={siteAttr('sidebar_brand_name')}
           className={cn('font-bold text-sm text-white transition-opacity', collapsed && 'opacity-0 pointer-events-none')}
         >
           {logoText}
@@ -74,7 +76,14 @@ export function SidebarComponent({ component, collapsed = false, onToggle }: Pro
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="9"/></svg>
                     </span>
                   )}
-                  {!collapsed && <span className="truncate">{item.label}</span>}
+                  {!collapsed && (
+                    <span
+                      data-directus={siteAttrs(`sidebar_nav_${i + 1}_label_en`, `sidebar_nav_${i + 1}_href`)}
+                      className="truncate"
+                    >
+                      {item.label}
+                    </span>
+                  )}
                 </Link>
               </li>
             )

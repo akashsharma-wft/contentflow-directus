@@ -9,13 +9,15 @@
  * For profile formId, renders the existing ProfileForm.
  */
 import Link from 'next/link'
+import { pageAttr } from '@/lib/directus/section-binding'
 import type { FormSection as FormSectionType } from '@/types/cms'
 
 interface Props {
   section: FormSectionType
+  translationId?: number
 }
 
-export function FormSection({ section }: Props) {
+export function FormSection({ section, translationId }: Props) {
   const {
     formId,
     heading,
@@ -26,7 +28,7 @@ export function FormSection({ section }: Props) {
   } = section
 
   return (
-    <section className="w-full px-6 py-12 max-w-md mx-auto">
+    <section className="w-full px-6 py-12 max-w-md mx-auto" data-directus={pageAttr(translationId, 'sections')}>
       {(heading || subheading) && (
         <div className="mb-8 space-y-1">
           {heading && (

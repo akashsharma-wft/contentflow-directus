@@ -10,7 +10,7 @@ import type { AuthSection as AuthSectionType } from '@/types/cms'
 import { LoginForm }  from '@/features/auth/components/LoginForm'
 import { SignupForm } from '@/features/auth/components/SignupForm'
 import type { DirectusPageTranslationRow } from '@/types/directus'
-import { pageAttr } from '@/lib/directus/section-binding'
+import { pageAttr, pageAttrs } from '@/lib/directus/section-binding'
 
 interface Props {
   section: AuthSectionType
@@ -73,7 +73,10 @@ export function AuthFormSection({ section, translationId, translationRow }: Prop
       <div className="hidden lg:block flex-1" />
 
       {/* ── Form card ─────────────────────────────────────────────────────────── */}
-      <div className="w-full lg:max-w-md lg:mx-auto px-4 lg:px-0">
+      <div
+        className="w-full lg:max-w-md lg:mx-auto px-4 lg:px-0"
+        data-directus={pageAttrs(translationId, 'auth_footer_link_label', 'auth_footer_link_href')}
+      >
         <Suspense
           fallback={
             <div className="bg-[#13141c] border border-white/8 rounded-2xl p-8 animate-pulse h-80" />

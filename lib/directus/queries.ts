@@ -429,12 +429,12 @@ export async function getNavPages(lang: string): Promise<DirectusNavPage[]> {
 // ─── Site config ──────────────────────────────────────────────────────────────
 
 /** Fetch the site-wide config singleton (id = 'site-config'). */
-export async function getSiteConfig(): Promise<DirectusSiteConfig | null> {
+export async function getSiteConfig(lang = 'en'): Promise<DirectusSiteConfig | null> {
   try {
     const row = (await directusClient.request(
-      readItem('site_config', 'site-config')
+      readItem('site_config', 'site-config', { fields: ['*', { translations: ['*'] }] })
     )) as unknown as DirectusSiteConfigRow
-    return toSiteConfig(row)
+    return toSiteConfig(row, lang)
   } catch {
     return null
   }

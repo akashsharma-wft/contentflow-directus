@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { editableAttr } from '@/lib/directus/visual-editing'
+import { postParentAttr } from '@/lib/directus/section-binding'
 import { PortableText } from '@portabletext/react'
 import { ArrowLeft, Share2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { format } from 'date-fns'
@@ -21,7 +22,7 @@ interface PostDetailProps {
     _id: string
     title: string
     slug: string
-    body: unknown[]
+    body: string | unknown[]
     tags: string[]
     featured: boolean
     publishedAt: string | null
@@ -220,7 +221,10 @@ export function PostDetail({
 
       {/* Cover image */}
       {post.coverImage && (
-        <div className="mb-6 rounded-xl overflow-hidden border border-white/5 aspect-video bg-linear-to-br from-indigo-500/20 to-teal-500/20">
+        <div
+          data-directus={postParentAttr(post._id, 'cover_image')}
+          className="mb-6 rounded-xl overflow-hidden border border-white/5 aspect-video bg-linear-to-br from-indigo-500/20 to-teal-500/20"
+        >
           <img
             src={post.coverImage}
             alt={post.title}
@@ -240,7 +244,24 @@ export function PostDetail({
         })}
       >
         {post.body ? (
-          <PortableText value={post.body as Parameters<typeof PortableText>[0]['value']} components={portableTextComponents} />
+          typeof post.body === 'string' ? (
+            // New: HTML from rich text editor or legacy PortableText stored as JSON string
+            post.body.startsWith('[') ? (
+              (() => {
+                try {
+                  const blocks = JSON.parse(post.body as string) as Parameters<typeof PortableText>[0]['value']
+                  return <PortableText value={blocks} components={portableTextComponents} />
+                } catch {
+                  return <div dangerouslySetInnerHTML={{ __html: post.body as string }} />
+                }
+              })()
+            ) : (
+              <div dangerouslySetInnerHTML={{ __html: post.body as string }} />
+            )
+          ) : (
+            // Legacy: PortableText block array directly
+            <PortableText value={post.body as Parameters<typeof PortableText>[0]['value']} components={portableTextComponents} />
+          )
         ) : (
           <p className="text-white/30 text-sm italic">{emptyBodyText}</p>
         )}

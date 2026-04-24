@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { PortableText } from '@portabletext/react'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 // ─── HEADING SECTION ──────────────────────────────────────────────────────────
 interface HeadingSectionProps {
@@ -10,16 +11,17 @@ interface HeadingSectionProps {
     align?: 'left' | 'center' | 'right'
     size?: 'h1' | 'h2' | 'h3'
   }
+  translationId?: number
 }
 
 const alignClass = { left: 'text-left', center: 'text-center', right: 'text-right' }
 const sizeClass = { h1: 'text-5xl font-bold', h2: 'text-3xl font-bold', h3: 'text-2xl font-semibold' }
 
-export function HeadingSection({ section }: HeadingSectionProps) {
+export function HeadingSection({ section, translationId }: HeadingSectionProps) {
   const { heading, subheading, badge, align = 'center', size = 'h2' } = section
   const Tag = size as 'h1' | 'h2' | 'h3'
   return (
-    <section className="py-12 px-6 bg-[#0d0e14]">
+    <section className="py-12 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className={`max-w-4xl mx-auto ${alignClass[align]}`}>
         {badge && (
           <span className="inline-block px-3 py-1 text-xs font-semibold uppercase tracking-widest text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-4">
@@ -42,6 +44,7 @@ interface FeatureListSectionProps {
     layout?: 'list' | 'grid-2' | 'grid-3'
     features?: Feature[]
   }
+  translationId?: number
 }
 
 const featureGridClass: Record<string, string> = {
@@ -50,10 +53,10 @@ const featureGridClass: Record<string, string> = {
   'grid-3': 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
 }
 
-export function FeatureListSection({ section }: FeatureListSectionProps) {
+export function FeatureListSection({ section, translationId }: FeatureListSectionProps) {
   const { heading, subheading, layout = 'grid-3', features = [] } = section
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-6xl mx-auto">
         {(heading || subheading) && (
           <div className="mb-12 text-center">
@@ -89,12 +92,13 @@ interface TestimonialsSectionProps {
     testimonials?: Testimonial[]
     layout?: 'grid' | 'single' | 'carousel'
   }
+  translationId?: number
 }
 
-export function TestimonialsSection({ section }: TestimonialsSectionProps) {
+export function TestimonialsSection({ section, translationId }: TestimonialsSectionProps) {
   const { heading, testimonials = [] } = section
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-6xl mx-auto">
         {heading && <h2 className="text-3xl font-bold text-white text-center mb-12">{heading}</h2>}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -129,12 +133,13 @@ interface FaqSectionProps {
     faqs?: FAQ[]
     layout?: 'accordion' | 'open' | 'two-col'
   }
+  translationId?: number
 }
 
-export function FaqSection({ section }: FaqSectionProps) {
+export function FaqSection({ section, translationId }: FaqSectionProps) {
   const { heading, subheading, faqs = [] } = section
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-3xl mx-auto">
         {heading && <h2 className="text-3xl font-bold text-white text-center mb-3">{heading}</h2>}
         {subheading && <p className="text-white/50 text-center mb-12">{subheading}</p>}
@@ -172,12 +177,13 @@ interface PricingPlan {
 }
 interface PricingSectionProps {
   section: { heading?: string; subheading?: string; plans?: PricingPlan[] }
+  translationId?: number
 }
 
-export function PricingSection({ section }: PricingSectionProps) {
+export function PricingSection({ section, translationId }: PricingSectionProps) {
   const { heading, subheading, plans = [] } = section
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-5xl mx-auto">
         {heading && <h2 className="text-3xl font-bold text-white text-center mb-3">{heading}</h2>}
         {subheading && <p className="text-white/50 text-center mb-12">{subheading}</p>}
@@ -229,6 +235,7 @@ interface BannerSectionProps {
     ctaHref?: string
     color?: 'indigo' | 'amber' | 'red' | 'emerald'
   }
+  translationId?: number
 }
 
 const bannerColors: Record<string, string> = {
@@ -238,10 +245,13 @@ const bannerColors: Record<string, string> = {
   emerald: 'bg-emerald-500/15 border-emerald-500/25 text-emerald-200',
 }
 
-export function BannerSection({ section }: BannerSectionProps) {
+export function BannerSection({ section, translationId }: BannerSectionProps) {
   const { text, ctaLabel, ctaHref, color = 'indigo' } = section
   return (
-    <div className={`flex items-center justify-center gap-4 px-6 py-3 border-b ${bannerColors[color]}`}>
+    <div
+      className={`flex items-center justify-center gap-4 px-6 py-3 border-b ${bannerColors[color]}`}
+      data-directus={pageAttr(translationId, 'sections')}
+    >
       <p className="text-sm font-medium">{text}</p>
       {ctaHref && ctaLabel && (
         <Link href={ctaHref} className="text-xs font-semibold underline underline-offset-2 hover:no-underline">
@@ -316,12 +326,13 @@ interface NewsletterSectionProps {
     privacyText?: string
     layout?: 'centered' | 'split' | 'bar'
   }
+  translationId?: number
 }
 
-export function NewsletterSection({ section }: NewsletterSectionProps) {
+export function NewsletterSection({ section, translationId }: NewsletterSectionProps) {
   const { heading = 'Stay in the loop', subheading, placeholder = 'Enter your email', buttonLabel = 'Subscribe', privacyText } = section
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-xl mx-auto text-center">
         <h2 className="text-2xl font-bold text-white mb-3">{heading}</h2>
         {subheading && <p className="text-white/50 mb-8">{subheading}</p>}

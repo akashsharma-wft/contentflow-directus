@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
 function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
@@ -24,9 +25,10 @@ interface CarouselSectionProps {
     showDots?: boolean
     showArrows?: boolean
   }
+  translationId?: number
 }
 
-export function CarouselSection({ section }: CarouselSectionProps) {
+export function CarouselSection({ section, translationId }: CarouselSectionProps) {
   const { heading, slides = [], autoplay = false, showDots = true, showArrows = true } = section
   const [current, setCurrent] = useState(0)
 
@@ -43,7 +45,7 @@ export function CarouselSection({ section }: CarouselSectionProps) {
   const slide = slides[current]
 
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-5xl mx-auto">
         {heading && <h2 className="text-3xl font-bold text-white text-center mb-10">{heading}</h2>}
 

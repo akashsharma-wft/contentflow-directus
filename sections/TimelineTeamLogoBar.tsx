@@ -2,6 +2,7 @@
 import Image from 'next/image'
 import { Globe, Share2 } from 'lucide-react'
 import Link from 'next/link'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
 function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
@@ -22,12 +23,13 @@ interface TimelineSectionProps {
     events?: TimelineEvent[]
     orientation?: 'vertical' | 'horizontal'
   }
+  translationId?: number
 }
 
-export function TimelineSection({ section }: TimelineSectionProps) {
+export function TimelineSection({ section, translationId }: TimelineSectionProps) {
   const { heading, events = [] } = section
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-3xl mx-auto">
         {heading && <h2 className="text-3xl font-bold text-white text-center mb-12">{heading}</h2>}
         <div className="relative">
@@ -77,6 +79,7 @@ interface TeamSectionProps {
     members?: TeamMember[]
     columns?: 2 | 3 | 4
   }
+  translationId?: number
 }
 
 const teamColClass: Record<number, string> = {
@@ -85,10 +88,10 @@ const teamColClass: Record<number, string> = {
   4: 'grid-cols-2 lg:grid-cols-4',
 }
 
-export function TeamSection({ section }: TeamSectionProps) {
+export function TeamSection({ section, translationId }: TeamSectionProps) {
   const { heading, subheading, members = [], columns = 3 } = section
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-6xl mx-auto">
         {(heading || subheading) && (
           <div className="text-center mb-12">
@@ -148,12 +151,13 @@ interface LogoBarSectionProps {
     logos?: Logo[]
     scrolling?: boolean
   }
+  translationId?: number
 }
 
-export function LogoBarSection({ section }: LogoBarSectionProps) {
+export function LogoBarSection({ section, translationId }: LogoBarSectionProps) {
   const { heading, logos = [] } = section
   return (
-    <section className="py-12 px-6 bg-[#0d0e14] border-y border-white/5">
+    <section className="py-12 px-6 bg-[#0d0e14] border-y border-white/5" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-5xl mx-auto">
         {heading && (
           <p className="text-center text-white/25 text-xs uppercase tracking-widest font-mono mb-8">{heading}</p>

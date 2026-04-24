@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import type { ComponentNavbarContent } from '@/types/cms'
+import { siteAttr, siteAttrs } from '@/lib/directus/section-binding'
 
 interface Props {
   component: ComponentNavbarContent
@@ -28,7 +29,11 @@ export function NavbarComponent({ component }: Props) {
       <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between gap-6">
 
         {/* Logo */}
-        <Link href="/" className="text-white font-bold text-sm tracking-tight shrink-0">
+        <Link
+          href="/"
+          data-directus={siteAttr('navbar_brand_name')}
+          className="text-white font-bold text-sm tracking-tight shrink-0"
+        >
           {logoText}
         </Link>
 
@@ -41,6 +46,7 @@ export function NavbarComponent({ component }: Props) {
                   href={link.href}
                   target={link.external ? '_blank' : undefined}
                   rel={link.external ? 'noopener noreferrer' : undefined}
+                  data-directus={siteAttrs(`navbar_item_${i + 1}_label_en`, `navbar_item_${i + 1}_href`)}
                   className="px-3 py-1.5 text-sm text-white/60 hover:text-white rounded-lg transition-colors"
                 >
                   {link.label}
@@ -55,6 +61,7 @@ export function NavbarComponent({ component }: Props) {
           {ctaButton?.label && ctaButton?.href && (
             <Link
               href={ctaButton.href}
+              data-directus={siteAttrs('navbar_cta_label_en', 'navbar_cta_href')}
               className="px-4 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold rounded-lg transition-colors"
             >
               {ctaButton.label}

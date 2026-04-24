@@ -10,8 +10,8 @@
  *  posts                — non-translatable parent: slug, cover_image, published_at, author_*…
  *  posts_translations   — per-language: title, excerpt, body, seo_title, seo_description
  *  pages                — non-translatable parent: slug, status, access, layout, og_image
- *  pages_translations   — per-language: title, sections (JSON), seo_title, seo_description
- *  site_config          — singleton-style (id = 'site-config'): navbar_config, footer_config…
+ *  pages_translations   — per-language: title, + all individual content fields (hero_*, billing_*, etc.)
+ *  site_config          — singleton-style (id = 'site-config'): navbar_*, footer_*, sidebar_* flat fields
  *
  * Relations wired for Directus "Translations" interface:
  *   posts_translations.posts_id  → posts.id       (O2M, cascade delete)
@@ -76,6 +76,55 @@ async function relationExists(collection: string, field: string): Promise<boolea
   } catch { return false }
 }
 
+// ── Field builder helpers ─────────────────────────────────────────────────────
+
+function strField(field: string, note?: string, width: 'half' | 'full' = 'full') {
+  return {
+    field,
+    payload: {
+      field, type: 'string',
+      meta: { interface: 'input', width, note: note ?? null },
+      schema: { is_nullable: true },
+    },
+  }
+}
+
+function txtField(field: string, note?: string) {
+  return {
+    field,
+    payload: {
+      field, type: 'text',
+      meta: { interface: 'input-multiline', width: 'full', note: note ?? null },
+      schema: { is_nullable: true },
+    },
+  }
+}
+
+function divField(field: string, label: string) {
+  return {
+    field,
+    payload: {
+      field, type: 'alias',
+      meta: {
+        interface: 'presentation-divider',
+        special: ['alias', 'no-data'],
+        width: 'full',
+        options: { title: label },
+      },
+      schema: null,
+    },
+  }
+}
+
+async function ensureFields(collection: string, fields: { field: string; payload: unknown }[]) {
+  for (const { field, payload } of fields) {
+    if (!(await fieldExists(collection, field))) {
+      await api('POST', `/fields/${collection}`, payload)
+      console.log(`  ✓ ${collection}.${field}`)
+    }
+  }
+}
+
 // ── languages ─────────────────────────────────────────────────────────────────
 
 async function bootstrapLanguages() {
@@ -104,7 +153,7 @@ async function bootstrapLanguages() {
     console.log(`  ${TAG} already exists — checking fields…`)
   }
 
-  const fields: { field: string; payload: unknown }[] = [
+  await ensureFields('languages', [
     {
       field: 'name',
       payload: {
@@ -125,14 +174,7 @@ async function bootstrapLanguages() {
         schema: { is_nullable: true, default_value: 'ltr' },
       },
     },
-  ]
-
-  for (const { field, payload } of fields) {
-    if (!(await fieldExists('languages', field))) {
-      await api('POST', '/fields/languages', payload)
-      console.log(`  ${TAG} field created: ${field}`)
-    }
-  }
+  ])
 }
 
 // ── posts ─────────────────────────────────────────────────────────────────────
@@ -163,8 +205,7 @@ async function bootstrapPosts() {
     console.log(`  ${TAG} already exists — checking fields…`)
   }
 
-  // Non-translatable parent fields
-  const parentFields: { field: string; payload: unknown }[] = [
+  await ensureFields('posts', [
     {
       field: 'slug',
       payload: {
@@ -253,21 +294,14 @@ async function bootstrapPosts() {
         schema: { is_nullable: true },
       },
     },
-  ]
-
-  for (const { field, payload } of parentFields) {
-    if (!(await fieldExists('posts', field))) {
-      await api('POST', '/fields/posts', payload)
-      console.log(`  ${TAG} field created: ${field}`)
-    }
-  }
+  ])
 
   // Hide deprecated per-language fields that moved to posts_translations
   const deprecated = ['title', 'language', 'excerpt', 'body', 'seo_title', 'seo_description']
   for (const field of deprecated) {
     if (await fieldExists('posts', field)) {
       await api('PATCH', `/fields/posts/${field}`, { meta: { hidden: true, note: '[deprecated — use translations]' } })
-      console.log(`  ${TAG} deprecated field hidden: ${field}`)
+      console.log(`  [posts] deprecated field hidden: ${field}`)
     }
   }
 }
@@ -300,7 +334,7 @@ async function bootstrapPostsTranslations() {
     console.log(`  ${TAG} already exists — checking fields…`)
   }
 
-  const fields: { field: string; payload: unknown }[] = [
+  await ensureFields('posts_translations', [
     {
       field: 'posts_id',
       payload: {
@@ -362,19 +396,9 @@ async function bootstrapPostsTranslations() {
         schema: { is_nullable: true },
       },
     },
-  ]
-
-  for (const { field, payload } of fields) {
-    if (!(await fieldExists('posts_translations', field))) {
-      await api('POST', '/fields/posts_translations', payload)
-      console.log(`  ${TAG} field created: ${field}`)
-    }
-  }
+  ])
 
   // O2M relation: posts_translations.posts_id → posts.id
-  // one_field: 'translations' exposes the O2M in the Directus admin on the parent.
-  // The alias field on posts (created below) must have type='alias' + schema=null.
-  // Writes to posts/pages pass fields:['id'] to avoid the post-write SELECT bug.
   if (!(await relationExists('posts_translations', 'posts_id'))) {
     await api('POST', '/relations', {
       collection:         'posts_translations',
@@ -400,7 +424,6 @@ async function bootstrapPostsTranslations() {
     console.log(`  ${TAG} relation created: posts_id → posts.id`)
   }
 
-  // M2O relation: posts_translations.languages_code → languages.code
   if (!(await relationExists('posts_translations', 'languages_code'))) {
     await api('POST', '/relations', {
       collection:         'posts_translations',
@@ -425,7 +448,6 @@ async function bootstrapPostsTranslations() {
     console.log(`  ${TAG} relation created: languages_code → languages.code`)
   }
 
-  // Alias field: posts.translations (type='alias', schema=null — virtual, no DB column)
   if (!(await fieldExists('posts', 'translations'))) {
     await api('POST', '/fields/posts', {
       field: 'translations', type: 'alias',
@@ -468,7 +490,7 @@ async function bootstrapPages() {
     console.log(`  ${TAG} already exists — checking fields…`)
   }
 
-  const parentFields: { field: string; payload: unknown }[] = [
+  await ensureFields('pages', [
     {
       field: 'slug',
       payload: {
@@ -530,14 +552,7 @@ async function bootstrapPages() {
         schema: { is_nullable: true },
       },
     },
-  ]
-
-  for (const { field, payload } of parentFields) {
-    if (!(await fieldExists('pages', field))) {
-      await api('POST', `/fields/pages`, payload)
-      console.log(`  ${TAG} field created: ${field}`)
-    }
-  }
+  ])
 
   // Hide deprecated per-language fields
   const deprecated = ['title', 'language', 'sections', 'seo_title', 'seo_description']
@@ -577,7 +592,8 @@ async function bootstrapPagesTranslations() {
     console.log(`  ${TAG} already exists — checking fields…`)
   }
 
-  const fields: { field: string; payload: unknown }[] = [
+  // ── Core fields ──────────────────────────────────────────────────────────────
+  await ensureFields('pages_translations', [
     {
       field: 'pages_id',
       payload: {
@@ -610,7 +626,8 @@ async function bootstrapPagesTranslations() {
           interface: 'input-code',
           options:   { language: 'json' },
           width:     'full',
-          note:      'SectionRenderer config array — all copy/labels for this language',
+          hidden:    true,
+          note:      '[migrated — data now in individual fields below. Do not edit this JSON directly.]',
         },
         schema: { is_nullable: true },
       },
@@ -631,16 +648,183 @@ async function bootstrapPagesTranslations() {
         schema: { is_nullable: true },
       },
     },
-  ]
 
-  for (const { field, payload } of fields) {
-    if (!(await fieldExists('pages_translations', field))) {
-      await api('POST', '/fields/pages_translations', payload)
-      console.log(`  ${TAG} field created: ${field}`)
-    }
-  }
+    // ── Hero ────────────────────────────────────────────────────────────────────
+    divField('_div_hero', '🦸 Hero Section'),
+    strField('hero_heading',             'Main hero heading'),
+    txtField('hero_subheading',          'Hero subheading / description'),
+    strField('hero_badge',               'Badge label above heading', 'half'),
+    strField('hero_community_text',      'Social proof text below CTAs', 'half'),
+    strField('hero_primary_cta_label',   'Primary CTA button label', 'half'),
+    strField('hero_primary_cta_href',    'Primary CTA href', 'half'),
+    strField('hero_secondary_cta_label', 'Secondary CTA button label', 'half'),
+    strField('hero_secondary_cta_href',  'Secondary CTA href', 'half'),
 
-  // O2M: pages_translations.pages_id → pages.id
+    // ── Featured posts ───────────────────────────────────────────────────────────
+    divField('_div_featured', '📌 Featured Posts Section'),
+    strField('featured_posts_heading',    'Featured posts heading', 'half'),
+    strField('featured_posts_subheading', 'Featured posts subheading', 'half'),
+    strField('featured_posts_view_all',      '"View all" link label', 'half'),
+    strField('featured_posts_view_all_href', '"View all" link href', 'half'),
+
+    // ── Recent posts ─────────────────────────────────────────────────────────────
+    divField('_div_recent', '🕐 Recent Posts Section'),
+    strField('recent_posts_heading',    'Recent posts heading', 'half'),
+    strField('recent_posts_subheading', 'Recent posts subheading', 'half'),
+    strField('recent_posts_view_all',      '"View all" link label', 'half'),
+    strField('recent_posts_view_all_href', '"View all" link href', 'half'),
+
+    // ── CTA section ──────────────────────────────────────────────────────────────
+    divField('_div_cta', '📢 CTA Section'),
+    strField('cta_heading',       'CTA heading', 'half'),
+    txtField('cta_body',          'CTA body text'),
+    strField('cta_primary_label', 'CTA button label', 'half'),
+    strField('cta_primary_href',  'CTA button href', 'half'),
+
+    // ── Auth hero ────────────────────────────────────────────────────────────────
+    divField('_div_auth_hero', '🔐 Auth Hero Section (login/signup left panel)'),
+    strField('auth_hero_badge',       'Auth hero badge text', 'half'),
+    strField('auth_hero_headline',    'Auth hero headline', 'half'),
+    txtField('auth_hero_footer_note', 'Auth hero footer note'),
+
+    // ── Auth form ────────────────────────────────────────────────────────────────
+    divField('_div_auth_form', '📝 Auth Form Section'),
+    strField('auth_heading',              'Form heading', 'half'),
+    strField('auth_google_label',         'Google OAuth button label', 'half'),
+    strField('auth_divider_label',        'Divider text (e.g. "or")', 'half'),
+    strField('auth_name_label',           'Name field label', 'half'),
+    strField('auth_name_placeholder',     'Name field placeholder', 'half'),
+    strField('auth_email_label',          'Email field label', 'half'),
+    strField('auth_email_placeholder',    'Email field placeholder', 'half'),
+    strField('auth_password_label',       'Password field label', 'half'),
+    strField('auth_password_placeholder', 'Password field placeholder', 'half'),
+    strField('auth_submit_label',         'Submit button label', 'half'),
+    strField('auth_footer_text',          'Footer text', 'half'),
+    strField('auth_footer_link_label',    'Footer link label', 'half'),
+    strField('auth_footer_link_href',     'Footer link href', 'half'),
+
+    // ── Posts page ───────────────────────────────────────────────────────────────
+    divField('_div_posts', '📄 Posts Page'),
+    strField('posts_heading',             'Posts page heading', 'half'),
+    strField('posts_subheading',          'Posts page subheading', 'half'),
+    strField('posts_api_badge',           'API badge label', 'half'),
+    strField('posts_my_label',            '"My posts" stat label', 'half'),
+    strField('posts_published_label',     '"Published" stat label', 'half'),
+    strField('posts_drafts_label',        '"Drafts" stat label', 'half'),
+    strField('posts_sync_label',          'Sync button label', 'half'),
+    strField('posts_new_label',           'New post button label', 'half'),
+    strField('posts_search_placeholder',  'Search placeholder', 'half'),
+    strField('posts_col_title',           'Table: Title column header', 'half'),
+    strField('posts_col_status',          'Table: Status column header', 'half'),
+    strField('posts_col_tags',            'Table: Tags column header', 'half'),
+    strField('posts_col_modified',        'Table: Last modified column header', 'half'),
+    strField('posts_empty_title',         'Empty state title', 'half'),
+    txtField('posts_empty_body',          'Empty state body'),
+    strField('posts_empty_cta',           'Empty state CTA label', 'half'),
+    strField('posts_load_more',           '"Load more" button label', 'half'),
+    strField('posts_view_label',          'Row action: View', 'half'),
+    strField('posts_edit_label',          'Row action: Edit', 'half'),
+    strField('posts_delete_label',        'Row action: Delete', 'half'),
+    strField('posts_delete_dialog_title', 'Delete dialog title', 'half'),
+    txtField('posts_delete_dialog_body',  'Delete dialog body'),
+    strField('posts_delete_confirm',      'Delete confirm button', 'half'),
+    strField('posts_delete_cancel',       'Delete cancel button', 'half'),
+
+    // ── Billing page ─────────────────────────────────────────────────────────────
+    divField('_div_billing', '💳 Billing Page'),
+    strField('billing_heading',            'Billing page heading', 'half'),
+    strField('billing_subheading',         'Billing page subheading', 'half'),
+    strField('billing_current_plan_label', '"Current plan" label', 'half'),
+    strField('billing_active_badge',       '"Active" badge label', 'half'),
+    strField('billing_cancelling_badge',   '"Cancelling" badge label', 'half'),
+    strField('billing_free_badge',         '"Free" badge label', 'half'),
+    strField('billing_manage_label',       '"Manage" button label', 'half'),
+    strField('billing_cancel_label',       '"Cancel" button label', 'half'),
+    strField('billing_reactivate_label',   '"Reactivate" button label', 'half'),
+    strField('billing_upgrade_label',      '"Upgrade" button label', 'half'),
+    txtField('billing_cancelling_note',    'Cancelling note text'),
+    strField('billing_usage_heading',      'Usage section heading', 'half'),
+    strField('billing_posts_label',        'Posts usage label', 'half'),
+    strField('billing_api_label',          'API usage label', 'half'),
+    strField('billing_storage_label',      'Storage usage label', 'half'),
+    strField('billing_seats_label',        'Seats usage label', 'half'),
+    strField('billing_plans_heading',      'Plans section heading', 'half'),
+    strField('billing_free_name',          'Free plan name', 'half'),
+    strField('billing_free_tagline',       'Free plan tagline', 'half'),
+    strField('billing_free_price',         'Free plan price display', 'half'),
+    strField('billing_pro_name',           'Pro plan name', 'half'),
+    strField('billing_pro_tagline',        'Pro plan tagline', 'half'),
+    strField('billing_pro_badge',          'Pro plan badge', 'half'),
+    strField('billing_upgrade_cta',        'Upgrade CTA label', 'half'),
+    strField('billing_downgrade_cta',      'Downgrade CTA label', 'half'),
+    strField('billing_current_plan_btn',   '"Current plan" button label', 'half'),
+    strField('billing_stripe_note',        'Stripe note text', 'half'),
+    strField('billing_webhook_note',       'Webhook note text', 'half'),
+
+    // ── Billing success ───────────────────────────────────────────────────────────
+    divField('_div_billing_success', '✅ Billing Success Page'),
+    strField('billing_success_heading',         'Success heading', 'half'),
+    strField('billing_success_subheading',      'Success subheading', 'half'),
+    txtField('billing_success_body',            'Success body text'),
+    strField('billing_success_primary_label',   'Primary action label', 'half'),
+    strField('billing_success_primary_href',    'Primary action href', 'half'),
+    strField('billing_success_secondary_label', 'Secondary action label', 'half'),
+    strField('billing_success_secondary_href',  'Secondary action href', 'half'),
+
+    // ── Settings page ─────────────────────────────────────────────────────────────
+    divField('_div_settings', '⚙️ Settings Page'),
+    strField('settings_heading',              'Settings page heading', 'half'),
+    strField('settings_subheading',           'Settings page subheading', 'half'),
+    strField('settings_upload_photo_label',   'Upload photo label', 'half'),
+    strField('settings_display_name_label',   'Display name field label', 'half'),
+    strField('settings_email_label',          'Email field label', 'half'),
+    strField('settings_email_helper',         'Email helper text', 'half'),
+    strField('settings_bio_label',            'Bio field label', 'half'),
+    txtField('settings_bio_placeholder',      'Bio field placeholder'),
+    strField('settings_website_label',        'Website field label', 'half'),
+    strField('settings_website_placeholder',  'Website field placeholder', 'half'),
+    strField('settings_website_error',        'Website validation error', 'half'),
+    strField('settings_save_label',           'Save button label', 'half'),
+    strField('settings_discard_label',        'Discard button label', 'half'),
+    strField('settings_danger_heading',       'Danger zone heading', 'half'),
+    txtField('settings_danger_body',          'Danger zone body text'),
+    strField('settings_danger_warning',       'Danger zone warning text', 'half'),
+    strField('settings_delete_label',         'Delete account button label', 'half'),
+
+    // ── Admin page ────────────────────────────────────────────────────────────────
+    divField('_div_admin', '🛡️ Admin Page'),
+    strField('admin_heading',                   'Admin page heading', 'half'),
+    strField('admin_subheading',                'Admin page subheading', 'half'),
+    strField('admin_total_users_label',         '"Total users" label', 'half'),
+    strField('admin_pro_label',                 '"Pro" label', 'half'),
+    strField('admin_free_label',                '"Free" label', 'half'),
+    strField('admin_col_user',                  'Table: User column header', 'half'),
+    strField('admin_col_plan',                  'Table: Plan column header', 'half'),
+    strField('admin_col_role',                  'Table: Role column header', 'half'),
+    strField('admin_col_joined',                'Table: Joined column header', 'half'),
+    strField('admin_empty_label',               'Empty users label', 'half'),
+    strField('admin_invite_heading',            'Invite section heading', 'half'),
+    strField('admin_invite_form_title',         'Invite form title', 'half'),
+    strField('admin_invite_email_label',        'Invite email label', 'half'),
+    strField('admin_invite_email_placeholder',  'Invite email placeholder', 'half'),
+    strField('admin_invite_message_label',      'Invite message label', 'half'),
+    strField('admin_invite_send_label',         'Invite send button label', 'half'),
+
+    // ── Analytics page ────────────────────────────────────────────────────────────
+    divField('_div_analytics', '📊 Analytics Page'),
+    strField('analytics_heading',        'Analytics heading', 'half'),
+    strField('analytics_subheading',     'Analytics subheading', 'half'),
+    strField('analytics_events_label',   'Events count label', 'half'),
+    strField('analytics_users_label',    'Unique users label', 'half'),
+    strField('analytics_empty_title',    'Empty state title', 'half'),
+    txtField('analytics_empty_body',     'Empty state body'),
+    strField('analytics_refresh_label',  'Refresh button label', 'half'),
+    strField('analytics_prev_label',     '"Previous" pagination label', 'half'),
+    strField('analytics_next_label',     '"Next" pagination label', 'half'),
+  ])
+
+  // ── Relations ────────────────────────────────────────────────────────────────
+
   if (!(await relationExists('pages_translations', 'pages_id'))) {
     await api('POST', '/relations', {
       collection:         'pages_translations',
@@ -666,7 +850,6 @@ async function bootstrapPagesTranslations() {
     console.log(`  ${TAG} relation created: pages_id → pages.id`)
   }
 
-  // M2O: pages_translations.languages_code → languages.code
   if (!(await relationExists('pages_translations', 'languages_code'))) {
     await api('POST', '/relations', {
       collection:         'pages_translations',
@@ -691,7 +874,6 @@ async function bootstrapPagesTranslations() {
     console.log(`  ${TAG} relation created: languages_code → languages.code`)
   }
 
-  // Alias field: pages.translations (type='alias', schema=null — virtual, no DB column)
   if (!(await fieldExists('pages', 'translations'))) {
     await api('POST', '/fields/pages', {
       field: 'translations', type: 'alias',
@@ -704,6 +886,17 @@ async function bootstrapPagesTranslations() {
       schema: null,
     })
     console.log(`  ${TAG} alias field created: pages.translations`)
+  }
+
+  // Hide the sections JSON blob so editors see the individual fields
+  if (await fieldExists('pages_translations', 'sections')) {
+    await api('PATCH', '/fields/pages_translations/sections', {
+      meta: {
+        hidden: true,
+        note: '[migrated — data now in individual fields above. Do not edit this JSON directly.]',
+      },
+    })
+    console.log(`  ${TAG} sections JSON field hidden`)
   }
 }
 
@@ -736,7 +929,7 @@ async function bootstrapSiteConfig() {
     }
   }
 
-  const fields: { field: string; payload: unknown }[] = [
+  await ensureFields('site_config', [
     {
       field: 'site_name',
       payload: {
@@ -745,11 +938,13 @@ async function bootstrapSiteConfig() {
         schema: { is_nullable: false },
       },
     },
+
+    // Legacy JSON fields — kept hidden for backward compat / fallback
     {
       field: 'navbar_config',
       payload: {
         field: 'navbar_config', type: 'json',
-        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full', note: 'Nav items use label: {"en":…,"hi":…,"kn":…}' },
+        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full', hidden: true, note: '[migrated — use flat fields below]' },
         schema: { is_nullable: true },
       },
     },
@@ -757,7 +952,7 @@ async function bootstrapSiteConfig() {
       field: 'footer_config',
       payload: {
         field: 'footer_config', type: 'json',
-        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full' },
+        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full', hidden: true, note: '[migrated — use flat fields below]' },
         schema: { is_nullable: true },
       },
     },
@@ -765,7 +960,7 @@ async function bootstrapSiteConfig() {
       field: 'sidebar_config',
       payload: {
         field: 'sidebar_config', type: 'json',
-        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full' },
+        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full', hidden: true, note: '[migrated — use flat fields below]' },
         schema: { is_nullable: true },
       },
     },
@@ -773,24 +968,228 @@ async function bootstrapSiteConfig() {
       field: 'mobile_nav_config',
       payload: {
         field: 'mobile_nav_config', type: 'json',
-        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full' },
+        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full', hidden: true, note: '[migrated — use flat fields below]' },
         schema: { is_nullable: true },
       },
     },
-  ]
 
-  for (const { field, payload } of fields) {
-    if (!(await fieldExists('site_config', field))) {
-      await api('POST', '/fields/site_config', payload)
-      console.log(`  ${TAG} field created: ${field}`)
+    // ── Navbar flat fields ────────────────────────────────────────────────────
+    divField('_div_navbar', '🔝 Navbar'),
+    strField('navbar_brand_name',       'Brand / logo name', 'half'),
+    strField('navbar_cta_label_en',     'CTA button label (English)', 'half'),
+    strField('navbar_cta_label_hi',     'CTA button label (Hindi)', 'half'),
+    strField('navbar_cta_label_kn',     'CTA button label (Kannada)', 'half'),
+    strField('navbar_cta_href',         'CTA button href', 'half'),
+    strField('navbar_login_label_en',   'Login label (English)', 'half'),
+    strField('navbar_login_label_hi',   'Login label (Hindi)', 'half'),
+    strField('navbar_login_label_kn',   'Login label (Kannada)', 'half'),
+    strField('navbar_signup_label_en',  'Sign up label (English)', 'half'),
+    strField('navbar_signup_label_hi',  'Sign up label (Hindi)', 'half'),
+    strField('navbar_signup_label_kn',  'Sign up label (Kannada)', 'half'),
+    strField('navbar_signout_label_en', 'Sign out label (English)', 'half'),
+    strField('navbar_signout_label_hi', 'Sign out label (Hindi)', 'half'),
+    strField('navbar_signout_label_kn', 'Sign out label (Kannada)', 'half'),
+
+    // ── Navbar nav items (up to 5) ────────────────────────────────────────────
+    divField('_div_navbar_items', '🔗 Navbar Nav Items'),
+    strField('navbar_item_1_label_en', 'Item 1 label (EN)', 'half'), strField('navbar_item_1_href', 'Item 1 href', 'half'),
+    strField('navbar_item_1_label_hi', 'Item 1 label (HI)', 'half'), strField('navbar_item_1_label_kn', 'Item 1 label (KN)', 'half'),
+    strField('navbar_item_2_label_en', 'Item 2 label (EN)', 'half'), strField('navbar_item_2_href', 'Item 2 href', 'half'),
+    strField('navbar_item_2_label_hi', 'Item 2 label (HI)', 'half'), strField('navbar_item_2_label_kn', 'Item 2 label (KN)', 'half'),
+    strField('navbar_item_3_label_en', 'Item 3 label (EN)', 'half'), strField('navbar_item_3_href', 'Item 3 href', 'half'),
+    strField('navbar_item_3_label_hi', 'Item 3 label (HI)', 'half'), strField('navbar_item_3_label_kn', 'Item 3 label (KN)', 'half'),
+    strField('navbar_item_4_label_en', 'Item 4 label (EN)', 'half'), strField('navbar_item_4_href', 'Item 4 href', 'half'),
+    strField('navbar_item_4_label_hi', 'Item 4 label (HI)', 'half'), strField('navbar_item_4_label_kn', 'Item 4 label (KN)', 'half'),
+    strField('navbar_item_5_label_en', 'Item 5 label (EN)', 'half'), strField('navbar_item_5_href', 'Item 5 href', 'half'),
+    strField('navbar_item_5_label_hi', 'Item 5 label (HI)', 'half'), strField('navbar_item_5_label_kn', 'Item 5 label (KN)', 'half'),
+
+    // ── Footer flat fields ────────────────────────────────────────────────────
+    divField('_div_footer', '🦶 Footer'),
+    strField('footer_brand_name',      'Footer brand name', 'half'),
+    strField('footer_tagline_en',      'Tagline (English)', 'half'),
+    strField('footer_tagline_hi',      'Tagline (Hindi)', 'half'),
+    strField('footer_tagline_kn',      'Tagline (Kannada)', 'half'),
+    strField('footer_copyright_en',    'Copyright text (English)', 'half'),
+    strField('footer_copyright_hi',    'Copyright text (Hindi)', 'half'),
+    strField('footer_copyright_kn',    'Copyright text (Kannada)', 'half'),
+
+    // ── Footer columns (2 cols × 2 links) ────────────────────────────────────
+    divField('_div_footer_cols', '📋 Footer Columns'),
+    strField('footer_col_1_heading_en', 'Col 1 heading (EN)', 'half'), strField('footer_col_1_heading_hi', 'Col 1 heading (HI)', 'half'),
+    strField('footer_col_1_heading_kn', 'Col 1 heading (KN)', 'half'),
+    strField('footer_col_1_link_1_label_en', 'Col 1 Link 1 label (EN)', 'half'), strField('footer_col_1_link_1_href', 'Col 1 Link 1 href', 'half'),
+    strField('footer_col_1_link_1_label_hi', 'Col 1 Link 1 label (HI)', 'half'), strField('footer_col_1_link_1_label_kn', 'Col 1 Link 1 label (KN)', 'half'),
+    strField('footer_col_1_link_2_label_en', 'Col 1 Link 2 label (EN)', 'half'), strField('footer_col_1_link_2_href', 'Col 1 Link 2 href', 'half'),
+    strField('footer_col_1_link_2_label_hi', 'Col 1 Link 2 label (HI)', 'half'), strField('footer_col_1_link_2_label_kn', 'Col 1 Link 2 label (KN)', 'half'),
+    strField('footer_col_2_heading_en', 'Col 2 heading (EN)', 'half'), strField('footer_col_2_heading_hi', 'Col 2 heading (HI)', 'half'),
+    strField('footer_col_2_heading_kn', 'Col 2 heading (KN)', 'half'),
+    strField('footer_col_2_link_1_label_en', 'Col 2 Link 1 label (EN)', 'half'), strField('footer_col_2_link_1_href', 'Col 2 Link 1 href', 'half'),
+    strField('footer_col_2_link_1_label_hi', 'Col 2 Link 1 label (HI)', 'half'), strField('footer_col_2_link_1_label_kn', 'Col 2 Link 1 label (KN)', 'half'),
+    strField('footer_col_2_link_2_label_en', 'Col 2 Link 2 label (EN)', 'half'), strField('footer_col_2_link_2_href', 'Col 2 Link 2 href', 'half'),
+    strField('footer_col_2_link_2_label_hi', 'Col 2 Link 2 label (HI)', 'half'), strField('footer_col_2_link_2_label_kn', 'Col 2 Link 2 label (KN)', 'half'),
+
+    // ── Sidebar flat fields ───────────────────────────────────────────────────
+    divField('_div_sidebar', '📌 Sidebar'),
+    strField('sidebar_brand_name',     'Sidebar brand name', 'half'),
+    strField('sidebar_brand_subtitle', 'Sidebar brand subtitle', 'half'),
+    strField('sidebar_status_text',    'Status text (e.g. "All systems operational")', 'half'),
+    strField('sidebar_status_badge',   'Status badge (e.g. "Live")', 'half'),
+
+    // ── Sidebar nav items (up to 5) ───────────────────────────────────────────
+    divField('_div_sidebar_nav', '🔗 Sidebar Nav Items'),
+    strField('sidebar_nav_1_label_en', 'Item 1 label (EN)', 'half'), strField('sidebar_nav_1_href', 'Item 1 href', 'half'),
+    strField('sidebar_nav_1_label_hi', 'Item 1 label (HI)', 'half'), strField('sidebar_nav_1_label_kn', 'Item 1 label (KN)', 'half'),
+    strField('sidebar_nav_2_label_en', 'Item 2 label (EN)', 'half'), strField('sidebar_nav_2_href', 'Item 2 href', 'half'),
+    strField('sidebar_nav_2_label_hi', 'Item 2 label (HI)', 'half'), strField('sidebar_nav_2_label_kn', 'Item 2 label (KN)', 'half'),
+    strField('sidebar_nav_3_label_en', 'Item 3 label (EN)', 'half'), strField('sidebar_nav_3_href', 'Item 3 href', 'half'),
+    strField('sidebar_nav_3_label_hi', 'Item 3 label (HI)', 'half'), strField('sidebar_nav_3_label_kn', 'Item 3 label (KN)', 'half'),
+    strField('sidebar_nav_4_label_en', 'Item 4 label (EN)', 'half'), strField('sidebar_nav_4_href', 'Item 4 href', 'half'),
+    strField('sidebar_nav_4_label_hi', 'Item 4 label (HI)', 'half'), strField('sidebar_nav_4_label_kn', 'Item 4 label (KN)', 'half'),
+    strField('sidebar_nav_5_label_en', 'Item 5 label (EN)', 'half'), strField('sidebar_nav_5_href', 'Item 5 href', 'half'),
+    strField('sidebar_nav_5_label_hi', 'Item 5 label (HI)', 'half'), strField('sidebar_nav_5_label_kn', 'Item 5 label (KN)', 'half'),
+  ])
+
+  // Hide old JSON config fields if they exist as visible
+  const toHide = ['navbar_config', 'footer_config', 'sidebar_config', 'mobile_nav_config']
+  for (const field of toHide) {
+    if (await fieldExists('site_config', field)) {
+      await api('PATCH', `/fields/site_config/${field}`, {
+        meta: { hidden: true, note: '[migrated — use flat fields above]' },
+      })
     }
   }
+}
+
+// ── site_config_translations ──────────────────────────────────────────────────
+
+async function bootstrapSiteConfigTranslations() {
+  const TAG = '[site_config_translations]'
+
+  if (!(await collectionExists('site_config_translations'))) {
+    await api('POST', '/collections', {
+      collection: 'site_config_translations',
+      meta: {
+        icon: 'translate',
+        display_template: '{{languages_code}}',
+        hidden: true,
+        sort_field: null,
+      },
+      schema: {},
+      fields: [
+        {
+          field: 'id',
+          type: 'integer',
+          meta: { hidden: true, readonly: true, interface: 'input', special: ['cast-integer'] },
+          schema: { is_primary_key: true, has_auto_increment: true },
+        },
+      ],
+    })
+    console.log(`  ${TAG} collection created`)
+  } else {
+    console.log(`  ${TAG} already exists — checking fields…`)
+  }
+
+  await ensureFields('site_config_translations', [
+    {
+      field: 'site_config_id',
+      payload: { field: 'site_config_id', type: 'string', meta: { interface: 'input', hidden: true }, schema: { is_nullable: false } },
+    },
+    {
+      field: 'languages_code',
+      payload: { field: 'languages_code', type: 'string', meta: { interface: 'input', hidden: true }, schema: { is_nullable: false } },
+    },
+    // Navbar labels
+    divField('_div_sc_navbar', '🔝 Navbar Labels'),
+    strField('navbar_cta_label',     'CTA button label', 'half'),
+    strField('navbar_login_label',   'Login label',      'half'),
+    strField('navbar_signup_label',  'Sign up label',    'half'),
+    strField('navbar_signout_label', 'Sign out label',   'half'),
+    // Nav item labels
+    divField('_div_sc_nav_items', '🔗 Navbar Items'),
+    strField('navbar_item_1_label', 'Item 1 label', 'half'),
+    strField('navbar_item_2_label', 'Item 2 label', 'half'),
+    strField('navbar_item_3_label', 'Item 3 label', 'half'),
+    strField('navbar_item_4_label', 'Item 4 label', 'half'),
+    strField('navbar_item_5_label', 'Item 5 label', 'half'),
+    // Footer labels
+    divField('_div_sc_footer', '🦶 Footer Labels'),
+    strField('footer_tagline',    'Tagline',         'full'),
+    strField('footer_copyright',  'Copyright text',  'full'),
+    strField('footer_col_1_heading',      'Column 1 heading',   'half'),
+    strField('footer_col_1_link_1_label', 'Col 1 Link 1 label', 'half'),
+    strField('footer_col_1_link_2_label', 'Col 1 Link 2 label', 'half'),
+    strField('footer_col_2_heading',      'Column 2 heading',   'half'),
+    strField('footer_col_2_link_1_label', 'Col 2 Link 1 label', 'half'),
+    strField('footer_col_2_link_2_label', 'Col 2 Link 2 label', 'half'),
+    // Sidebar labels
+    divField('_div_sc_sidebar', '📌 Sidebar Labels'),
+    strField('sidebar_brand_name',  'Sidebar brand name', 'half'),
+    strField('sidebar_status_text', 'Status text',        'half'),
+    strField('sidebar_nav_1_label', 'Nav 1 label', 'half'),
+    strField('sidebar_nav_2_label', 'Nav 2 label', 'half'),
+    strField('sidebar_nav_3_label', 'Nav 3 label', 'half'),
+    strField('sidebar_nav_4_label', 'Nav 4 label', 'half'),
+    strField('sidebar_nav_5_label', 'Nav 5 label', 'half'),
+  ])
+
+  // FK: site_config_id → site_config
+  if (!(await relationExists('site_config_translations', 'site_config_id'))) {
+    await api('POST', '/relations', {
+      collection: 'site_config_translations',
+      field: 'site_config_id',
+      related_collection: 'site_config',
+      meta: { junction_field: null },
+      schema: { on_delete: 'CASCADE' },
+    })
+    console.log(`  ${TAG} relation site_config_id → site_config created`)
+  }
+
+  // FK: languages_code → languages
+  if (!(await relationExists('site_config_translations', 'languages_code'))) {
+    await api('POST', '/relations', {
+      collection: 'site_config_translations',
+      field: 'languages_code',
+      related_collection: 'languages',
+      meta: { junction_field: null },
+      schema: { on_delete: 'CASCADE' },
+    })
+    console.log(`  ${TAG} relation languages_code → languages created`)
+  }
+
+  // Add translations alias field to site_config (shows translation tabs)
+  if (!(await fieldExists('site_config', 'translations'))) {
+    await api('POST', '/fields/site_config', {
+      field: 'translations',
+      type: 'alias',
+      meta: {
+        interface: 'translations',
+        special: ['translations'],
+        options: {
+          languageField: 'languages_code',
+          defaultLanguage: 'en',
+          userLanguage: true,
+        },
+        width: 'full',
+        translations: [{ language: 'en-US', t: 'Translations' }],
+      },
+      schema: null,
+    })
+    console.log(`  ${TAG} translations alias field added to site_config`)
+  }
+
+  // Set collection preview URL
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+  await api('PATCH', '/collections/site_config', {
+    meta: { preview_url: `${appUrl}?preview={{KEY}}` },
+  })
+
+  console.log(`  ${TAG} done`)
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
-  console.log('\n🚀  ContentFlow — Directus schema bootstrap (with translations)')
+  console.log('\n🚀  ContentFlow — Directus schema bootstrap (with translations + flat fields)')
   console.log(`    URL: ${BASE_URL}\n`)
 
   try {
@@ -817,12 +1216,31 @@ async function main() {
   await bootstrapPages()
   console.log()
 
-  console.log('📦  pages_translations…')
+  console.log('📦  pages_translations (all content fields)…')
   await bootstrapPagesTranslations()
   console.log()
 
-  console.log('📦  site_config…')
+  console.log('📦  site_config (flat fields)…')
   await bootstrapSiteConfig()
+
+  console.log('\n📦  site_config_translations…')
+  await bootstrapSiteConfigTranslations()
+
+  // Patch posts body to rich-text HTML editor
+  if (await fieldExists('posts_translations', 'body')) {
+    await api('PATCH', '/fields/posts_translations/body', {
+      type: 'text',
+      meta: {
+        interface: 'input-rich-text-html',
+        options: {
+          toolbar: ['bold','italic','underline','strike','h1','h2','h3','blockquote','code','link','ordered','bullet','image','clear'],
+        },
+        width: 'full',
+        note: 'Post body (HTML rich text). Use the editor toolbar to format content.',
+      },
+    })
+    console.log('  ✓ posts_translations.body → input-rich-text-html')
+  }
 
   console.log('\n✅  Bootstrap complete!')
   console.log('\n── Access Policy (update in Directus dashboard) ─────────────────────')
@@ -834,8 +1252,10 @@ async function main() {
   console.log('     languages            — no filter                     fields: *')
   console.log('     site_config          — no filter                     fields: *')
   console.log()
-  console.log('── Next: seed data ──────────────────────────────────────────────────')
-  console.log('   npm run directus:seed\n')
+  console.log('── Next steps ───────────────────────────────────────────────────────')
+  console.log('   1. npm run directus:seed     — seed initial pages, posts, site config')
+  console.log('   2. npm run directus:migrate  — populate individual fields from JSON data')
+  console.log('      (skip step 2 if seeding fresh — migrate reads from existing JSON)\n')
 }
 
 main().catch(err => {

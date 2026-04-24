@@ -1308,6 +1308,8 @@ export type SiteConfig = {
   footerTagline?: string
   footerLinks?: { label: string; href: string }[]
   copyright?: string
+  /** ID of the resolved site_config_translations row (for visual editing bindings). */
+  siteConfigTranslationId?: number
 }
 
 // ─── Shared nav / link types ──────────────────────────────────────────────────

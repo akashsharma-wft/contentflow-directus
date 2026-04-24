@@ -2,6 +2,7 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
 function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
@@ -24,6 +25,7 @@ interface GridSectionProps {
     items?: GridItem[]
     cardStyle?: 'bordered' | 'filled' | 'plain'
   }
+  translationId?: number
 }
 
 const colClass: Record<number, string> = {
@@ -38,10 +40,10 @@ const cardClass: Record<string, string> = {
   plain: 'p-4',
 }
 
-export function GridSection({ section }: GridSectionProps) {
+export function GridSection({ section, translationId }: GridSectionProps) {
   const { heading, subheading, columns = 3, items = [], cardStyle = 'bordered' } = section
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-7xl mx-auto">
         {(heading || subheading) && (
           <div className="mb-12 text-center">

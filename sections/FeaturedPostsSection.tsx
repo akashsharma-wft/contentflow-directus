@@ -3,7 +3,7 @@ import { getFeaturedPosts } from '@/lib/directus/queries'
 import { FeaturedPostsCarousel } from './FeaturedPostsCarousel'
 import type { FeaturedPostsSection as FeaturedPostsSectionType, PostCard } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
-import { pageAttr } from '@/lib/directus/section-binding'
+import { pageAttr, pageAttrs } from '@/lib/directus/section-binding'
 
 interface Props {
   section: FeaturedPostsSectionType
@@ -21,11 +21,10 @@ export async function FeaturedPostsSection({ section, lang = 'en', translationId
   const heading     = translationRow?.featured_posts_heading    ?? section.heading    ?? 'Featured Stories'
   const subheading  = translationRow?.featured_posts_subheading ?? section.subheading
   const viewAllLabel = translationRow?.featured_posts_view_all  ?? section.viewAllLabel
+  const viewAllHref  = translationRow?.featured_posts_view_all_href ?? (lang === 'en' ? '/posts' : `/${lang}/posts`)
 
   const posts = (await getFeaturedPosts(lang)) as unknown as PostCard[]
   if (posts.length === 0) return null
-
-  const viewAllUrl = lang === 'en' ? '/posts' : `/${lang}/posts`
 
   return (
     <section className="w-full px-4 sm:px-6 py-14 max-w-7xl mx-auto">
@@ -50,8 +49,8 @@ export async function FeaturedPostsSection({ section, lang = 'en', translationId
         </div>
         {viewAllLabel && (
           <Link
-            href={viewAllUrl}
-            data-directus={pageAttr(translationId, 'featured_posts_view_all')}
+            href={viewAllHref}
+            data-directus={pageAttrs(translationId, 'featured_posts_view_all', 'featured_posts_view_all_href')}
             className="text-white/40 hover:text-white text-sm font-medium transition-colors shrink-0 inline-flex items-center gap-1.5"
           >
             {viewAllLabel}

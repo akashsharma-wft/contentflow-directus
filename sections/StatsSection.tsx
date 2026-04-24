@@ -1,11 +1,13 @@
 ﻿import { getPostsCountByLang } from '@/lib/directus/queries'
+import { pageAttr } from '@/lib/directus/section-binding'
 import type { StatsSection as StatsSectionType } from '@/types/cms'
 
 interface Props {
   section: StatsSectionType
+  translationId?: number
 }
 
-export async function StatsSection({ section }: Props) {
+export async function StatsSection({ section, translationId }: Props) {
   const { heading, stats = [] } = section
 
   // Resolve live post count for any stat that requests it
@@ -23,7 +25,10 @@ export async function StatsSection({ section }: Props) {
   }))
 
   return (
-    <section className="w-full px-6 py-12">
+    <section
+      className="w-full px-6 py-12"
+      data-directus={pageAttr(translationId, 'sections')}
+    >
       {heading && (
         <h2 className="text-center text-2xl font-bold text-white tracking-tight mb-10">
           {heading}

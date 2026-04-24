@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { X } from 'lucide-react'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
 function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
@@ -16,6 +17,7 @@ interface GallerySectionProps {
     columns?: 2 | 3 | 4
     lightbox?: boolean
   }
+  translationId?: number
 }
 
 const colClass: Record<number, string> = {
@@ -24,12 +26,12 @@ const colClass: Record<number, string> = {
   4: 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4',
 }
 
-export function GallerySection({ section }: GallerySectionProps) {
+export function GallerySection({ section, translationId }: GallerySectionProps) {
   const { heading, images = [], columns = 3, lightbox = true } = section
   const [activeIdx, setActiveIdx] = useState<number | null>(null)
 
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-6xl mx-auto">
         {heading && <h2 className="text-3xl font-bold text-white text-center mb-10">{heading}</h2>}
 

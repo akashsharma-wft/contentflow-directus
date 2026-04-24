@@ -12,6 +12,7 @@ import { APP_NAV_ITEMS, filterNavItems, localizeHref, getLocalizedLabel, resolve
 import { useUser } from '@/hooks/useUser'
 import { cn } from '@/lib/utils'
 import type { SiteConfig } from '@/types/cms'
+import { siteAttr, siteTranslationAttr } from '@/lib/directus/section-binding'
 
 interface Props {
   siteConfig: SiteConfig | null
@@ -72,10 +73,16 @@ export function Footer({ siteConfig }: Props) {
                     <path d="M3 9h9m0 0-3-3m3 3-3 3M12 4h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <span className="text-white font-semibold text-sm tracking-tight">{brandName}</span>
+                <span
+                  data-directus={siteAttr('footer_brand_name')}
+                  className="text-white font-semibold text-sm tracking-tight"
+                >{brandName}</span>
               </div>
             )}
-            <p className="text-white/35 text-xs leading-relaxed max-w-[220px]">{tagline}</p>
+            <p
+              data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, 'footer_tagline')}
+              className="text-white/35 text-xs leading-relaxed max-w-[220px]"
+            >{tagline}</p>
             {socialLinks.length > 0 && (
               <div className="flex items-center gap-2 pt-1">
                 {socialLinks.map((s) => (
@@ -103,16 +110,20 @@ export function Footer({ siteConfig }: Props) {
                 : footerColumns.length === 3 ? 'sm:grid-cols-3'
                 : 'sm:grid-cols-2'
               )}>
-                {footerColumns.map((col) => (
+                {footerColumns.map((col, ci) => (
                   <div key={col._key} className="space-y-3">
-                    <p className="text-white/30 text-[10px] font-bold uppercase tracking-widest">{resolveLabel(col.heading, currentLang)}</p>
+                    <p
+                      data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, `footer_col_${ci + 1}_heading`)}
+                      className="text-white/30 text-[10px] font-bold uppercase tracking-widest"
+                    >{resolveLabel(col.heading, currentLang)}</p>
                     <ul className="space-y-2">
-                      {col.links?.map((link) => (
+                      {col.links?.map((link, li) => (
                         <li key={link._key}>
                           <Link
                             href={link.external ? link.href : localizeHref(link.href, currentLang)}
                             target={link.external ? '_blank' : undefined}
                             rel={link.external ? 'noopener noreferrer' : undefined}
+                            data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, `footer_col_${ci + 1}_link_${li + 1}_label`)}
                             className="text-white/50 text-sm hover:text-white transition-colors"
                           >
                             {resolveLabel(link.label, currentLang)}
@@ -145,7 +156,10 @@ export function Footer({ siteConfig }: Props) {
 
         {/* Bottom row */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/25">
-          <span className="uppercase tracking-widest">{copyright}</span>
+          <span
+            data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, 'footer_copyright')}
+            className="uppercase tracking-widest"
+          >{copyright}</span>
           {bottomLinks.length > 0 && (
             <div className="flex items-center gap-4">
               {bottomLinks.map((link) => (

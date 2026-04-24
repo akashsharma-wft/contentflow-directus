@@ -1,5 +1,6 @@
 'use client'
 import Image from 'next/image'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
 function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
@@ -13,6 +14,7 @@ interface ImageSectionProps {
     rounded?: boolean
     shadow?: boolean
   }
+  translationId?: number
 }
 
 const maxWidthClass: Record<string, string> = {
@@ -22,12 +24,12 @@ const maxWidthClass: Record<string, string> = {
   full: 'max-w-none',
 }
 
-export function ImageSection({ section }: ImageSectionProps) {
+export function ImageSection({ section, translationId }: ImageSectionProps) {
   const { image, alt, caption, maxWidth = 'wide', rounded = true, shadow = false } = section
   const url = resolveImg(image)
   if (!url) return null
   return (
-    <section className="py-12 px-6 bg-[#0d0e14]">
+    <section className="py-12 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className={`mx-auto ${maxWidthClass[maxWidth]}`}>
         <div className={`relative w-full aspect-video overflow-hidden ${rounded ? 'rounded-2xl' : ''} ${shadow ? 'shadow-2xl shadow-black/50' : ''}`}>
           <Image

@@ -1,3 +1,5 @@
+import { pageAttr } from '@/lib/directus/section-binding'
+
 interface TableSectionProps {
   section: {
     heading?: string
@@ -6,12 +8,13 @@ interface TableSectionProps {
     striped?: boolean
     bordered?: boolean
   }
+  translationId?: number
 }
 
-export function TableSection({ section }: TableSectionProps) {
+export function TableSection({ section, translationId }: TableSectionProps) {
   const { heading, headers = [], rows = [], striped = true, bordered = true } = section
   return (
-    <section className="py-12 px-6 bg-[#0d0e14]">
+    <section className="py-12 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-5xl mx-auto">
         {heading && <h2 className="text-2xl font-bold text-white mb-6">{heading}</h2>}
         <div className={`overflow-x-auto rounded-xl ${bordered ? 'border border-white/8' : ''}`}>

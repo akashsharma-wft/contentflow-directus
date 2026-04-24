@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { Play } from 'lucide-react'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
 function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
@@ -14,6 +15,7 @@ interface VideoSectionProps {
     posterImage?: ImgSrc
     maxWidth?: 'medium' | 'wide' | 'full'
   }
+  translationId?: number
 }
 
 const maxWidthClass: Record<string, string> = {
@@ -30,14 +32,14 @@ function getEmbedUrl(url: string): string {
   return url
 }
 
-export function VideoSection({ section }: VideoSectionProps) {
+export function VideoSection({ section, translationId }: VideoSectionProps) {
   const { heading, subheading, url, posterImage, maxWidth = 'wide' } = section
   const [playing, setPlaying] = useState(false)
   const embedUrl = getEmbedUrl(url)
   const posterUrl = resolveImg(posterImage)
 
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className={`mx-auto ${maxWidthClass[maxWidth]}`}>
         {(heading || subheading) && (
           <div className="text-center mb-8">

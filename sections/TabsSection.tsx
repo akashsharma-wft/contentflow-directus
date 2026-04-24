@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { PortableText } from '@portabletext/react'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 type ImgSrc = string | { asset?: { _ref?: string } } | null | undefined
 function resolveImg(src: ImgSrc): string { return typeof src === 'string' ? src : '' }
@@ -19,15 +20,16 @@ interface TabsSectionProps {
     heading?: string
     tabs?: Tab[]
   }
+  translationId?: number
 }
 
-export function TabsSection({ section }: TabsSectionProps) {
+export function TabsSection({ section, translationId }: TabsSectionProps) {
   const { heading, tabs = [] } = section
   const [active, setActive] = useState(0)
   const current = tabs[active]
 
   return (
-    <section className="py-16 px-6 bg-[#0d0e14]">
+    <section className="py-16 px-6 bg-[#0d0e14]" data-directus={pageAttr(translationId, 'sections')}>
       <div className="max-w-5xl mx-auto">
         {heading && <h2 className="text-3xl font-bold text-white text-center mb-10">{heading}</h2>}
 

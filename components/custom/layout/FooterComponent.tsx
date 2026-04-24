@@ -1,6 +1,7 @@
 ﻿import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import type { ComponentFooterContent } from '@/types/cms'
+import { siteAttr, siteAttrs } from '@/lib/directus/section-binding'
 
 interface Props {
   component: ComponentFooterContent
@@ -34,8 +35,8 @@ export function FooterComponent({ component }: Props) {
           {/* Brand */}
           {showLogo && (
             <div className="space-y-3">
-              <span className="text-white font-bold text-sm">{logoText ?? 'ContentFlow'}</span>
-              {tagline && <p className="text-white/40 text-xs leading-relaxed max-w-[180px]">{tagline}</p>}
+              <span data-directus={siteAttr('footer_brand_name')} className="text-white font-bold text-sm">{logoText ?? 'ContentFlow'}</span>
+              {tagline && <p data-directus={siteAttr('footer_tagline_en')} className="text-white/40 text-xs leading-relaxed max-w-[180px]">{tagline}</p>}
               {socialLinks.length > 0 && (
                 <div className="flex gap-2 pt-1">
                   {socialLinks.map((s, i) => (
@@ -64,7 +65,12 @@ export function FooterComponent({ component }: Props) {
             )}>
               {columns.map((col, ci) => (
                 <div key={ci} className="space-y-3">
-                  <p className="text-xs font-semibold uppercase tracking-widest text-white/30">{col.heading}</p>
+                  <p
+                    data-directus={siteAttr(`footer_col_${ci + 1}_heading_en`)}
+                    className="text-xs font-semibold uppercase tracking-widest text-white/30"
+                  >
+                    {col.heading}
+                  </p>
                   <ul className="space-y-2">
                     {col.links?.map((link, li) => (
                       <li key={li}>
@@ -72,6 +78,7 @@ export function FooterComponent({ component }: Props) {
                           href={link.href ?? '#'}
                           target={link.external ? '_blank' : undefined}
                           rel={link.external ? 'noopener noreferrer' : undefined}
+                          data-directus={siteAttrs(`footer_col_${ci + 1}_link_${li + 1}_label_en`, `footer_col_${ci + 1}_link_${li + 1}_href`)}
                           className="text-sm text-white/50 hover:text-white transition-colors"
                         >
                           {link.label}
@@ -87,7 +94,7 @@ export function FooterComponent({ component }: Props) {
 
         {/* Copyright */}
         <div className="mt-12 pt-6 border-t border-white/5">
-          <p className="text-xs text-white/30">{copyright}</p>
+          <p data-directus={siteAttr('footer_copyright_en')} className="text-xs text-white/30">{copyright}</p>
         </div>
       </div>
     </footer>

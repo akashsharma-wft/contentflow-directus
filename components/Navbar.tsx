@@ -20,6 +20,7 @@ import { localizeHref, filterByVisibility, getNavItemLabel, getNavRole, resolveL
 import { useUser } from '@/hooks/useUser'
 import { createClient } from '@/lib/supabase/client'
 import type { SiteConfig, NavPage } from '@/types/cms'
+import { siteAttr, siteTranslationAttr, siteTranslationAttrs } from '@/lib/directus/section-binding'
 // NavPage kept for prop backward compat — not used in center nav
 
 const LANG_CODES = ['en', 'hi', 'kn'] as const
@@ -114,14 +115,17 @@ export function Navbar({ siteConfig }: Props) {
                   <path d="M3 9h9m0 0-3-3m3 3-3 3M12 4h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <span className="text-white font-semibold text-sm tracking-tight">{brandName}</span>
+              <span
+                data-directus={siteAttr('navbar_brand_name')}
+                className="text-white font-semibold text-sm tracking-tight"
+              >{brandName}</span>
             </Link>
           </div>
 
           {/* Center: siteConfig nav items filtered by role — desktop only */}
           {navItems.length > 0 && (
             <nav className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => {
+              {navItems.map((item, i) => {
                 const href     = localizeHref(item.href, currentLang)
                 const isActive = pathname === href || (href !== '/' && pathname.startsWith(href))
                 const label    = getNavItemLabel(item.label, currentLang)
@@ -129,6 +133,7 @@ export function Navbar({ siteConfig }: Props) {
                   <Link
                     key={item._key}
                     href={href}
+                    data-directus={siteTranslationAttrs(siteConfig?.siteConfigTranslationId, `navbar_item_${i + 1}_label`)}
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                       isActive ? 'text-white bg-white/8' : 'text-white/50 hover:text-white hover:bg-white/5'
                     }`}
@@ -159,6 +164,7 @@ export function Navbar({ siteConfig }: Props) {
               <>
                 <Link
                   href={localizeHref('/login', currentLang)}
+                  data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, 'navbar_login_label')}
                   className="px-3 py-1.5 text-sm text-white/60 hover:text-white transition-colors"
                 >
                   {loginLabel}
@@ -166,6 +172,7 @@ export function Navbar({ siteConfig }: Props) {
                 {ctaButton?.label && ctaButton?.href ? (
                   <Link
                     href={localizeHref(ctaButton.href, currentLang)}
+                    data-directus={siteTranslationAttrs(siteConfig?.siteConfigTranslationId, 'navbar_cta_label')}
                     className="hidden sm:inline-flex px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg transition-colors"
                   >
                     {resolveLabel(ctaButton.label, currentLang)}
@@ -173,6 +180,7 @@ export function Navbar({ siteConfig }: Props) {
                 ) : (
                   <Link
                     href={localizeHref('/signup', currentLang)}
+                    data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, 'navbar_signup_label')}
                     className="hidden sm:inline-flex px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg transition-colors"
                   >
                     {signupLabel}
@@ -228,7 +236,7 @@ export function Navbar({ siteConfig }: Props) {
               </div>
 
               {/* Nav items filtered by role */}
-              {navItems.map((item) => {
+              {navItems.map((item, i) => {
                 const href     = localizeHref(item.href, currentLang)
                 const isActive = pathname === href || (href !== '/' && pathname.startsWith(href))
                 const label    = getNavItemLabel(item.label, currentLang)
@@ -237,6 +245,7 @@ export function Navbar({ siteConfig }: Props) {
                     key={item._key}
                     href={href}
                     onClick={closeMobile}
+                    data-directus={siteTranslationAttrs(siteConfig?.siteConfigTranslationId, `navbar_item_${i + 1}_label`)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
                       isActive ? 'text-white bg-white/8' : 'text-white/50 hover:text-white hover:bg-white/5'
                     }`}
@@ -249,10 +258,20 @@ export function Navbar({ siteConfig }: Props) {
               {/* Guest mobile links */}
               {isGuest && (
                 <>
-                  <Link href={localizeHref('/login', currentLang)} onClick={closeMobile} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors">
+                  <Link
+                    href={localizeHref('/login', currentLang)}
+                    onClick={closeMobile}
+                    data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, 'navbar_login_label')}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors"
+                  >
                     {loginLabel}
                   </Link>
-                  <Link href={localizeHref('/signup', currentLang)} onClick={closeMobile} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors">
+                  <Link
+                    href={localizeHref('/signup', currentLang)}
+                    onClick={closeMobile}
+                    data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, 'navbar_signup_label')}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors"
+                  >
                     {signupLabel}
                   </Link>
                 </>

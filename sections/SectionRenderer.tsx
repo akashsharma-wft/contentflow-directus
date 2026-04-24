@@ -212,29 +212,29 @@ export async function SectionRenderer({
           case 'navbarSection':
           case 'footerSection':
             return null
-          case 'richTextSection':      return <RichTextSection       key={key} section={s} />
-          case 'statsSection':         return <StatsSection          key={key} section={s} />
-          case 'formSection':          return <FormSection           key={key} section={s} />
-          case 'gridSection':          return <GridSection           key={key} section={s} />
+          case 'richTextSection':      return <RichTextSection       key={key} section={s} translationId={translationId} />
+          case 'statsSection':         return <StatsSection          key={key} section={s} translationId={translationId} />
+          case 'formSection':          return <FormSection           key={key} section={s} translationId={translationId} />
+          case 'gridSection':          return <GridSection           key={key} section={s} translationId={translationId} />
           case 'columnsSection':       return <ColumnsSection        key={key} section={s} />
           case 'spacerSection':        return <SpacerSection         key={key} section={s} />
           case 'dividerSection':       return <DividerSection        key={key} section={s} />
-          case 'headingSection':       return <HeadingSection        key={key} section={s} />
-          case 'featureListSection':   return <FeatureListSection    key={key} section={s} />
-          case 'testimonialsSection':  return <TestimonialsSection   key={key} section={s} />
-          case 'faqSection':           return <FaqSection            key={key} section={s} />
-          case 'pricingSection':       return <PricingSection        key={key} section={s} />
-          case 'teamSection':          return <TeamSection           key={key} section={s} />
-          case 'logoBarSection':       return <LogoBarSection        key={key} section={s} />
-          case 'carouselSection':      return <CarouselSection       key={key} section={s} />
-          case 'tableSection':         return <TableSection          key={key} section={s} />
-          case 'timelineSection':      return <TimelineSection       key={key} section={s} />
-          case 'bannerSection':        return <BannerSection         key={key} section={s} />
-          case 'tabsSection':          return <TabsSection           key={key} section={s} />
-          case 'imageSection':         return <ImageSection          key={key} section={s} />
-          case 'gallerySection':       return <GallerySection        key={key} section={s} />
-          case 'videoSection':         return <VideoSection          key={key} section={s} />
-          case 'newsletterSection':    return <NewsletterSection     key={key} section={s} />
+          case 'headingSection':       return <HeadingSection        key={key} section={s} translationId={translationId} />
+          case 'featureListSection':   return <FeatureListSection    key={key} section={s} translationId={translationId} />
+          case 'testimonialsSection':  return <TestimonialsSection   key={key} section={s} translationId={translationId} />
+          case 'faqSection':           return <FaqSection            key={key} section={s} translationId={translationId} />
+          case 'pricingSection':       return <PricingSection        key={key} section={s} translationId={translationId} />
+          case 'teamSection':          return <TeamSection           key={key} section={s} translationId={translationId} />
+          case 'logoBarSection':       return <LogoBarSection        key={key} section={s} translationId={translationId} />
+          case 'carouselSection':      return <CarouselSection       key={key} section={s} translationId={translationId} />
+          case 'tableSection':         return <TableSection          key={key} section={s} translationId={translationId} />
+          case 'timelineSection':      return <TimelineSection       key={key} section={s} translationId={translationId} />
+          case 'bannerSection':        return <BannerSection         key={key} section={s} translationId={translationId} />
+          case 'tabsSection':          return <TabsSection           key={key} section={s} translationId={translationId} />
+          case 'imageSection':         return <ImageSection          key={key} section={s} translationId={translationId} />
+          case 'gallerySection':       return <GallerySection        key={key} section={s} translationId={translationId} />
+          case 'videoSection':         return <VideoSection          key={key} section={s} translationId={translationId} />
+          case 'newsletterSection':    return <NewsletterSection     key={key} section={s} translationId={translationId} />
           case 'notFoundSection':      return <NotFoundSection       key={key} section={s} />
           case 'contactSection':       return null
           case 'loginSection':
