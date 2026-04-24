@@ -4,7 +4,12 @@
     "cover_image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80",
     "published_at": "2026-04-20T10:00:00.000Z",
     "featured": true,
-    "tags": ["Next.js", "Directus", "SaaS", "Architecture"],
+    "tags": [
+      "Next.js",
+      "Directus",
+      "SaaS",
+      "Architecture"
+    ],
     "author_id": "b459a878-e7c2-4532-8719-3a3276ba49bd",
     "author_name": "Akash Sharma",
     "author_email": "akash.sharma@weframetech.com",
@@ -14,43 +19,194 @@
         "languages_code": "en",
         "title": "Building a CMS-Driven SaaS Dashboard with Next.js and Directus",
         "excerpt": "A deep dive into architecting a production-ready SaaS dashboard where every piece of UI copy, navigation item, and page layout is controlled from a headless CMS.",
+        "body_html": "<p>Most SaaS products hardcode their marketing copy directly into JSX. That works fine until your marketing team wants to A/B test a headline at 2am and can't reach a developer. The solution is a CMS-driven architecture where content and code are cleanly separated.</p><h2>Why Directus?</h2><p>Directus gives you a production-ready admin UI on top of any Postgres database, with a powerful REST and GraphQL API out of the box. Unlike Sanity or Contentful, your data lives in your own database — no vendor lock-in, no per-seat pricing surprises.</p><h2>The Section JSON Pattern</h2><p>Instead of modelling every section type as a separate Directus collection, we store the entire page section config as a single JSON blob. The SectionRenderer component reads the sectionType discriminator and dispatches to the correct React component.</p>",
+        "seo_title": "CMS-Driven SaaS Dashboard: Next.js + Directus Guide",
+        "seo_description": "Learn how to architect a production-ready SaaS dashboard where every UI element is controlled from a headless CMS using Next.js and Directus.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Most SaaS products hardcode their marketing copy directly into JSX. That works fine until your marketing team wants to A/B test a headline at 2am and can't reach a developer. The solution is a CMS-driven architecture where content and code are cleanly separated.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Why Directus?", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Directus gives you a production-ready admin UI on top of any Postgres database, with a powerful REST and GraphQL API out of the box. Unlike Sanity or Contentful, your data lives in your own database — no vendor lock-in, no per-seat pricing surprises.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The Section JSON Pattern", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Instead of modelling every section type as a separate Directus collection, we store the entire page section config as a single JSON blob. The SectionRenderer component reads the sectionType discriminator and dispatches to the correct React component. This gives you full page-builder flexibility with a trivially simple data model.", "marks": [] }] }
-        ],
-        "seo_title": null,
-        "seo_description": null
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Most SaaS products hardcode their marketing copy directly into JSX. That works fine until your marketing team wants to A/B test a headline at 2am and can't reach a developer. The solution is a CMS-driven architecture where content and code are cleanly separated.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Why Directus?",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Directus gives you a production-ready admin UI on top of any Postgres database, with a powerful REST and GraphQL API out of the box. Unlike Sanity or Contentful, your data lives in your own database — no vendor lock-in, no per-seat pricing surprises.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "The Section JSON Pattern",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Instead of modelling every section type as a separate Directus collection, we store the entire page section config as a single JSON blob. The SectionRenderer component reads the sectionType discriminator and dispatches to the correct React component. This gives you full page-builder flexibility with a trivially simple data model.",
+                "marks": []
+              }
+            ]
+          }
+        ]
       },
       {
         "languages_code": "hi",
         "title": "Next.js और Directus के साथ CMS-संचालित SaaS डैशबोर्ड बनाना",
         "excerpt": "एक प्रोडक्शन-रेडी SaaS डैशबोर्ड के आर्किटेक्चर में गहराई से जाना जहाँ UI कॉपी, नेविगेशन आइटम और पेज लेआउट सब कुछ हेडलेस CMS से नियंत्रित होता है।",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "अधिकांश SaaS उत्पाद अपनी मार्केटिंग कॉपी सीधे JSX में हार्डकोड करते हैं। यह तब तक ठीक काम करता है जब तक आपकी मार्केटिंग टीम रात 2 बजे एक हेडलाइन A/B टेस्ट करना चाहती है और किसी डेवलपर तक नहीं पहुंच सकती। समाधान है CMS-संचालित आर्किटेक्चर जहाँ सामग्री और कोड अलग-अलग होते हैं।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Directus क्यों?", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Directus किसी भी Postgres डेटाबेस के ऊपर एक प्रोडक्शन-रेडी एडमिन UI प्रदान करता है, जिसमें REST और GraphQL API बॉक्स से बाहर होती है। Sanity या Contentful के विपरीत, आपका डेटा आपके अपने डेटाबेस में रहता है — कोई वेंडर लॉक-इन नहीं।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "सेक्शन JSON पैटर्न", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "हर सेक्शन टाइप को एक अलग Directus कलेक्शन के रूप में मॉडल करने के बजाय, हम पूरे पेज सेक्शन कॉन्फिग को एक JSON ब्लॉब के रूप में स्टोर करते हैं। SectionRenderer कॉम्पोनेंट sectionType डिस्क्रिमिनेटर पढ़ता है और सही React कॉम्पोनेंट को डिस्पैच करता है।", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "अधिकांश SaaS उत्पाद अपनी मार्केटिंग कॉपी सीधे JSX में हार्डकोड करते हैं। यह तब तक ठीक काम करता है जब तक आपकी मार्केटिंग टीम रात 2 बजे एक हेडलाइन A/B टेस्ट करना चाहती है और किसी डेवलपर तक नहीं पहुंच सकती। समाधान है CMS-संचालित आर्किटेक्चर जहाँ सामग्री और कोड अलग-अलग होते हैं।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Directus क्यों?",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Directus किसी भी Postgres डेटाबेस के ऊपर एक प्रोडक्शन-रेडी एडमिन UI प्रदान करता है, जिसमें REST और GraphQL API बॉक्स से बाहर होती है। Sanity या Contentful के विपरीत, आपका डेटा आपके अपने डेटाबेस में रहता है — कोई वेंडर लॉक-इन नहीं।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "सेक्शन JSON पैटर्न",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "हर सेक्शन टाइप को एक अलग Directus कलेक्शन के रूप में मॉडल करने के बजाय, हम पूरे पेज सेक्शन कॉन्फिग को एक JSON ब्लॉब के रूप में स्टोर करते हैं। SectionRenderer कॉम्पोनेंट sectionType डिस्क्रिमिनेटर पढ़ता है और सही React कॉम्पोनेंट को डिस्पैच करता है।",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "CMS-संचालित SaaS डैशबोर्ड: Next.js + Directus गाइड",
+        "seo_description": "Next.js और Directus के साथ production-ready SaaS dashboard बनाना सीखें जहाँ हर UI तत्व headless CMS से नियंत्रित होता है।"
       },
       {
         "languages_code": "kn",
         "title": "Next.js ಮತ್ತು Directus ನೊಂದಿಗೆ CMS-ಚಾಲಿತ SaaS ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ನಿರ್ಮಿಸುವುದು",
         "excerpt": "ಪ್ರತಿಯೊಂದು UI ಕಾಪಿ, ನ್ಯಾವಿಗೇಷನ್ ಐಟಂ ಮತ್ತು ಪೇಜ್ ಲೇಔಟ್ ಹೆಡ್‌ಲೆಸ್ CMS ನಿಂದ ನಿಯಂತ್ರಿಸಲ್ಪಡುವ ಪ್ರೊಡಕ್ಷನ್-ರೆಡಿ SaaS ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ಆರ್ಕಿಟೆಕ್ಚರ್‌ನ ಆಳವಾದ ಅಧ್ಯಯನ.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ಹೆಚ್ಚಿನ SaaS ಉತ್ಪನ್ನಗಳು ತಮ್ಮ ಮಾರ್ಕೆಟಿಂಗ್ ಕಾಪಿಯನ್ನು ನೇರವಾಗಿ JSX ನಲ್ಲಿ ಹಾರ್ಡ್‌ಕೋಡ್ ಮಾಡುತ್ತವೆ. ನಿಮ್ಮ ಮಾರ್ಕೆಟಿಂಗ್ ತಂಡ ರಾತ್ರಿ 2 ಗಂಟೆಗೆ ಶೀರ್ಷಿಕೆ A/B ಪರೀಕ್ಷಿಸಲು ಬಯಸಿದಾಗ ಡೆವಲಪರ್ ಸಿಗದಿರುವವರೆಗೆ ಇದು ಸರಿಯಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ. ಪರಿಹಾರವೆಂದರೆ CMS-ಚಾಲಿತ ಆರ್ಕಿಟೆಕ್ಚರ್.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Directus ಏಕೆ?", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Directus ಯಾವುದೇ Postgres ಡೇಟಾಬೇಸ್ ಮೇಲೆ ಪ್ರೊಡಕ್ಷನ್-ರೆಡಿ ಅಡ್ಮಿನ್ UI ನೀಡುತ್ತದೆ, REST ಮತ್ತು GraphQL API ಬಾಕ್ಸ್‌ನಿಂದ ಹೊರಗೆ ಇರುತ್ತದೆ. ನಿಮ್ಮ ಡೇಟಾ ನಿಮ್ಮ ಸ್ವಂತ ಡೇಟಾಬೇಸ್‌ನಲ್ಲಿ ಇರುತ್ತದೆ — ವೆಂಡರ್ ಲಾಕ್-ಇನ್ ಇಲ್ಲ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "ಸೆಕ್ಷನ್ JSON ಮಾದರಿ", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ಪ್ರತಿ ಸೆಕ್ಷನ್ ಪ್ರಕಾರವನ್ನು ಪ್ರತ್ಯೇಕ Directus ಕಲೆಕ್ಷನ್ ಆಗಿ ಮಾದರಿ ಮಾಡುವ ಬದಲು, ಇಡೀ ಪೇಜ್ ಸೆಕ್ಷನ್ ಕಾನ್ಫಿಗ್ ಅನ್ನು ಒಂದೇ JSON ಬ್ಲಾಬ್ ಆಗಿ ಸಂಗ್ರಹಿಸುತ್ತೇವೆ. SectionRenderer ಕಾಂಪೊನೆಂಟ್ sectionType ಡಿಸ್ಕ್ರಿಮಿನೇಟರ್ ಓದಿ ಸರಿಯಾದ React ಕಾಂಪೊನೆಂಟ್‌ಗೆ ಡಿಸ್ಪ್ಯಾಚ್ ಮಾಡುತ್ತದೆ.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಹೆಚ್ಚಿನ SaaS ಉತ್ಪನ್ನಗಳು ತಮ್ಮ ಮಾರ್ಕೆಟಿಂಗ್ ಕಾಪಿಯನ್ನು ನೇರವಾಗಿ JSX ನಲ್ಲಿ ಹಾರ್ಡ್‌ಕೋಡ್ ಮಾಡುತ್ತವೆ. ನಿಮ್ಮ ಮಾರ್ಕೆಟಿಂಗ್ ತಂಡ ರಾತ್ರಿ 2 ಗಂಟೆಗೆ ಶೀರ್ಷಿಕೆ A/B ಪರೀಕ್ಷಿಸಲು ಬಯಸಿದಾಗ ಡೆವಲಪರ್ ಸಿಗದಿರುವವರೆಗೆ ಇದು ಸರಿಯಾಗಿ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ. ಪರಿಹಾರವೆಂದರೆ CMS-ಚಾಲಿತ ಆರ್ಕಿಟೆಕ್ಚರ್.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Directus ಏಕೆ?",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Directus ಯಾವುದೇ Postgres ಡೇಟಾಬೇಸ್ ಮೇಲೆ ಪ್ರೊಡಕ್ಷನ್-ರೆಡಿ ಅಡ್ಮಿನ್ UI ನೀಡುತ್ತದೆ, REST ಮತ್ತು GraphQL API ಬಾಕ್ಸ್‌ನಿಂದ ಹೊರಗೆ ಇರುತ್ತದೆ. ನಿಮ್ಮ ಡೇಟಾ ನಿಮ್ಮ ಸ್ವಂತ ಡೇಟಾಬೇಸ್‌ನಲ್ಲಿ ಇರುತ್ತದೆ — ವೆಂಡರ್ ಲಾಕ್-ಇನ್ ಇಲ್ಲ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಸೆಕ್ಷನ್ JSON ಮಾದರಿ",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಪ್ರತಿ ಸೆಕ್ಷನ್ ಪ್ರಕಾರವನ್ನು ಪ್ರತ್ಯೇಕ Directus ಕಲೆಕ್ಷನ್ ಆಗಿ ಮಾದರಿ ಮಾಡುವ ಬದಲು, ಇಡೀ ಪೇಜ್ ಸೆಕ್ಷನ್ ಕಾನ್ಫಿಗ್ ಅನ್ನು ಒಂದೇ JSON ಬ್ಲಾಬ್ ಆಗಿ ಸಂಗ್ರಹಿಸುತ್ತೇವೆ. SectionRenderer ಕಾಂಪೊನೆಂಟ್ sectionType ಡಿಸ್ಕ್ರಿಮಿನೇಟರ್ ಓದಿ ಸರಿಯಾದ React ಕಾಂಪೊನೆಂಟ್‌ಗೆ ಡಿಸ್ಪ್ಯಾಚ್ ಮಾಡುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "CMS-ಚಾಲಿತ SaaS ಡ್ಯಾಶ್‌ಬೋರ್ಡ್: Next.js + Directus ಮಾರ್ಗದರ್ಶಿ",
+        "seo_description": "Next.js ಮತ್ತು Directus ಬಳಸಿ production-ready SaaS dashboard ನಿರ್ಮಿಸುವ ವಿಧಾನ ಕಲಿಯಿರಿ, ಎಲ್ಲಾ UI ಅಂಶಗಳು headless CMS ನಿಂದ ನಿಯಂತ್ರಿಸಲ್ಪಡುತ್ತವೆ."
       }
     ]
   },
@@ -59,7 +215,12 @@
     "cover_image": "https://images.unsplash.com/photo-1614741118887-7a4ee193a5fa?w=1200&q=80",
     "published_at": "2026-04-18T09:00:00.000Z",
     "featured": true,
-    "tags": ["Supabase", "Auth", "Security", "PostgreSQL"],
+    "tags": [
+      "Supabase",
+      "Auth",
+      "Security",
+      "PostgreSQL"
+    ],
     "author_id": "b459a878-e7c2-4532-8719-3a3276ba49bd",
     "author_name": "Akash Sharma",
     "author_email": "akash.sharma@weframetech.com",
@@ -70,42 +231,192 @@
         "title": "Supabase Auth with Row-Level Security: A Practical Guide",
         "excerpt": "Row-Level Security is Supabase's superpower — but it's also the source of the most cryptic silent bugs. Here's how to get it right from the start.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Supabase's Row-Level Security lets you enforce data access rules at the database level, so your API routes can never accidentally leak another user's data even if you forget a WHERE clause. But RLS has sharp edges that catch almost every developer the first time.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The Silent UPDATE Problem", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "When a browser client runs an UPDATE that RLS blocks, Supabase returns {data: null, error: null} — no error, no affected rows. Your UI thinks the save succeeded. This is by design: revealing that a row exists but is inaccessible would be an information leak.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Using Service Role for Writes", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "The clean pattern is to never write directly from client components. Instead, POST to a Next.js API route that uses the SUPABASE_SERVICE_ROLE_KEY. The service role bypasses RLS entirely, giving predictable error behaviour and a single place to add business logic before writes.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Supabase's Row-Level Security lets you enforce data access rules at the database level, so your API routes can never accidentally leak another user's data even if you forget a WHERE clause. But RLS has sharp edges that catch almost every developer the first time.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "The Silent UPDATE Problem",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "When a browser client runs an UPDATE that RLS blocks, Supabase returns {data: null, error: null} — no error, no affected rows. Your UI thinks the save succeeded. This is by design: revealing that a row exists but is inaccessible would be an information leak.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Using Service Role for Writes",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "The clean pattern is to never write directly from client components. Instead, POST to a Next.js API route that uses the SUPABASE_SERVICE_ROLE_KEY. The service role bypasses RLS entirely, giving predictable error behaviour and a single place to add business logic before writes.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Supabase Auth & Row-Level Security: Practical Guide",
+        "seo_description": "Learn RLS in Supabase: the silent UPDATE bug, service role patterns, and how to enforce data access rules at the database level without leaking data."
       },
       {
         "languages_code": "hi",
         "title": "Supabase Auth और Row-Level Security: एक व्यावहारिक गाइड",
         "excerpt": "Row-Level Security Supabase की सुपरपावर है — लेकिन यह सबसे रहस्यमय साइलेंट बग्स का स्रोत भी है। शुरुआत से इसे सही करने का तरीका यहाँ है।",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Supabase का Row-Level Security आपको डेटाबेस स्तर पर डेटा एक्सेस नियम लागू करने देता है, इसलिए आपके API रूट गलती से किसी अन्य उपयोगकर्ता का डेटा लीक नहीं कर सकते। लेकिन RLS में तीखे किनारे हैं जो लगभग हर डेवलपर को पहली बार पकड़ लेते हैं।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "साइलेंट UPDATE समस्या", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "जब कोई ब्राउज़र क्लाइंट ऐसा UPDATE चलाता है जिसे RLS ब्लॉक करता है, Supabase {data: null, error: null} लौटाता है — कोई एरर नहीं, कोई प्रभावित रो नहीं। आपका UI सोचता है कि सेव सफल हो गया।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "राइट्स के लिए Service Role का उपयोग", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "साफ पैटर्न है कभी भी सीधे क्लाइंट कॉम्पोनेंट से न लिखें। इसके बजाय, Next.js API रूट पर POST करें जो SUPABASE_SERVICE_ROLE_KEY का उपयोग करता है। Service role RLS को पूरी तरह बायपास करती है।", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Supabase का Row-Level Security आपको डेटाबेस स्तर पर डेटा एक्सेस नियम लागू करने देता है, इसलिए आपके API रूट गलती से किसी अन्य उपयोगकर्ता का डेटा लीक नहीं कर सकते। लेकिन RLS में तीखे किनारे हैं जो लगभग हर डेवलपर को पहली बार पकड़ लेते हैं।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "साइलेंट UPDATE समस्या",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "जब कोई ब्राउज़र क्लाइंट ऐसा UPDATE चलाता है जिसे RLS ब्लॉक करता है, Supabase {data: null, error: null} लौटाता है — कोई एरर नहीं, कोई प्रभावित रो नहीं। आपका UI सोचता है कि सेव सफल हो गया।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "राइट्स के लिए Service Role का उपयोग",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "साफ पैटर्न है कभी भी सीधे क्लाइंट कॉम्पोनेंट से न लिखें। इसके बजाय, Next.js API रूट पर POST करें जो SUPABASE_SERVICE_ROLE_KEY का उपयोग करता है। Service role RLS को पूरी तरह बायपास करती है।",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Supabase Auth और Row-Level Security: व्यावहारिक गाइड",
+        "seo_description": "Supabase में RLS सीखें: साइलेंट UPDATE बग, service role patterns, और डेटाबेस स्तर पर डेटा एक्सेस नियम कैसे लागू करें।"
       },
       {
         "languages_code": "kn",
         "title": "Supabase Auth ಮತ್ತು Row-Level Security: ಒಂದು ಪ್ರಾಯೋಗಿಕ ಮಾರ್ಗದರ್ಶಿ",
         "excerpt": "Row-Level Security ಎಂಬುದು Supabase ನ ಸೂಪರ್‌ಪವರ್ — ಆದರೆ ಇದು ಅತ್ಯಂತ ರಹಸ್ಯಮಯ ಮೌನ ಬಗ್‌ಗಳ ಮೂಲ ಕೂಡ. ಆರಂಭದಿಂದಲೇ ಸರಿಯಾಗಿ ಮಾಡುವ ವಿಧಾನ ಇಲ್ಲಿದೆ.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Supabase ನ Row-Level Security ನಿಮಗೆ ಡೇಟಾಬೇಸ್ ಮಟ್ಟದಲ್ಲಿ ಡೇಟಾ ಪ್ರವೇಶ ನಿಯಮಗಳನ್ನು ಜಾರಿಗೊಳಿಸಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ. ಆದರೆ RLS ತೀಕ್ಷ್ಣ ಅಂಚುಗಳನ್ನು ಹೊಂದಿದೆ ಅದು ಮೊದಲ ಬಾರಿ ಬಹುತೇಕ ಪ್ರತಿ ಡೆವಲಪರ್ ಅನ್ನು ಹಿಡಿಯುತ್ತದೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "ಮೌನ UPDATE ಸಮಸ್ಯೆ", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ಬ್ರೌಸರ್ ಕ್ಲೈಂಟ್ RLS ನಿರ್ಬಂಧಿಸುವ UPDATE ಚಲಾಯಿಸಿದಾಗ, Supabase {data: null, error: null} ಹಿಂತಿರುಗಿಸುತ್ತದೆ — ದೋಷವಿಲ್ಲ, ಪ್ರಭಾವಿತ ಸಾಲುಗಳಿಲ್ಲ. ನಿಮ್ಮ UI ಉಳಿತಾಯ ಯಶಸ್ವಿಯಾಯಿತು ಎಂದು ಭಾವಿಸುತ್ತದೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "ಬರೆಯಲು Service Role ಬಳಸುವುದು", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ಸ್ವಚ್ಛ ಮಾದರಿ ಎಂದರೆ ಎಂದಿಗೂ ಕ್ಲೈಂಟ್ ಕಾಂಪೊನೆಂಟ್‌ಗಳಿಂದ ನೇರವಾಗಿ ಬರೆಯಬಾರದು. ಬದಲಿಗೆ, SUPABASE_SERVICE_ROLE_KEY ಬಳಸುವ Next.js API ರೂಟ್‌ಗೆ POST ಮಾಡಿ.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Supabase ನ Row-Level Security ನಿಮಗೆ ಡೇಟಾಬೇಸ್ ಮಟ್ಟದಲ್ಲಿ ಡೇಟಾ ಪ್ರವೇಶ ನಿಯಮಗಳನ್ನು ಜಾರಿಗೊಳಿಸಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ. ಆದರೆ RLS ತೀಕ್ಷ್ಣ ಅಂಚುಗಳನ್ನು ಹೊಂದಿದೆ ಅದು ಮೊದಲ ಬಾರಿ ಬಹುತೇಕ ಪ್ರತಿ ಡೆವಲಪರ್ ಅನ್ನು ಹಿಡಿಯುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಮೌನ UPDATE ಸಮಸ್ಯೆ",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಬ್ರೌಸರ್ ಕ್ಲೈಂಟ್ RLS ನಿರ್ಬಂಧಿಸುವ UPDATE ಚಲಾಯಿಸಿದಾಗ, Supabase {data: null, error: null} ಹಿಂತಿರುಗಿಸುತ್ತದೆ — ದೋಷವಿಲ್ಲ, ಪ್ರಭಾವಿತ ಸಾಲುಗಳಿಲ್ಲ. ನಿಮ್ಮ UI ಉಳಿತಾಯ ಯಶಸ್ವಿಯಾಯಿತು ಎಂದು ಭಾವಿಸುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಬರೆಯಲು Service Role ಬಳಸುವುದು",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಸ್ವಚ್ಛ ಮಾದರಿ ಎಂದರೆ ಎಂದಿಗೂ ಕ್ಲೈಂಟ್ ಕಾಂಪೊನೆಂಟ್‌ಗಳಿಂದ ನೇರವಾಗಿ ಬರೆಯಬಾರದು. ಬದಲಿಗೆ, SUPABASE_SERVICE_ROLE_KEY ಬಳಸುವ Next.js API ರೂಟ್‌ಗೆ POST ಮಾಡಿ.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Supabase Auth ಮತ್ತು Row-Level Security: ಪ್ರಾಯೋಗಿಕ ಮಾರ್ಗದರ್ಶಿ",
+        "seo_description": "Supabase ನಲ್ಲಿ RLS ಕಲಿಯಿರಿ: ಮೌನ UPDATE ಬಗ್, service role patterns, ಮತ್ತು ಡೇಟಾಬೇಸ್ ಮಟ್ಟದಲ್ಲಿ ಡೇಟಾ ಪ್ರವೇಶ ನಿಯಮಗಳನ್ನು ಜಾರಿಗೊಳಿಸುವ ವಿಧಾನ."
       }
     ]
   },
@@ -114,7 +425,12 @@
     "cover_image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&q=80",
     "published_at": "2026-04-15T08:00:00.000Z",
     "featured": true,
-    "tags": ["Stripe", "Webhooks", "Backend", "Payments"],
+    "tags": [
+      "Stripe",
+      "Webhooks",
+      "Backend",
+      "Payments"
+    ],
     "author_id": "b459a878-e7c2-4532-8719-3a3276ba49bd",
     "author_name": "Akash Sharma",
     "author_email": "akash.sharma@weframetech.com",
@@ -125,42 +441,192 @@
         "title": "Stripe Webhooks Done Right: Idempotency and Race Conditions",
         "excerpt": "Stripe can deliver the same webhook event more than once. Here's how to write handlers that are safe to replay without corrupting your subscription state.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Stripe guarantees at-least-once delivery for webhook events. Under normal conditions you'll receive each event once, but during network failures, the same event can arrive multiple times. Your handler must be idempotent.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The Right Handler Structure", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Always verify the webhook signature first using stripe.webhooks.constructEvent with your STRIPE_WEBHOOK_SECRET. A missing or invalid signature means the request didn't come from Stripe — reject it immediately with a 400.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Upsert, Don't Insert", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "When updating subscription state, use an upsert keyed on the Stripe customer ID rather than an INSERT. A second delivery of customer.subscription.updated will overwrite the same row rather than creating a duplicate.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Stripe guarantees at-least-once delivery for webhook events. Under normal conditions you'll receive each event once, but during network failures, the same event can arrive multiple times. Your handler must be idempotent.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "The Right Handler Structure",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Always verify the webhook signature first using stripe.webhooks.constructEvent with your STRIPE_WEBHOOK_SECRET. A missing or invalid signature means the request didn't come from Stripe — reject it immediately with a 400.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Upsert, Don't Insert",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "When updating subscription state, use an upsert keyed on the Stripe customer ID rather than an INSERT. A second delivery of customer.subscription.updated will overwrite the same row rather than creating a duplicate.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Stripe Webhooks: Idempotency & Race Conditions Guide",
+        "seo_description": "Write Stripe webhook handlers that handle duplicate events safely. Covers signature verification, idempotency patterns, and upsert over insert."
       },
       {
         "languages_code": "hi",
         "title": "Stripe Webhooks सही तरीके से: Idempotency और Race Conditions",
         "excerpt": "Stripe एक ही वेबहुक इवेंट एक से अधिक बार डिलीवर कर सकता है। ऐसे हैंडलर लिखने का तरीका जो आपकी सदस्यता स्थिति को बिगाड़े बिना रीप्ले के लिए सुरक्षित हों।",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Stripe वेबहुक इवेंट के लिए at-least-once डिलीवरी की गारंटी देता है। सामान्य परिस्थितियों में आपको प्रत्येक इवेंट एक बार मिलेगा, लेकिन नेटवर्क विफलताओं के दौरान एक ही इवेंट कई बार आ सकता है। आपका हैंडलर idempotent होना चाहिए।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "सही हैंडलर संरचना", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "पहले हमेशा STRIPE_WEBHOOK_SECRET के साथ stripe.webhooks.constructEvent का उपयोग करके वेबहुक सिग्नेचर सत्यापित करें। गायब या अमान्य सिग्नेचर का मतलब है कि अनुरोध Stripe से नहीं आया।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "INSERT नहीं, Upsert करें", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "सदस्यता स्थिति अपडेट करते समय, INSERT के बजाय Stripe customer ID पर keyed upsert का उपयोग करें। customer.subscription.updated की दूसरी डिलीवरी डुप्लीकेट बनाने के बजाय उसी रो को ओवरराइट करेगी।", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Stripe वेबहुक इवेंट के लिए at-least-once डिलीवरी की गारंटी देता है। सामान्य परिस्थितियों में आपको प्रत्येक इवेंट एक बार मिलेगा, लेकिन नेटवर्क विफलताओं के दौरान एक ही इवेंट कई बार आ सकता है। आपका हैंडलर idempotent होना चाहिए।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "सही हैंडलर संरचना",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "पहले हमेशा STRIPE_WEBHOOK_SECRET के साथ stripe.webhooks.constructEvent का उपयोग करके वेबहुक सिग्नेचर सत्यापित करें। गायब या अमान्य सिग्नेचर का मतलब है कि अनुरोध Stripe से नहीं आया।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "INSERT नहीं, Upsert करें",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "सदस्यता स्थिति अपडेट करते समय, INSERT के बजाय Stripe customer ID पर keyed upsert का उपयोग करें। customer.subscription.updated की दूसरी डिलीवरी डुप्लीकेट बनाने के बजाय उसी रो को ओवरराइट करेगी।",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Stripe Webhooks: Idempotency और Race Conditions गाइड",
+        "seo_description": "Stripe webhook handlers लिखना सीखें जो duplicate events को safely handle करें। Signature verification, idempotency patterns और upsert कवर किए गए हैं।"
       },
       {
         "languages_code": "kn",
         "title": "Stripe Webhooks ಸರಿಯಾಗಿ: Idempotency ಮತ್ತು Race Conditions",
         "excerpt": "Stripe ಒಂದೇ ವೆಬ್‌ಹುಕ್ ಈವೆಂಟ್ ಅನ್ನು ಒಂದಕ್ಕಿಂತ ಹೆಚ್ಚು ಬಾರಿ ತಲುಪಿಸಬಹುದು. ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆ ಸ್ಥಿತಿಯನ್ನು ಹಾಳು ಮಾಡದೆ ರೀಪ್ಲೇ ಮಾಡಲು ಸುರಕ್ಷಿತ ಹ್ಯಾಂಡ್ಲರ್‌ಗಳನ್ನು ಬರೆಯುವ ವಿಧಾನ.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Stripe ವೆಬ್‌ಹುಕ್ ಈವೆಂಟ್‌ಗಳಿಗೆ ಕನಿಷ್ಟ ಒಮ್ಮೆ ಡೆಲಿವರಿ ಖಾತರಿ ನೀಡುತ್ತದೆ. ಸಾಮಾನ್ಯ ಪರಿಸ್ಥಿತಿಗಳಲ್ಲಿ ನೀವು ಪ್ರತಿ ಈವೆಂಟ್ ಒಮ್ಮೆ ಸ್ವೀಕರಿಸುತ್ತೀರಿ, ಆದರೆ ನೆಟ್‌ವರ್ಕ್ ವೈಫಲ್ಯಗಳ ಸಮಯದಲ್ಲಿ ಒಂದೇ ಈವೆಂಟ್ ಹಲವು ಬಾರಿ ಬರಬಹುದು.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "ಸರಿಯಾದ ಹ್ಯಾಂಡ್ಲರ್ ರಚನೆ", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ಮೊದಲು ಯಾವಾಗಲೂ STRIPE_WEBHOOK_SECRET ನೊಂದಿಗೆ stripe.webhooks.constructEvent ಬಳಸಿ ವೆಬ್‌ಹುಕ್ ಸಿಗ್ನೇಚರ್ ಪರಿಶೀಲಿಸಿ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "INSERT ಅಲ್ಲ, Upsert ಮಾಡಿ", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ಚಂದಾದಾರಿಕೆ ಸ್ಥಿತಿ ಅಪ್‌ಡೇಟ್ ಮಾಡುವಾಗ, INSERT ಬದಲು Stripe customer ID ಮೇಲೆ ಕೀ ಮಾಡಿದ upsert ಬಳಸಿ. customer.subscription.updated ನ ಎರಡನೇ ಡೆಲಿವರಿ ನಕಲು ರಚಿಸುವ ಬದಲು ಅದೇ ಸಾಲನ್ನು ಮೇಲ್ಬರೆಯುತ್ತದೆ.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Stripe ವೆಬ್‌ಹುಕ್ ಈವೆಂಟ್‌ಗಳಿಗೆ ಕನಿಷ್ಟ ಒಮ್ಮೆ ಡೆಲಿವರಿ ಖಾತರಿ ನೀಡುತ್ತದೆ. ಸಾಮಾನ್ಯ ಪರಿಸ್ಥಿತಿಗಳಲ್ಲಿ ನೀವು ಪ್ರತಿ ಈವೆಂಟ್ ಒಮ್ಮೆ ಸ್ವೀಕರಿಸುತ್ತೀರಿ, ಆದರೆ ನೆಟ್‌ವರ್ಕ್ ವೈಫಲ್ಯಗಳ ಸಮಯದಲ್ಲಿ ಒಂದೇ ಈವೆಂಟ್ ಹಲವು ಬಾರಿ ಬರಬಹುದು.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಸರಿಯಾದ ಹ್ಯಾಂಡ್ಲರ್ ರಚನೆ",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಮೊದಲು ಯಾವಾಗಲೂ STRIPE_WEBHOOK_SECRET ನೊಂದಿಗೆ stripe.webhooks.constructEvent ಬಳಸಿ ವೆಬ್‌ಹುಕ್ ಸಿಗ್ನೇಚರ್ ಪರಿಶೀಲಿಸಿ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "INSERT ಅಲ್ಲ, Upsert ಮಾಡಿ",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಚಂದಾದಾರಿಕೆ ಸ್ಥಿತಿ ಅಪ್‌ಡೇಟ್ ಮಾಡುವಾಗ, INSERT ಬದಲು Stripe customer ID ಮೇಲೆ ಕೀ ಮಾಡಿದ upsert ಬಳಸಿ. customer.subscription.updated ನ ಎರಡನೇ ಡೆಲಿವರಿ ನಕಲು ರಚಿಸುವ ಬದಲು ಅದೇ ಸಾಲನ್ನು ಮೇಲ್ಬರೆಯುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Stripe Webhooks: Idempotency ಮತ್ತು Race Conditions ಮಾರ್ಗದರ್ಶಿ",
+        "seo_description": "ನಕಲು events ಅನ್ನು ಸುರಕ್ಷಿತವಾಗಿ handle ಮಾಡುವ Stripe webhook handlers ಬರೆಯಿರಿ. Signature verification, idempotency patterns ಮತ್ತು upsert ಒಳಗೊಂಡಿದೆ."
       }
     ]
   },
@@ -169,7 +635,12 @@
     "cover_image": "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=1200&q=80",
     "published_at": "2026-04-12T11:00:00.000Z",
     "featured": false,
-    "tags": ["React Query", "React", "Frontend", "Debugging"],
+    "tags": [
+      "React Query",
+      "React",
+      "Frontend",
+      "Debugging"
+    ],
     "author_id": "b459a878-e7c2-4532-8719-3a3276ba49bd",
     "author_name": "Akash Sharma",
     "author_email": "akash.sharma@weframetech.com",
@@ -180,42 +651,192 @@
         "title": "React Query Cache Keys: The Gotcha That Bites Everyone",
         "excerpt": "Two components sharing the same React Query cache key but selecting different database columns — a subtle bug that silently discards data in ways that are surprisingly hard to debug.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "React Query deduplicates requests by cache key. If two components mount at the same time with the same key, only one network request fires and both components receive the same cached result. This is a feature — but it becomes a bug when the two queries have different field selections.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The Scenario", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "A settings page with two sections: one fetching avatar_url and display_name, another fetching bio and website — both keyed on ['profile', user.id]. Whichever mounts first wins. If the avatar section fires first, the cache contains only {avatar_url, display_name}. The form section gets the partial object — bio and website are undefined.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The Fix", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Use select('*') everywhere — fetch all columns once and let every subscriber read what it needs from the cache. Alternatively, include the selected fields in the cache key: ['profile', user.id, 'full']. Both work; select(*) is simpler.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "React Query deduplicates requests by cache key. If two components mount at the same time with the same key, only one network request fires and both components receive the same cached result. This is a feature — but it becomes a bug when the two queries have different field selections.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "The Scenario",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "A settings page with two sections: one fetching avatar_url and display_name, another fetching bio and website — both keyed on ['profile', user.id]. Whichever mounts first wins. If the avatar section fires first, the cache contains only {avatar_url, display_name}. The form section gets the partial object — bio and website are undefined.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "The Fix",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Use select('*') everywhere — fetch all columns once and let every subscriber read what it needs from the cache. Alternatively, include the selected fields in the cache key: ['profile', user.id, 'full']. Both work; select(*) is simpler.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "React Query Cache Keys: The Gotcha That Bites Everyone",
+        "seo_description": "Why sharing a React Query cache key between components with different field selections silently drops data, and how to fix it with one change."
       },
       {
         "languages_code": "hi",
         "title": "React Query Cache Keys: वह गलती जो सबको काटती है",
         "excerpt": "दो कॉम्पोनेंट एक ही React Query cache key साझा करते हुए अलग-अलग डेटाबेस कॉलम चुन रहे हैं — एक सूक्ष्म बग जो डेटा को चुपचाप हटा देता है।",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "React Query cache key द्वारा अनुरोधों को डिडुप्लीकेट करता है। यदि दो कॉम्पोनेंट एक ही key के साथ एक साथ माउंट होते हैं, तो केवल एक नेटवर्क अनुरोध होता है और दोनों कॉम्पोनेंट को एक ही कैश्ड परिणाम मिलता है।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "परिदृश्य", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "दो सेक्शन वाला एक सेटिंग्स पेज: एक avatar_url और display_name फेच करता है, दूसरा bio और website — दोनों ['profile', user.id] पर keyed। जो पहले माउंट होता है वह जीतता है।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "समाधान", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "हर जगह select('*') का उपयोग करें — एक बार सभी कॉलम फेच करें और प्रत्येक सब्सक्राइबर को cache से जो चाहिए वह पढ़ने दें।", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "React Query cache key द्वारा अनुरोधों को डिडुप्लीकेट करता है। यदि दो कॉम्पोनेंट एक ही key के साथ एक साथ माउंट होते हैं, तो केवल एक नेटवर्क अनुरोध होता है और दोनों कॉम्पोनेंट को एक ही कैश्ड परिणाम मिलता है।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "परिदृश्य",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "दो सेक्शन वाला एक सेटिंग्स पेज: एक avatar_url और display_name फेच करता है, दूसरा bio और website — दोनों ['profile', user.id] पर keyed। जो पहले माउंट होता है वह जीतता है।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "समाधान",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "हर जगह select('*') का उपयोग करें — एक बार सभी कॉलम फेच करें और प्रत्येक सब्सक्राइबर को cache से जो चाहिए वह पढ़ने दें।",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "React Query Cache Keys: वह गलती जो सबको काटती है",
+        "seo_description": "अलग-अलग fields चुनने वाले components के बीच एक ही React Query cache key share करने पर data चुपचाप क्यों गायब होता है और इसे कैसे ठीक करें।"
       },
       {
         "languages_code": "kn",
         "title": "React Query Cache Keys: ಎಲ್ಲರನ್ನೂ ಕಚ್ಚುವ ತಪ್ಪು",
         "excerpt": "ಒಂದೇ React Query cache key ಹಂಚಿಕೊಳ್ಳುವ ಆದರೆ ವಿಭಿನ್ನ ಡೇಟಾಬೇಸ್ ಕಾಲಮ್‌ಗಳನ್ನು ಆಯ್ಕೆ ಮಾಡುವ ಎರಡು ಕಾಂಪೊನೆಂಟ್‌ಗಳು — ಡೇಟಾವನ್ನು ಮೌನವಾಗಿ ತ್ಯಜಿಸುವ ಸೂಕ್ಷ್ಮ ಬಗ್.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "React Query cache key ಮೂಲಕ ವಿನಂತಿಗಳನ್ನು ಡಿಡ್ಯುಪ್ಲಿಕೇಟ್ ಮಾಡುತ್ತದೆ. ಎರಡು ಕಾಂಪೊನೆಂಟ್‌ಗಳು ಒಂದೇ key ನೊಂದಿಗೆ ಏಕಕಾಲದಲ್ಲಿ ಮೌಂಟ್ ಆದರೆ, ಕೇವಲ ಒಂದು ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿ ಮಾತ್ರ ಆಗುತ್ತದೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "ಸನ್ನಿವೇಶ", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ಎರಡು ವಿಭಾಗಗಳುಳ್ಳ ಸೆಟ್ಟಿಂಗ್ ಪೇಜ್: ಒಂದು avatar_url ಮತ್ತು display_name ಫೆಚ್ ಮಾಡುತ್ತದೆ, ಇನ್ನೊಂದು bio ಮತ್ತು website — ಎರಡೂ ['profile', user.id] ಮೇಲೆ ಕೀ ಮಾಡಲಾಗಿದೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "ಪರಿಹಾರ", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ಎಲ್ಲೆಡೆ select('*') ಬಳಸಿ — ಒಮ್ಮೆ ಎಲ್ಲಾ ಕಾಲಮ್‌ಗಳನ್ನು ಫೆಚ್ ಮಾಡಿ ಮತ್ತು ಪ್ರತಿ ಚಂದಾದಾರರಿಗೆ cache ನಿಂದ ತಮಗೆ ಬೇಕಾದ್ದನ್ನು ಓದಲು ಅವಕಾಶ ಕೊಡಿ.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "React Query cache key ಮೂಲಕ ವಿನಂತಿಗಳನ್ನು ಡಿಡ್ಯುಪ್ಲಿಕೇಟ್ ಮಾಡುತ್ತದೆ. ಎರಡು ಕಾಂಪೊನೆಂಟ್‌ಗಳು ಒಂದೇ key ನೊಂದಿಗೆ ಏಕಕಾಲದಲ್ಲಿ ಮೌಂಟ್ ಆದರೆ, ಕೇವಲ ಒಂದು ನೆಟ್‌ವರ್ಕ್ ವಿನಂತಿ ಮಾತ್ರ ಆಗುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಸನ್ನಿವೇಶ",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಎರಡು ವಿಭಾಗಗಳುಳ್ಳ ಸೆಟ್ಟಿಂಗ್ ಪೇಜ್: ಒಂದು avatar_url ಮತ್ತು display_name ಫೆಚ್ ಮಾಡುತ್ತದೆ, ಇನ್ನೊಂದು bio ಮತ್ತು website — ಎರಡೂ ['profile', user.id] ಮೇಲೆ ಕೀ ಮಾಡಲಾಗಿದೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಪರಿಹಾರ",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಎಲ್ಲೆಡೆ select('*') ಬಳಸಿ — ಒಮ್ಮೆ ಎಲ್ಲಾ ಕಾಲಮ್‌ಗಳನ್ನು ಫೆಚ್ ಮಾಡಿ ಮತ್ತು ಪ್ರತಿ ಚಂದಾದಾರರಿಗೆ cache ನಿಂದ ತಮಗೆ ಬೇಕಾದ್ದನ್ನು ಓದಲು ಅವಕಾಶ ಕೊಡಿ.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "React Query Cache Keys: ಎಲ್ಲರನ್ನೂ ಕಚ್ಚುವ ತಪ್ಪು",
+        "seo_description": "ವಿಭಿನ್ನ fields ಆಯ್ಕೆ ಮಾಡುವ components ನಡುವೆ React Query cache key ಹಂಚಿಕೊಂಡಾಗ data ಮೌನವಾಗಿ ಕಳೆದುಹೋಗುವ ಕಾರಣ ಮತ್ತು ಅದನ್ನು ಸರಿಪಡಿಸುವ ವಿಧಾನ."
       }
     ]
   },
@@ -224,7 +845,12 @@
     "cover_image": "https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=1200&q=80",
     "published_at": "2026-04-10T09:30:00.000Z",
     "featured": false,
-    "tags": ["Tailwind CSS", "Frontend", "CSS", "Performance"],
+    "tags": [
+      "Tailwind CSS",
+      "Frontend",
+      "CSS",
+      "Performance"
+    ],
     "author_id": "b459a878-e7c2-4532-8719-3a3276ba49bd",
     "author_name": "Akash Sharma",
     "author_email": "akash.sharma@weframetech.com",
@@ -235,42 +861,192 @@
         "title": "Tailwind CSS Purging and Dynamic Class Names: What You Need to Know",
         "excerpt": "Using template literals to build Tailwind class names looks clean but silently breaks in production. Here's why and what to do instead.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Tailwind CSS works by scanning your source files for class name strings and including only those classes in the final CSS bundle. This tree-shaking keeps your CSS small — but it has an important implication for dynamic class names.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The Template Literal Trap", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Writing `grid-cols-${count}` seems reasonable — the value is always 2, 3, or 4 at runtime. But Tailwind's scanner sees only the template literal. None of the resulting class names appear as static strings in your source, so none make it into the CSS bundle.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The Fix: Static Class Maps", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Replace the dynamic string with a ternary over static strings: count === 4 ? 'grid-cols-4' : count === 3 ? 'grid-cols-3' : 'grid-cols-2'. Now all three strings are visible to the scanner and all three will be in your CSS.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Tailwind CSS works by scanning your source files for class name strings and including only those classes in the final CSS bundle. This tree-shaking keeps your CSS small — but it has an important implication for dynamic class names.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "The Template Literal Trap",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Writing `grid-cols-${count}` seems reasonable — the value is always 2, 3, or 4 at runtime. But Tailwind's scanner sees only the template literal. None of the resulting class names appear as static strings in your source, so none make it into the CSS bundle.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "The Fix: Static Class Maps",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Replace the dynamic string with a ternary over static strings: count === 4 ? 'grid-cols-4' : count === 3 ? 'grid-cols-3' : 'grid-cols-2'. Now all three strings are visible to the scanner and all three will be in your CSS.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Tailwind CSS: Dynamic Class Names Break in Production",
+        "seo_description": "Template literals in Tailwind class names are purged in production builds. Learn why and how to replace them with static class maps that work correctly."
       },
       {
         "languages_code": "hi",
         "title": "Tailwind CSS Purging और Dynamic Class Names: जो आपको जानना चाहिए",
         "excerpt": "Tailwind class names बनाने के लिए template literals का उपयोग साफ दिखता है लेकिन प्रोडक्शन में चुपचाप टूट जाता है। यहाँ कारण और विकल्प हैं।",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Tailwind CSS class name strings के लिए आपकी सोर्स फाइलों को स्कैन करके और केवल उन classes को अंतिम CSS बंडल में शामिल करके काम करता है। यह tree-shaking आपकी CSS को छोटा रखती है।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Template Literal का जाल", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "grid-cols-${count} लिखना उचित लगता है — रनटाइम पर मान हमेशा 2, 3, या 4 होता है। लेकिन Tailwind का स्कैनर केवल template literal देखता है। परिणामी class names में से कोई भी आपके सोर्स में static string के रूप में नहीं दिखता।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "समाधान: Static Class Maps", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "dynamic string को static strings पर ternary से बदलें: count === 4 ? 'grid-cols-4' : count === 3 ? 'grid-cols-3' : 'grid-cols-2'. अब सभी तीन strings स्कैनर को दिखती हैं।", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Tailwind CSS class name strings के लिए आपकी सोर्स फाइलों को स्कैन करके और केवल उन classes को अंतिम CSS बंडल में शामिल करके काम करता है। यह tree-shaking आपकी CSS को छोटा रखती है।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Template Literal का जाल",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "grid-cols-${count} लिखना उचित लगता है — रनटाइम पर मान हमेशा 2, 3, या 4 होता है। लेकिन Tailwind का स्कैनर केवल template literal देखता है। परिणामी class names में से कोई भी आपके सोर्स में static string के रूप में नहीं दिखता।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "समाधान: Static Class Maps",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "dynamic string को static strings पर ternary से बदलें: count === 4 ? 'grid-cols-4' : count === 3 ? 'grid-cols-3' : 'grid-cols-2'. अब सभी तीन strings स्कैनर को दिखती हैं।",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Tailwind CSS: Dynamic Class Names प्रोडक्शन में टूट जाते हैं",
+        "seo_description": "Tailwind class names में template literals production builds में purge हो जाते हैं। जानें क्यों और static class maps से इसे कैसे ठीक करें।"
       },
       {
         "languages_code": "kn",
         "title": "Tailwind CSS Purging ಮತ್ತು Dynamic Class Names: ನೀವು ತಿಳಿದಿರಬೇಕಾದದ್ದು",
         "excerpt": "Tailwind class names ನಿರ್ಮಿಸಲು template literals ಬಳಸುವುದು ಸ್ವಚ್ಛವಾಗಿ ಕಾಣುತ್ತದೆ ಆದರೆ ಪ್ರೊಡಕ್ಷನ್‌ನಲ್ಲಿ ಮೌನವಾಗಿ ಮುರಿಯುತ್ತದೆ.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Tailwind CSS ನಿಮ್ಮ ಸೋರ್ಸ್ ಫೈಲ್‌ಗಳನ್ನು class name strings ಗಾಗಿ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ ಕೊನೆಯ CSS ಬಂಡಲ್‌ನಲ್ಲಿ ಆ classes ಮಾತ್ರ ಸೇರಿಸುವ ಮೂಲಕ ಕೆಲಸ ಮಾಡುತ್ತದೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Template Literal ಬಲೆ", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "grid-cols-${count} ಬರೆಯುವುದು ಸಮಂಜಸವಾಗಿ ತೋರುತ್ತದೆ — ರನ್‌ಟೈಮ್‌ನಲ್ಲಿ ಮೌಲ್ಯ ಯಾವಾಗಲೂ 2, 3, ಅಥವಾ 4. ಆದರೆ Tailwind ಸ್ಕ್ಯಾನರ್ ಕೇವಲ template literal ನೋಡುತ್ತದೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "ಪರಿಹಾರ: Static Class Maps", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "dynamic string ಅನ್ನು static strings ಮೇಲೆ ternary ನಿಂದ ಬದಲಾಯಿಸಿ: count === 4 ? 'grid-cols-4' : count === 3 ? 'grid-cols-3' : 'grid-cols-2'. ಈಗ ಮೂರೂ strings ಸ್ಕ್ಯಾನರ್‌ಗೆ ಗೋಚರಿಸುತ್ತವೆ.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Tailwind CSS ನಿಮ್ಮ ಸೋರ್ಸ್ ಫೈಲ್‌ಗಳನ್ನು class name strings ಗಾಗಿ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ ಕೊನೆಯ CSS ಬಂಡಲ್‌ನಲ್ಲಿ ಆ classes ಮಾತ್ರ ಸೇರಿಸುವ ಮೂಲಕ ಕೆಲಸ ಮಾಡುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Template Literal ಬಲೆ",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "grid-cols-${count} ಬರೆಯುವುದು ಸಮಂಜಸವಾಗಿ ತೋರುತ್ತದೆ — ರನ್‌ಟೈಮ್‌ನಲ್ಲಿ ಮೌಲ್ಯ ಯಾವಾಗಲೂ 2, 3, ಅಥವಾ 4. ಆದರೆ Tailwind ಸ್ಕ್ಯಾನರ್ ಕೇವಲ template literal ನೋಡುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಪರಿಹಾರ: Static Class Maps",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "dynamic string ಅನ್ನು static strings ಮೇಲೆ ternary ನಿಂದ ಬದಲಾಯಿಸಿ: count === 4 ? 'grid-cols-4' : count === 3 ? 'grid-cols-3' : 'grid-cols-2'. ಈಗ ಮೂರೂ strings ಸ್ಕ್ಯಾನರ್‌ಗೆ ಗೋಚರಿಸುತ್ತವೆ.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Tailwind CSS: Dynamic Class Names ಪ್ರೊಡಕ್ಷನ್‌ನಲ್ಲಿ ಮುರಿಯುತ್ತವೆ",
+        "seo_description": "Tailwind class names ನಲ್ಲಿ template literals ಪ್ರೊಡಕ್ಷನ್ builds ನಲ್ಲಿ purge ಆಗುತ್ತವೆ. ಏಕೆ ಮತ್ತು static class maps ನಿಂದ ಹೇಗೆ ಸರಿಪಡಿಸಬೇಕೆಂದು ತಿಳಿಯಿರಿ."
       }
     ]
   },
@@ -279,7 +1055,12 @@
     "cover_image": "https://images.unsplash.com/photo-1593720213428-28a5b9e94613?w=1200&q=80",
     "published_at": "2026-04-08T10:00:00.000Z",
     "featured": false,
-    "tags": ["Next.js", "React", "App Router", "Performance"],
+    "tags": [
+      "Next.js",
+      "React",
+      "App Router",
+      "Performance"
+    ],
     "author_id": "b459a878-e7c2-4532-8719-3a3276ba49bd",
     "author_name": "Akash Sharma",
     "author_email": "akash.sharma@weframetech.com",
@@ -290,42 +1071,192 @@
         "title": "Next.js App Router: Server Components vs Client Components Explained",
         "excerpt": "The App Router's component model is a paradigm shift from the Pages Router. Here's a mental model that makes it click.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Next.js App Router introduces a new default: every component is a Server Component unless you opt in to the client with 'use client'. Server Components run only on the server, can be async, and can fetch data directly without useEffect.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "The Mental Model", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Think of your component tree as a rendering boundary. Server Components sit at the top — they fetch CMS data, database rows, and session info, then pass it down as props. Client Components sit at the leaves — they handle interactivity.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Practical Implications", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Mark a component 'use client' only when it needs useState, useEffect, event handlers, or browser APIs. Everything else should stay a Server Component — less JavaScript shipped to the browser, faster page loads, no loading skeletons on data that fetches at render time.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Next.js App Router introduces a new default: every component is a Server Component unless you opt in to the client with 'use client'. Server Components run only on the server, can be async, and can fetch data directly without useEffect.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "The Mental Model",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Think of your component tree as a rendering boundary. Server Components sit at the top — they fetch CMS data, database rows, and session info, then pass it down as props. Client Components sit at the leaves — they handle interactivity.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Practical Implications",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Mark a component 'use client' only when it needs useState, useEffect, event handlers, or browser APIs. Everything else should stay a Server Component — less JavaScript shipped to the browser, faster page loads, no loading skeletons on data that fetches at render time.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Next.js App Router: Server vs Client Components Guide",
+        "seo_description": "A practical mental model for Next.js App Router. When to use Server vs Client Components to ship less JavaScript and get faster page loads."
       },
       {
         "languages_code": "hi",
         "title": "Next.js App Router: Server Components बनाम Client Components समझाया",
         "excerpt": "App Router का कॉम्पोनेंट मॉडल Pages Router से एक paradigm shift है। यहाँ एक mental model है जो इसे समझाता है।",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Next.js App Router एक नया डिफ़ॉल्ट पेश करता है: हर कॉम्पोनेंट एक Server Component होता है जब तक आप 'use client' के साथ क्लाइंट में ऑप्ट-इन नहीं करते। Server Components केवल सर्वर पर चलते हैं, async हो सकते हैं।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Mental Model", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "अपने कॉम्पोनेंट ट्री को एक rendering boundary के रूप में सोचें। Server Components शीर्ष पर हैं — वे CMS डेटा, डेटाबेस rows और session info फेच करते हैं। Client Components पत्तियों पर हैं — वे interactivity संभालते हैं।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "व्यावहारिक निहितार्थ", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "किसी कॉम्पोनेंट को 'use client' तभी चिह्नित करें जब उसे useState, useEffect, event handlers, या browser APIs की आवश्यकता हो। बाकी सब Server Component रहने दें।", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Next.js App Router एक नया डिफ़ॉल्ट पेश करता है: हर कॉम्पोनेंट एक Server Component होता है जब तक आप 'use client' के साथ क्लाइंट में ऑप्ट-इन नहीं करते। Server Components केवल सर्वर पर चलते हैं, async हो सकते हैं।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Mental Model",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "अपने कॉम्पोनेंट ट्री को एक rendering boundary के रूप में सोचें। Server Components शीर्ष पर हैं — वे CMS डेटा, डेटाबेस rows और session info फेच करते हैं। Client Components पत्तियों पर हैं — वे interactivity संभालते हैं।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "व्यावहारिक निहितार्थ",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "किसी कॉम्पोनेंट को 'use client' तभी चिह्नित करें जब उसे useState, useEffect, event handlers, या browser APIs की आवश्यकता हो। बाकी सब Server Component रहने दें।",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Next.js App Router: Server बनाम Client Components गाइड",
+        "seo_description": "Next.js App Router के component boundary के लिए practical mental model। कब Server vs Client Components का उपयोग करें और pages को कैसे faster बनाएं।"
       },
       {
         "languages_code": "kn",
         "title": "Next.js App Router: Server Components ಮತ್ತು Client Components ವಿವರಿಸಲಾಗಿದೆ",
         "excerpt": "App Router ನ ಕಾಂಪೊನೆಂಟ್ ಮಾದರಿ Pages Router ನಿಂದ ಒಂದು ಮಾದರಿ ಬದಲಾವಣೆ. ಇದನ್ನು ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಒಂದು mental model ಇಲ್ಲಿದೆ.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Next.js App Router ಹೊಸ ಡೀಫಾಲ್ಟ್ ಪರಿಚಯಿಸುತ್ತದೆ: ಪ್ರತಿ ಕಾಂಪೊನೆಂಟ್ Server Component ಆಗಿರುತ್ತದೆ ನೀವು 'use client' ನೊಂದಿಗೆ ಕ್ಲೈಂಟ್‌ಗೆ ಆಯ್ಕೆ ಮಾಡಿಕೊಳ್ಳದ ಹೊರತು.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Mental Model", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ನಿಮ್ಮ ಕಾಂಪೊನೆಂಟ್ ಟ್ರೀ ಅನ್ನು ರೆಂಡರಿಂಗ್ ಗಡಿ ಎಂದು ಭಾವಿಸಿ. Server Components ಮೇಲ್ಭಾಗದಲ್ಲಿ ಇರುತ್ತವೆ — ಅವು CMS ಡೇಟಾ, ಡೇಟಾಬೇಸ್ ಸಾಲುಗಳು ಮತ್ತು ಸೆಷನ್ ಮಾಹಿತಿ ಫೆಚ್ ಮಾಡುತ್ತವೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "ಪ್ರಾಯೋಗಿಕ ಪರಿಣಾಮಗಳು", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ಕಾಂಪೊನೆಂಟ್ ಅನ್ನು 'use client' ಎಂದು ಗುರುತಿಸಿ ಕೇವಲ ಅದಕ್ಕೆ useState, useEffect, event handlers, ಅಥವಾ browser APIs ಅಗತ್ಯವಿದ್ದಾಗ ಮಾತ್ರ.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Next.js App Router ಹೊಸ ಡೀಫಾಲ್ಟ್ ಪರಿಚಯಿಸುತ್ತದೆ: ಪ್ರತಿ ಕಾಂಪೊನೆಂಟ್ Server Component ಆಗಿರುತ್ತದೆ ನೀವು 'use client' ನೊಂದಿಗೆ ಕ್ಲೈಂಟ್‌ಗೆ ಆಯ್ಕೆ ಮಾಡಿಕೊಳ್ಳದ ಹೊರತು.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Mental Model",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ನಿಮ್ಮ ಕಾಂಪೊನೆಂಟ್ ಟ್ರೀ ಅನ್ನು ರೆಂಡರಿಂಗ್ ಗಡಿ ಎಂದು ಭಾವಿಸಿ. Server Components ಮೇಲ್ಭಾಗದಲ್ಲಿ ಇರುತ್ತವೆ — ಅವು CMS ಡೇಟಾ, ಡೇಟಾಬೇಸ್ ಸಾಲುಗಳು ಮತ್ತು ಸೆಷನ್ ಮಾಹಿತಿ ಫೆಚ್ ಮಾಡುತ್ತವೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಪ್ರಾಯೋಗಿಕ ಪರಿಣಾಮಗಳು",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಕಾಂಪೊನೆಂಟ್ ಅನ್ನು 'use client' ಎಂದು ಗುರುತಿಸಿ ಕೇವಲ ಅದಕ್ಕೆ useState, useEffect, event handlers, ಅಥವಾ browser APIs ಅಗತ್ಯವಿದ್ದಾಗ ಮಾತ್ರ.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Next.js App Router: Server ಮತ್ತು Client Components ಮಾರ್ಗದರ್ಶಿ",
+        "seo_description": "Next.js App Router ನ component boundary ಗೆ practical mental model. Server vs Client Components ಯಾವಾಗ ಬಳಸಬೇಕು ಮತ್ತು ವೇಗವಾದ pages ಹೇಗೆ ತಲುಪಿಸಬೇಕು."
       }
     ]
   },
@@ -334,7 +1265,12 @@
     "cover_image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80",
     "published_at": "2026-04-05T08:00:00.000Z",
     "featured": false,
-    "tags": ["PostHog", "Feature Flags", "Analytics", "Product"],
+    "tags": [
+      "PostHog",
+      "Feature Flags",
+      "Analytics",
+      "Product"
+    ],
     "author_id": "b459a878-e7c2-4532-8719-3a3276ba49bd",
     "author_name": "Akash Sharma",
     "author_email": "akash.sharma@weframetech.com",
@@ -345,42 +1281,192 @@
         "title": "PostHog Feature Flags: Ship Dark Features to Specific Users",
         "excerpt": "Feature flags let you merge unfinished features to main, enable them for QA, and roll them out to 10% of users — all without code deployments.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Feature flags decouple deployment from release. You can merge a half-finished feature behind a flag, test it in production with your own account, then gradually roll it out by percentage or targeting rule — and instantly kill it if something goes wrong.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "PostHog in Next.js", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "The PostHog React SDK provides a useFeatureFlagEnabled hook that returns true/false based on the flag state for the current user. You can also evaluate flags server-side using posthog-node with the user's distinct ID — useful for conditionally rendering server components.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Targeting Rules", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "PostHog lets you target flags by user properties, cohort membership, or percentage rollout. The show-featured-banner flag targets users with subscription_tier = 'pro' — a different banner experience for paying customers without any backend code change.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Feature flags decouple deployment from release. You can merge a half-finished feature behind a flag, test it in production with your own account, then gradually roll it out by percentage or targeting rule — and instantly kill it if something goes wrong.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "PostHog in Next.js",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "The PostHog React SDK provides a useFeatureFlagEnabled hook that returns true/false based on the flag state for the current user. You can also evaluate flags server-side using posthog-node with the user's distinct ID — useful for conditionally rendering server components.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Targeting Rules",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "PostHog lets you target flags by user properties, cohort membership, or percentage rollout. The show-featured-banner flag targets users with subscription_tier = 'pro' — a different banner experience for paying customers without any backend code change.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "PostHog Feature Flags: Ship Dark Features Safely",
+        "seo_description": "Use PostHog feature flags in Next.js to merge unfinished features, test them in production with your own account, and gradually roll out to user segments."
       },
       {
         "languages_code": "hi",
         "title": "PostHog Feature Flags: विशिष्ट उपयोगकर्ताओं को Dark Features भेजें",
         "excerpt": "Feature flags आपको अधूरी features को main में मर्ज करने, QA के लिए सक्षम करने और 10% उपयोगकर्ताओं तक रोल आउट करने देते हैं — बिना कोड डिप्लॉयमेंट के।",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Feature flags deployment को release से अलग करते हैं। आप किसी अधूरे feature को flag के पीछे मर्ज कर सकते हैं, अपने खाते से production में टेस्ट कर सकते हैं, फिर percentage या targeting rule से धीरे-धीरे रोल आउट कर सकते हैं।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Next.js में PostHog", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "PostHog React SDK एक useFeatureFlagEnabled hook प्रदान करता है जो वर्तमान उपयोगकर्ता के लिए flag state के आधार पर true/false लौटाता है।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Targeting नियम", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "PostHog आपको user properties, cohort membership, या percentage rollout द्वारा flags target करने देता है। show-featured-banner flag subscription_tier = 'pro' वाले उपयोगकर्ताओं को target करता है।", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Feature flags deployment को release से अलग करते हैं। आप किसी अधूरे feature को flag के पीछे मर्ज कर सकते हैं, अपने खाते से production में टेस्ट कर सकते हैं, फिर percentage या targeting rule से धीरे-धीरे रोल आउट कर सकते हैं।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Next.js में PostHog",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "PostHog React SDK एक useFeatureFlagEnabled hook प्रदान करता है जो वर्तमान उपयोगकर्ता के लिए flag state के आधार पर true/false लौटाता है।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Targeting नियम",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "PostHog आपको user properties, cohort membership, या percentage rollout द्वारा flags target करने देता है। show-featured-banner flag subscription_tier = 'pro' वाले उपयोगकर्ताओं को target करता है।",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "PostHog Feature Flags: Dark Features सुरक्षित Ship करें",
+        "seo_description": "Next.js में PostHog feature flags का उपयोग करके अधूरी features merge करें, production में टेस्ट करें और targeted user segments में roll out करें।"
       },
       {
         "languages_code": "kn",
         "title": "PostHog Feature Flags: ನಿರ್ದಿಷ್ಟ ಬಳಕೆದಾರರಿಗೆ Dark Features ಕಳುಹಿಸಿ",
         "excerpt": "Feature flags ನಿಮಗೆ ಅಪೂರ್ಣ features ಅನ್ನು main ಗೆ ವಿಲೀನಗೊಳಿಸಲು, QA ಗಾಗಿ ಸಕ್ರಿಯಗೊಳಿಸಲು ಮತ್ತು 10% ಬಳಕೆದಾರರಿಗೆ ರೋಲ್ ಔಟ್ ಮಾಡಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತವೆ.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Feature flags deployment ಅನ್ನು release ನಿಂದ ಬೇರ್ಪಡಿಸುತ್ತವೆ. ನೀವು ಅರ್ಧ-ಮುಗಿದ feature ಅನ್ನು flag ಹಿಂದೆ ವಿಲೀನಗೊಳಿಸಬಹುದು, ನಿಮ್ಮ ಖಾತೆಯಿಂದ production ನಲ್ಲಿ ಪರೀಕ್ಷಿಸಬಹುದು.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Next.js ನಲ್ಲಿ PostHog", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "PostHog React SDK ಒಂದು useFeatureFlagEnabled hook ಒದಗಿಸುತ್ತದೆ ಅದು ಪ್ರಸ್ತುತ ಬಳಕೆದಾರರಿಗೆ flag ಸ್ಥಿತಿ ಆಧಾರದ ಮೇಲೆ true/false ಹಿಂತಿರುಗಿಸುತ್ತದೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Targeting ನಿಯಮಗಳು", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "PostHog ನಿಮಗೆ user properties, cohort membership, ಅಥವಾ percentage rollout ಮೂಲಕ flags target ಮಾಡಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Feature flags deployment ಅನ್ನು release ನಿಂದ ಬೇರ್ಪಡಿಸುತ್ತವೆ. ನೀವು ಅರ್ಧ-ಮುಗಿದ feature ಅನ್ನು flag ಹಿಂದೆ ವಿಲೀನಗೊಳಿಸಬಹುದು, ನಿಮ್ಮ ಖಾತೆಯಿಂದ production ನಲ್ಲಿ ಪರೀಕ್ಷಿಸಬಹುದು.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Next.js ನಲ್ಲಿ PostHog",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "PostHog React SDK ಒಂದು useFeatureFlagEnabled hook ಒದಗಿಸುತ್ತದೆ ಅದು ಪ್ರಸ್ತುತ ಬಳಕೆದಾರರಿಗೆ flag ಸ್ಥಿತಿ ಆಧಾರದ ಮೇಲೆ true/false ಹಿಂತಿರುಗಿಸುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Targeting ನಿಯಮಗಳು",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "PostHog ನಿಮಗೆ user properties, cohort membership, ಅಥವಾ percentage rollout ಮೂಲಕ flags target ಮಾಡಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "PostHog Feature Flags: Dark Features ಸುರಕ್ಷಿತವಾಗಿ Ship ಮಾಡಿ",
+        "seo_description": "Next.js ನಲ್ಲಿ PostHog feature flags ಬಳಸಿ ಅಪೂರ್ಣ features ವಿಲೀನಗೊಳಿಸಿ, production ನಲ್ಲಿ ಪರೀಕ್ಷಿಸಿ ಮತ್ತು user segments ಗೆ ಕ್ರಮೇಣ roll out ಮಾಡಿ."
       }
     ]
   },
@@ -389,7 +1475,11 @@
     "cover_image": "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=1200&q=80",
     "published_at": "2026-04-02T09:00:00.000Z",
     "featured": false,
-    "tags": ["TypeScript", "Developer Experience", "Best Practices"],
+    "tags": [
+      "TypeScript",
+      "Developer Experience",
+      "Best Practices"
+    ],
     "author_id": "b459a878-e7c2-4532-8719-3a3276ba49bd",
     "author_name": "Akash Sharma",
     "author_email": "akash.sharma@weframetech.com",
@@ -400,42 +1490,192 @@
         "title": "TypeScript Strict Mode: The Settings That Actually Matter",
         "excerpt": "Strict mode isn't a single setting — it's seven compiler flags. Here's what each one catches and why you should enable them all from day one.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Enabling strict: true in tsconfig.json turns on seven flags at once: strictNullChecks, noImplicitAny, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, and alwaysStrict. Each catches a different class of runtime error at compile time.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "strictNullChecks: The Most Important One", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Without strictNullChecks, null and undefined are assignable to every type. You can call .map() on a value that might be null and TypeScript won't complain. With it enabled, you must explicitly handle the null case — which catches the majority of real-world TypeError crashes before they hit production.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "noImplicitAny: Enforce Explicit Contracts", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "noImplicitAny prevents the compiler from silently widening untyped parameters to any. It forces explicit types for every function signature, making refactors dramatically safer.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Enabling strict: true in tsconfig.json turns on seven flags at once: strictNullChecks, noImplicitAny, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, and alwaysStrict. Each catches a different class of runtime error at compile time.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "strictNullChecks: The Most Important One",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Without strictNullChecks, null and undefined are assignable to every type. You can call .map() on a value that might be null and TypeScript won't complain. With it enabled, you must explicitly handle the null case — which catches the majority of real-world TypeError crashes before they hit production.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "noImplicitAny: Enforce Explicit Contracts",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "noImplicitAny prevents the compiler from silently widening untyped parameters to any. It forces explicit types for every function signature, making refactors dramatically safer.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "TypeScript Strict Mode: Settings That Actually Matter",
+        "seo_description": "What each of TypeScript's seven strict mode flags catches and why enabling all of them from day one prevents the most common runtime errors in production."
       },
       {
         "languages_code": "hi",
         "title": "TypeScript Strict Mode: वे सेटिंग्स जो वास्तव में मायने रखती हैं",
         "excerpt": "Strict mode एक single setting नहीं है — यह सात compiler flags हैं। यहाँ है कि प्रत्येक क्या पकड़ता है और आपको शुरुआत से सभी को क्यों सक्षम करना चाहिए।",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "tsconfig.json में strict: true सक्षम करने से एक साथ सात flags चालू होते हैं: strictNullChecks, noImplicitAny, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, और alwaysStrict।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "strictNullChecks: सबसे महत्वपूर्ण", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "strictNullChecks के बिना, null और undefined हर type को assign किए जा सकते हैं। इसे सक्षम करने पर, आपको null case को स्पष्ट रूप से संभालना होगा — जो production में जाने से पहले अधिकांश TypeError crashes को पकड़ता है।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "noImplicitAny: स्पष्ट Contracts लागू करें", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "noImplicitAny कंपाइलर को untyped parameters को any में silently widening करने से रोकता है। यह हर function signature के लिए explicit types मजबूर करता है।", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "tsconfig.json में strict: true सक्षम करने से एक साथ सात flags चालू होते हैं: strictNullChecks, noImplicitAny, strictFunctionTypes, strictBindCallApply, strictPropertyInitialization, noImplicitThis, और alwaysStrict।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "strictNullChecks: सबसे महत्वपूर्ण",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "strictNullChecks के बिना, null और undefined हर type को assign किए जा सकते हैं। इसे सक्षम करने पर, आपको null case को स्पष्ट रूप से संभालना होगा — जो production में जाने से पहले अधिकांश TypeError crashes को पकड़ता है।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "noImplicitAny: स्पष्ट Contracts लागू करें",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "noImplicitAny कंपाइलर को untyped parameters को any में silently widening करने से रोकता है। यह हर function signature के लिए explicit types मजबूर करता है।",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "TypeScript Strict Mode: वे सेटिंग्स जो वास्तव में मायने रखती हैं",
+        "seo_description": "TypeScript के सात strict mode flags में से प्रत्येक क्या पकड़ता है और शुरू से सभी enable करने से production में runtime errors क्यों कम होती हैं।"
       },
       {
         "languages_code": "kn",
         "title": "TypeScript Strict Mode: ನಿಜವಾಗಿ ಮುಖ್ಯವಾದ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
         "excerpt": "Strict mode ಒಂದೇ ಸೆಟ್ಟಿಂಗ್ ಅಲ್ಲ — ಇದು ಏಳು compiler flags. ಪ್ರತಿಯೊಂದೂ ಏನನ್ನು ಹಿಡಿಯುತ್ತದೆ ಮತ್ತು ಮೊದಲ ದಿನದಿಂದಲೇ ಎಲ್ಲವನ್ನೂ ಏಕೆ ಸಕ್ರಿಯಗೊಳಿಸಬೇಕು.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "tsconfig.json ನಲ್ಲಿ strict: true ಸಕ್ರಿಯಗೊಳಿಸಿದಾಗ ಏಕಕಾಲದಲ್ಲಿ ಏಳು flags ಆನ್ ಆಗುತ್ತವೆ: strictNullChecks, noImplicitAny, strictFunctionTypes, strictBindCallApply ಮತ್ತು ಇತರರು.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "strictNullChecks: ಅತ್ಯಂತ ಮುಖ್ಯವಾದದ್ದು", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "strictNullChecks ಇಲ್ಲದೆ, null ಮತ್ತು undefined ಅನ್ನು ಪ್ರತಿ ಟೈಪ್‌ಗೆ ನಿಯೋಜಿಸಬಹುದು. ಇದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿದಾಗ, ನೀವು null ಪ್ರಕರಣವನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ನಿರ್ವಹಿಸಬೇಕು.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "noImplicitAny: ಸ್ಪಷ್ಟ Contracts ಜಾರಿಗೊಳಿಸಿ", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "noImplicitAny ಕಂಪೈಲರ್ ಅನ್ನು untyped parameters ಅನ್ನು any ಗೆ ಮೌನವಾಗಿ ವಿಸ್ತರಿಸುವುದನ್ನು ತಡೆಯುತ್ತದೆ.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "tsconfig.json ನಲ್ಲಿ strict: true ಸಕ್ರಿಯಗೊಳಿಸಿದಾಗ ಏಕಕಾಲದಲ್ಲಿ ಏಳು flags ಆನ್ ಆಗುತ್ತವೆ: strictNullChecks, noImplicitAny, strictFunctionTypes, strictBindCallApply ಮತ್ತು ಇತರರು.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "strictNullChecks: ಅತ್ಯಂತ ಮುಖ್ಯವಾದದ್ದು",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "strictNullChecks ಇಲ್ಲದೆ, null ಮತ್ತು undefined ಅನ್ನು ಪ್ರತಿ ಟೈಪ್‌ಗೆ ನಿಯೋಜಿಸಬಹುದು. ಇದನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿದಾಗ, ನೀವು null ಪ್ರಕರಣವನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ನಿರ್ವಹಿಸಬೇಕು.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "noImplicitAny: ಸ್ಪಷ್ಟ Contracts ಜಾರಿಗೊಳಿಸಿ",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "noImplicitAny ಕಂಪೈಲರ್ ಅನ್ನು untyped parameters ಅನ್ನು any ಗೆ ಮೌನವಾಗಿ ವಿಸ್ತರಿಸುವುದನ್ನು ತಡೆಯುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "TypeScript Strict Mode: ನಿಜವಾಗಿ ಮುಖ್ಯವಾದ ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+        "seo_description": "TypeScript ನ ಏಳು strict mode flags ಪ್ರತಿಯೊಂದು ಏನನ್ನು ಹಿಡಿಯುತ್ತದೆ ಮತ್ತು ಮೊದಲ ದಿನದಿಂದ ಸಕ್ರಿಯಗೊಳಿಸಿದಾಗ production runtime errors ಹೇಗೆ ತಡೆಯಬಹುದು."
       }
     ]
   },
@@ -444,7 +1684,12 @@
     "cover_image": "https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?w=1200&q=80",
     "published_at": "2026-03-29T10:00:00.000Z",
     "featured": false,
-    "tags": ["React", "State Management", "Zustand", "Frontend"],
+    "tags": [
+      "React",
+      "State Management",
+      "Zustand",
+      "Frontend"
+    ],
     "author_id": "b459a878-e7c2-4532-8719-3a3276ba49bd",
     "author_name": "Akash Sharma",
     "author_email": "akash.sharma@weframetech.com",
@@ -455,42 +1700,192 @@
         "title": "Zustand vs Context API: Choosing the Right State Solution",
         "excerpt": "Context API causes every subscriber to re-render on every change. Zustand's selector-based subscriptions let components opt in to exactly the state they need.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "React's Context API works great for infrequently-changing values like auth state or theme. But for global UI state that changes on user interaction — sidebar open/closed, search query, modal visibility — Context causes unnecessary re-renders across your entire component tree.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "How Zustand Is Different", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Zustand stores are created outside React. Components subscribe to slices using selectors: useStore(s => s.sidebarOpen). They re-render only when that specific slice changes. A component reading sidebarOpen never re-renders when postsSearchQuery changes.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "When to Use Which", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Use Context for: auth user, theme, feature flags — values that rarely change and are needed deep in the tree. Use Zustand for: UI state that changes frequently (search queries, sidebar state, modal toggles).", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "React's Context API works great for infrequently-changing values like auth state or theme. But for global UI state that changes on user interaction — sidebar open/closed, search query, modal visibility — Context causes unnecessary re-renders across your entire component tree.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "How Zustand Is Different",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Zustand stores are created outside React. Components subscribe to slices using selectors: useStore(s => s.sidebarOpen). They re-render only when that specific slice changes. A component reading sidebarOpen never re-renders when postsSearchQuery changes.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "When to Use Which",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Use Context for: auth user, theme, feature flags — values that rarely change and are needed deep in the tree. Use Zustand for: UI state that changes frequently (search queries, sidebar state, modal toggles).",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Zustand vs Context API: Choosing the Right State Tool",
+        "seo_description": "Why React's Context API re-renders every subscriber on every state change and when Zustand's selector-based subscriptions are the better alternative."
       },
       {
         "languages_code": "hi",
         "title": "Zustand बनाम Context API: सही State Solution चुनना",
         "excerpt": "Context API हर बदलाव पर प्रत्येक सब्सक्राइबर को re-render करता है। Zustand के selector-based subscriptions कॉम्पोनेंट को ठीक वही state opt-in करने देते हैं जिसकी उन्हें जरूरत है।",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "React का Context API auth state या theme जैसे कम बदलने वाले values के लिए बेहतरीन काम करता है। लेकिन global UI state के लिए जो user interaction पर बदलती है — sidebar open/closed, search query — Context पूरे component tree में अनावश्यक re-renders का कारण बनता है।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Zustand कैसे अलग है", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Zustand stores React के बाहर बनाए जाते हैं। कॉम्पोनेंट selectors का उपयोग करके slices सब्सक्राइब करते हैं: useStore(s => s.sidebarOpen). वे केवल तभी re-render होते हैं जब वह specific slice बदलती है।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "कब क्या उपयोग करें", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Context के लिए: auth user, theme, feature flags। Zustand के लिए: UI state जो बार-बार बदलती है (search queries, sidebar state, modal toggles)।", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "React का Context API auth state या theme जैसे कम बदलने वाले values के लिए बेहतरीन काम करता है। लेकिन global UI state के लिए जो user interaction पर बदलती है — sidebar open/closed, search query — Context पूरे component tree में अनावश्यक re-renders का कारण बनता है।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Zustand कैसे अलग है",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Zustand stores React के बाहर बनाए जाते हैं। कॉम्पोनेंट selectors का उपयोग करके slices सब्सक्राइब करते हैं: useStore(s => s.sidebarOpen). वे केवल तभी re-render होते हैं जब वह specific slice बदलती है।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "कब क्या उपयोग करें",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Context के लिए: auth user, theme, feature flags। Zustand के लिए: UI state जो बार-बार बदलती है (search queries, sidebar state, modal toggles)।",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Zustand बनाम Context API: सही State Tool चुनना",
+        "seo_description": "React का Context API हर state बदलाव पर सभी subscribers को re-render क्यों करता है और कब Zustand के selector-based subscriptions सही विकल्प हैं।"
       },
       {
         "languages_code": "kn",
         "title": "Zustand ಮತ್ತು Context API: ಸರಿಯಾದ State Solution ಆಯ್ಕೆ",
         "excerpt": "Context API ಪ್ರತಿ ಬದಲಾವಣೆಯಲ್ಲಿ ಪ್ರತಿ ಚಂದಾದಾರರನ್ನು ಮರು-ರೆಂಡರ್ ಮಾಡಿಸುತ್ತದೆ. Zustand ನ selector-based subscriptions ಕಾಂಪೊನೆಂಟ್‌ಗಳಿಗೆ ಅವರಿಗೆ ಅಗತ್ಯವಾದ state ಮಾತ್ರ opt-in ಮಾಡಲು ಅನುವು ಮಾಡಿಕೊಡುತ್ತದೆ.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "React ನ Context API auth state ಅಥವಾ theme ನಂತಹ ವಿರಳವಾಗಿ ಬದಲಾಗುವ ಮೌಲ್ಯಗಳಿಗೆ ಚೆನ್ನಾಗಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ. ಆದರೆ ಬಳಕೆದಾರ ಸಂವಾದದಲ್ಲಿ ಬದಲಾಗುವ global UI state ಗಾಗಿ Context ಅನಗತ್ಯ re-renders ಉಂಟುಮಾಡುತ್ತದೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Zustand ಹೇಗೆ ಭಿನ್ನ", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Zustand stores React ಹೊರಗೆ ರಚಿಸಲ್ಪಡುತ್ತವೆ. ಕಾಂಪೊನೆಂಟ್‌ಗಳು selectors ಬಳಸಿ slices ಚಂದಾದಾರರಾಗುತ್ತಾರೆ: useStore(s => s.sidebarOpen). ಆ ನಿರ್ದಿಷ್ಟ slice ಬದಲಾದಾಗ ಮಾತ್ರ ಅವು ಮರು-ರೆಂಡರ್ ಆಗುತ್ತವೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "ಯಾವಾಗ ಯಾವದನ್ನು ಬಳಸಬೇಕು", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Context ಗಾಗಿ: auth user, theme, feature flags. Zustand ಗಾಗಿ: ಆಗಾಗ ಬದಲಾಗುವ UI state (search queries, sidebar state, modal toggles).", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "React ನ Context API auth state ಅಥವಾ theme ನಂತಹ ವಿರಳವಾಗಿ ಬದಲಾಗುವ ಮೌಲ್ಯಗಳಿಗೆ ಚೆನ್ನಾಗಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ. ಆದರೆ ಬಳಕೆದಾರ ಸಂವಾದದಲ್ಲಿ ಬದಲಾಗುವ global UI state ಗಾಗಿ Context ಅನಗತ್ಯ re-renders ಉಂಟುಮಾಡುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Zustand ಹೇಗೆ ಭಿನ್ನ",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Zustand stores React ಹೊರಗೆ ರಚಿಸಲ್ಪಡುತ್ತವೆ. ಕಾಂಪೊನೆಂಟ್‌ಗಳು selectors ಬಳಸಿ slices ಚಂದಾದಾರರಾಗುತ್ತಾರೆ: useStore(s => s.sidebarOpen). ಆ ನಿರ್ದಿಷ್ಟ slice ಬದಲಾದಾಗ ಮಾತ್ರ ಅವು ಮರು-ರೆಂಡರ್ ಆಗುತ್ತವೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ಯಾವಾಗ ಯಾವದನ್ನು ಬಳಸಬೇಕು",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Context ಗಾಗಿ: auth user, theme, feature flags. Zustand ಗಾಗಿ: ಆಗಾಗ ಬದಲಾಗುವ UI state (search queries, sidebar state, modal toggles).",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Zustand ಮತ್ತು Context API: ಸರಿಯಾದ State Tool ಆಯ್ಕೆ",
+        "seo_description": "React ನ Context API ಪ್ರತಿ state ಬದಲಾವಣೆಯಲ್ಲಿ ಎಲ್ಲಾ subscribers ಅನ್ನು ಮರು-ರೆಂಡರ್ ಮಾಡಿಸುವ ಕಾರಣ ಮತ್ತು Zustand ಯಾವಾಗ ಉತ್ತಮ ಪರ್ಯಾಯ."
       }
     ]
   },
@@ -499,7 +1894,12 @@
     "cover_image": "https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=1200&q=80",
     "published_at": "2026-03-25T09:00:00.000Z",
     "featured": false,
-    "tags": ["i18n", "SEO", "Next.js", "Architecture"],
+    "tags": [
+      "i18n",
+      "SEO",
+      "Next.js",
+      "Architecture"
+    ],
     "author_id": "b459a878-e7c2-4532-8719-3a3276ba49bd",
     "author_name": "Akash Sharma",
     "author_email": "akash.sharma@weframetech.com",
@@ -510,42 +1910,192 @@
         "title": "Multi-Language SaaS Apps: URL Structure and Content Strategy",
         "excerpt": "Supporting multiple languages isn't just about translating strings — it's about URL structure, content modelling, SEO, and graceful fallbacks when translations are missing.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ContentFlow supports three languages: English (en), Hindi (hi), and Kannada (kn). The URL structure uses a language prefix for non-English content: / for English, /hi/ for Hindi, /kn/ for Kannada. This is the most SEO-friendly approach — each language variant has its own canonical URL.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Content Modelling with Directus Translations", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Directus provides a first-class translations pattern: a parent collection holds non-translatable fields (slug, author, cover image) while a junction table holds per-language content (title, excerpt, body). The Directus admin UI shows a tabbed interface for editing each language variant.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Language Variants and hreflang", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "For SEO, each page must declare hreflang tags pointing to its language variants. The buildHreflangPaths() utility generates the correct alternate link tags from the list of known language variants, ensuring search engines serve the right language to the right audience.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ContentFlow supports three languages: English (en), Hindi (hi), and Kannada (kn). The URL structure uses a language prefix for non-English content: / for English, /hi/ for Hindi, /kn/ for Kannada. This is the most SEO-friendly approach — each language variant has its own canonical URL.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Content Modelling with Directus Translations",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Directus provides a first-class translations pattern: a parent collection holds non-translatable fields (slug, author, cover image) while a junction table holds per-language content (title, excerpt, body). The Directus admin UI shows a tabbed interface for editing each language variant.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Language Variants and hreflang",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "For SEO, each page must declare hreflang tags pointing to its language variants. The buildHreflangPaths() utility generates the correct alternate link tags from the list of known language variants, ensuring search engines serve the right language to the right audience.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "Multi-Language SaaS: URL Structure and i18n Strategy",
+        "seo_description": "How to architect URL structure, content modelling, SEO hreflang tags, and graceful fallbacks for multi-language SaaS apps using Next.js and Directus."
       },
       {
         "languages_code": "hi",
         "title": "बहुभाषी SaaS Apps: URL संरचना और सामग्री रणनीति",
         "excerpt": "कई भाषाओं का समर्थन करना केवल strings का अनुवाद करने के बारे में नहीं है — यह URL संरचना, सामग्री मॉडलिंग, SEO और अनुवाद गायब होने पर graceful fallbacks के बारे में है।",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ContentFlow तीन भाषाओं का समर्थन करता है: अंग्रेजी (en), हिंदी (hi), और कन्नड़ (kn)। URL संरचना गैर-अंग्रेजी सामग्री के लिए language prefix का उपयोग करती है: अंग्रेजी के लिए /, हिंदी के लिए /hi/, कन्नड़ के लिए /kn/।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Directus Translations के साथ सामग्री मॉडलिंग", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Directus एक first-class translations pattern प्रदान करता है: एक parent collection non-translatable fields (slug, author, cover image) रखती है जबकि एक junction table per-language content (title, excerpt, body) रखती है।", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Language Variants और hreflang", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "SEO के लिए, प्रत्येक पेज को अपने language variants की ओर इंगित करते hreflang tags घोषित करने होंगे। buildHreflangPaths() utility ज्ञात language variants की सूची से सही alternate link tags उत्पन्न करती है।", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ContentFlow तीन भाषाओं का समर्थन करता है: अंग्रेजी (en), हिंदी (hi), और कन्नड़ (kn)। URL संरचना गैर-अंग्रेजी सामग्री के लिए language prefix का उपयोग करती है: अंग्रेजी के लिए /, हिंदी के लिए /hi/, कन्नड़ के लिए /kn/।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Directus Translations के साथ सामग्री मॉडलिंग",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Directus एक first-class translations pattern प्रदान करता है: एक parent collection non-translatable fields (slug, author, cover image) रखती है जबकि एक junction table per-language content (title, excerpt, body) रखती है।",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Language Variants और hreflang",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "SEO के लिए, प्रत्येक पेज को अपने language variants की ओर इंगित करते hreflang tags घोषित करने होंगे। buildHreflangPaths() utility ज्ञात language variants की सूची से सही alternate link tags उत्पन्न करती है।",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "बहुभाषी SaaS: URL संरचना और i18n रणनीति",
+        "seo_description": "बहुभाषी Next.js SaaS apps के लिए URL संरचना, सामग्री मॉडलिंग, SEO hreflang tags और graceful translation fallbacks कैसे तैयार करें।"
       },
       {
         "languages_code": "kn",
         "title": "ಬಹುಭಾಷಾ SaaS Apps: URL ರಚನೆ ಮತ್ತು ವಿಷಯ ತಂತ್ರ",
         "excerpt": "ಬಹು ಭಾಷೆಗಳನ್ನು ಬೆಂಬಲಿಸುವುದು ಕೇವಲ strings ಅನುವಾದಿಸುವ ಬಗ್ಗೆ ಅಲ್ಲ — ಇದು URL ರಚನೆ, ವಿಷಯ ಮಾಡೆಲಿಂಗ್, SEO ಮತ್ತು ಅನುವಾದಗಳು ಇಲ್ಲದಿದ್ದಾಗ graceful fallbacks ಬಗ್ಗೆ.",
         "body": [
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "ContentFlow ಮೂರು ಭಾಷೆಗಳನ್ನು ಬೆಂಬಲಿಸುತ್ತದೆ: ಇಂಗ್ಲಿಷ್ (en), ಹಿಂದಿ (hi), ಮತ್ತು ಕನ್ನಡ (kn). URL ರಚನೆ ಇಂಗ್ಲಿಷೇತರ ವಿಷಯಕ್ಕೆ language prefix ಬಳಸುತ್ತದೆ: ಇಂಗ್ಲಿಷ್‌ಗೆ /, ಹಿಂದಿಗೆ /hi/, ಕನ್ನಡಕ್ಕೆ /kn/.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Directus Translations ನೊಂದಿಗೆ ವಿಷಯ ಮಾಡೆಲಿಂಗ್", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "Directus ಒಂದು first-class translations pattern ಒದಗಿಸುತ್ತದೆ: parent collection non-translatable fields (slug, author, cover image) ಇಡುತ್ತದೆ, junction table per-language content (title, excerpt, body) ಇಡುತ್ತದೆ.", "marks": [] }] },
-          { "_type": "block", "style": "h2", "children": [{ "_type": "span", "text": "Language Variants ಮತ್ತು hreflang", "marks": [] }] },
-          { "_type": "block", "style": "normal", "children": [{ "_type": "span", "text": "SEO ಗಾಗಿ, ಪ್ರತಿ ಪೇಜ್ ತನ್ನ language variants ಅನ್ನು ತೋರಿಸುವ hreflang tags ಘೋಷಿಸಬೇಕು. buildHreflangPaths() utility ತಿಳಿದ language variants ಪಟ್ಟಿಯಿಂದ ಸರಿಯಾದ alternate link tags ರಚಿಸುತ್ತದೆ.", "marks": [] }] }
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "ContentFlow ಮೂರು ಭಾಷೆಗಳನ್ನು ಬೆಂಬಲಿಸುತ್ತದೆ: ಇಂಗ್ಲಿಷ್ (en), ಹಿಂದಿ (hi), ಮತ್ತು ಕನ್ನಡ (kn). URL ರಚನೆ ಇಂಗ್ಲಿಷೇತರ ವಿಷಯಕ್ಕೆ language prefix ಬಳಸುತ್ತದೆ: ಇಂಗ್ಲಿಷ್‌ಗೆ /, ಹಿಂದಿಗೆ /hi/, ಕನ್ನಡಕ್ಕೆ /kn/.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Directus Translations ನೊಂದಿಗೆ ವಿಷಯ ಮಾಡೆಲಿಂಗ್",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Directus ಒಂದು first-class translations pattern ಒದಗಿಸುತ್ತದೆ: parent collection non-translatable fields (slug, author, cover image) ಇಡುತ್ತದೆ, junction table per-language content (title, excerpt, body) ಇಡುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "h2",
+            "children": [
+              {
+                "_type": "span",
+                "text": "Language Variants ಮತ್ತು hreflang",
+                "marks": []
+              }
+            ]
+          },
+          {
+            "_type": "block",
+            "style": "normal",
+            "children": [
+              {
+                "_type": "span",
+                "text": "SEO ಗಾಗಿ, ಪ್ರತಿ ಪೇಜ್ ತನ್ನ language variants ಅನ್ನು ತೋರಿಸುವ hreflang tags ಘೋಷಿಸಬೇಕು. buildHreflangPaths() utility ತಿಳಿದ language variants ಪಟ್ಟಿಯಿಂದ ಸರಿಯಾದ alternate link tags ರಚಿಸುತ್ತದೆ.",
+                "marks": []
+              }
+            ]
+          }
         ],
-        "seo_title": null,
-        "seo_description": null
+        "seo_title": "ಬಹುಭಾಷಾ SaaS: URL ರಚನೆ ಮತ್ತು i18n ತಂತ್ರ",
+        "seo_description": "ಬಹುಭಾಷಾ Next.js SaaS apps ಗಾಗಿ URL ರಚನೆ, ವಿಷಯ ಮಾಡೆಲಿಂಗ್, SEO hreflang tags ಮತ್ತು graceful translation fallbacks ಹೇಗೆ ರಚಿಸಬೇಕು."
       }
     ]
   }

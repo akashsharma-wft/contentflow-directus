@@ -234,32 +234,38 @@ export function PostDetail({
       )}
 
       {/* Body content */}
-      <article 
-        className="prose prose-invert max-w-none"
+      <article
+        className="max-w-none"
         data-directus={editableAttr({
           collection: 'posts_translations',
           item: post.translationId ?? null,
-          fields: 'body',
+          fields: 'body_html',
           mode: 'drawer',
         })}
       >
         {post.body ? (
           typeof post.body === 'string' ? (
-            // New: HTML from rich text editor or legacy PortableText stored as JSON string
             post.body.startsWith('[') ? (
               (() => {
                 try {
                   const blocks = JSON.parse(post.body as string) as Parameters<typeof PortableText>[0]['value']
                   return <PortableText value={blocks} components={portableTextComponents} />
                 } catch {
-                  return <div dangerouslySetInnerHTML={{ __html: post.body as string }} />
+                  return (
+                    <div
+                      className="[&_p]:text-white/60 [&_p]:text-sm [&_p]:leading-relaxed [&_p]:mb-4 [&_h1]:text-white [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-4 [&_h2]:text-white [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-white [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_blockquote]:border-l-2 [&_blockquote]:border-indigo-500 [&_blockquote]:pl-4 [&_blockquote]:my-4 [&_blockquote]:text-white/40 [&_blockquote]:text-sm [&_code]:bg-white/5 [&_code]:text-indigo-300 [&_code]:text-xs [&_code]:font-mono [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:text-white/60 [&_ul]:text-sm [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:text-white/60 [&_ol]:text-sm [&_ol]:mb-4 [&_a]:text-indigo-400 [&_a]:underline"
+                      dangerouslySetInnerHTML={{ __html: post.body as string }}
+                    />
+                  )
                 }
               })()
             ) : (
-              <div dangerouslySetInnerHTML={{ __html: post.body as string }} />
+              <div
+                className="[&_p]:text-white/60 [&_p]:text-sm [&_p]:leading-relaxed [&_p]:mb-4 [&_h1]:text-white [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:mt-8 [&_h1]:mb-4 [&_h2]:text-white [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3 [&_h3]:text-white [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-5 [&_h3]:mb-2 [&_blockquote]:border-l-2 [&_blockquote]:border-indigo-500 [&_blockquote]:pl-4 [&_blockquote]:my-4 [&_blockquote]:text-white/40 [&_blockquote]:text-sm [&_code]:bg-white/5 [&_code]:text-indigo-300 [&_code]:text-xs [&_code]:font-mono [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:text-white/60 [&_ul]:text-sm [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:text-white/60 [&_ol]:text-sm [&_ol]:mb-4 [&_a]:text-indigo-400 [&_a]:underline"
+                dangerouslySetInnerHTML={{ __html: post.body as string }}
+              />
             )
           ) : (
-            // Legacy: PortableText block array directly
             <PortableText value={post.body as Parameters<typeof PortableText>[0]['value']} components={portableTextComponents} />
           )
         ) : (

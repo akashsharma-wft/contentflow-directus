@@ -1058,6 +1058,34 @@ async function bootstrapSiteConfig() {
       })
     }
   }
+
+  // Hide per-language duplicate flat fields — editors use site_config_translations instead
+  const langFields = [
+    'navbar_cta_label_en', 'navbar_cta_label_hi', 'navbar_cta_label_kn',
+    'navbar_login_label_en', 'navbar_login_label_hi', 'navbar_login_label_kn',
+    'navbar_signup_label_en', 'navbar_signup_label_hi', 'navbar_signup_label_kn',
+    'navbar_signout_label_en', 'navbar_signout_label_hi', 'navbar_signout_label_kn',
+    ...[1,2,3,4,5].flatMap(n => [
+      `navbar_item_${n}_label_en`, `navbar_item_${n}_label_hi`, `navbar_item_${n}_label_kn`,
+    ]),
+    'footer_tagline_en', 'footer_tagline_hi', 'footer_tagline_kn',
+    'footer_copyright_en', 'footer_copyright_hi', 'footer_copyright_kn',
+    ...[1,2].flatMap(c => [
+      `footer_col_${c}_heading_en`, `footer_col_${c}_heading_hi`, `footer_col_${c}_heading_kn`,
+      ...[1,2].flatMap(l => [
+        `footer_col_${c}_link_${l}_label_en`, `footer_col_${c}_link_${l}_label_hi`, `footer_col_${c}_link_${l}_label_kn`,
+      ]),
+    ]),
+    ...[1,2,3,4,5].flatMap(n => [
+      `sidebar_nav_${n}_label_en`, `sidebar_nav_${n}_label_hi`, `sidebar_nav_${n}_label_kn`,
+    ]),
+  ]
+  for (const field of langFields) {
+    if (await fieldExists('site_config', field)) {
+      await api('PATCH', `/fields/site_config/${field}`, { meta: { hidden: true } })
+    }
+  }
+  console.log(`  ${TAG} per-language duplicate fields hidden`)
 }
 
 // ── site_config_translations ──────────────────────────────────────────────────
@@ -1086,9 +1114,7 @@ async function bootstrapSiteConfigTranslations() {
     })
     console.log(`  ${TAG} collection created`)
   } else {
-    // Ensure it's visible in admin sidebar
-    await api('PATCH', '/collections/site_config_translations', { meta: { hidden: false } })
-    console.log(`  ${TAG} already exists — un-hidden in admin`)
+    console.log(`  ${TAG} already exists — checking fields…`)
   }
 
   await ensureFields('site_config_translations', [
@@ -1134,16 +1160,35 @@ async function bootstrapSiteConfigTranslations() {
     strField('sidebar_nav_5_label', 'Nav 5 label', 'half'),
   ])
 
-  // FK: site_config_id → site_config (no one_field — alias removed to avoid SQL SELECT bug)
-  if (!(await relationExists('site_config_translations', 'site_config_id'))) {
+  // FK: site_config_id → site_config
+  // Delete then recreate so we can set one_field = 'translations' (PATCH doesn't work on Directus Cloud)
+  await fetch(`${BASE_URL}/relations/site_config_translations/site_config_id`, {
+    method: 'DELETE', headers: HEADERS,
+  }).catch(() => {/* ignore if not tracked */})
+  try {
     await api('POST', '/relations', {
       collection: 'site_config_translations',
       field: 'site_config_id',
       related_collection: 'site_config',
-      meta: { junction_field: null },
-      schema: { on_delete: 'CASCADE' },
+      meta: {
+        many_collection:     'site_config_translations',
+        many_field:          'site_config_id',
+        one_collection:      'site_config',
+        one_field:           'translations',
+        one_deselect_action: 'nullify',
+        sort_field:          null,
+      },
+      schema: {
+        table: 'site_config_translations', column: 'site_config_id',
+        foreign_key_table: 'site_config', foreign_key_column: 'id',
+        on_update: 'NO ACTION', on_delete: 'CASCADE',
+      },
     })
-    console.log(`  ${TAG} relation site_config_id → site_config created`)
+    console.log(`  ${TAG} relation site_config_id → site_config created (one_field=translations)`)
+  } catch (e) {
+    const msg = (e as Error).message ?? ''
+    if (!msg.includes('already exists') && !msg.includes('UNIQUE') && !msg.includes('duplicate')) throw e
+    console.log(`  ${TAG} relation site_config_id → site_config already exists`)
   }
 
   // FK: languages_code → languages
@@ -1158,16 +1203,29 @@ async function bootstrapSiteConfigTranslations() {
     console.log(`  ${TAG} relation languages_code → languages created`)
   }
 
-  // Note: site_config.translations alias intentionally NOT created.
-  // The alias caused "column site_config.translations does not exist" SQL errors in Directus admin.
-  // Translations are fetched separately via site_config_translations collection (getSiteConfig() in queries.ts).
-  // Editors can access translations through Content → site_config_translations in the admin sidebar.
-  if (await fieldExists('site_config', 'translations')) {
-    try {
-      await fetch(`${BASE_URL}/fields/site_config/translations`, { method: 'DELETE', headers: HEADERS })
-      console.log(`  ${TAG} removed legacy translations alias from site_config`)
-    } catch { /* ignore */ }
+  // Add translations alias to site_config — shows clickable translation list like Pages
+  if (!(await fieldExists('site_config', 'translations'))) {
+    await api('POST', '/fields/site_config', {
+      field: 'translations',
+      type: 'alias',
+      meta: {
+        interface: 'list-o2m',
+        special: ['o2m'],
+        options: { enableCreate: true, enableSelect: false },
+        display: 'related-values',
+        display_options: { template: '{{languages_code}}' },
+        width: 'full',
+        readonly: false,
+        hidden: false,
+      },
+      schema: null,
+    })
+    console.log(`  ${TAG} translations alias added to site_config`)
   }
+
+  // Hide site_config_translations from sidebar (accessed via Site Config → Translations)
+  await api('PATCH', '/collections/site_config_translations', { meta: { hidden: true } })
+  console.log(`  ${TAG} site_config_translations hidden from sidebar`)
 
   // Set collection preview URL
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
@@ -1218,7 +1276,7 @@ async function main() {
   console.log('\n📦  site_config_translations…')
   await bootstrapSiteConfigTranslations()
 
-  // Add body_html as a proper text column with rich-text HTML editor
+  // Add body_html (Description) as a proper text column with rich-text HTML editor
   // (cannot change existing `body` JSON column type on Directus Cloud)
   if (!(await fieldExists('posts_translations', 'body_html'))) {
     await api('POST', '/fields/posts_translations', {
@@ -1229,18 +1287,27 @@ async function main() {
           toolbar: ['bold','italic','underline','strike','h1','h2','h3','blockquote','code','link','ordered','bullet','image','clear'],
         },
         width: 'full',
-        note: 'Post body (HTML rich text). Use the toolbar to format content.',
+        note: 'Post description / body content.',
       },
       schema: { is_nullable: true },
     })
-    console.log('  ✓ posts_translations.body_html added (rich text HTML)')
+    console.log('  ✓ posts_translations.body_html added (Description)')
+  } else {
+    await api('PATCH', '/fields/posts_translations/body_html', {
+      meta: { note: 'Post description / body content.' },
+    })
   }
-  // Hide the old JSON body field so editors don't accidentally edit it
+  // Hide excerpt — title + image + description is enough
+  if (await fieldExists('posts_translations', 'excerpt')) {
+    await api('PATCH', '/fields/posts_translations/excerpt', { meta: { hidden: true } })
+    console.log('  ✓ posts_translations.excerpt hidden')
+  }
+  // Hide the old JSON body field
   if (await fieldExists('posts_translations', 'body')) {
     await api('PATCH', '/fields/posts_translations/body', {
       meta: { hidden: true, note: '[deprecated — use body_html]' },
     })
-    console.log('  ✓ posts_translations.body hidden (deprecated, use body_html)')
+    console.log('  ✓ posts_translations.body hidden (deprecated)')
   }
 
   console.log('\n✅  Bootstrap complete!')
