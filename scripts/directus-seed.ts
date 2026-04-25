@@ -259,13 +259,32 @@ async function upsertSiteConfig() {
   console.log('\n📋  Seeding site_config…')
 
   const { default: config } = await import('./seed-data/site-config.json', { with: { type: 'json' } })
+  const payload = config as Record<string, unknown>
 
-  // Singleton collections must always be PATCHed — Directus upserts on first PATCH.
-  // POST doesn't work for singletons, and GET returns 403 when no item exists yet.
-  const { id: _id, ...payload } = config as Record<string, unknown>
-  void _id
-  await siteConfigWrite('PATCH', '/items/site_config', payload)
-  console.log('   ✓  Upserted site-config singleton row')
+  // Singleton API (PATCH /items/site_config) returns 403 when no item exists yet,
+  // so we temporarily disable singleton, write by ID, then re-enable it.
+  await fetch(`${DIRECTUS_URL}/collections/site_config`, {
+    method: 'PATCH', headers: HEADERS,
+    body: JSON.stringify({ meta: { singleton: false } }),
+  }).catch(() => { /* ignore */ })
+
+  const existing = await reqItem('/items/site_config/site-config?fields[]=id')
+  if (existing?.data) {
+    const { id: _id, ...updatePayload } = payload
+    void _id
+    await siteConfigWrite('PATCH', '/items/site_config/site-config', updatePayload)
+    console.log('   ✓  Updated site-config row')
+  } else {
+    await siteConfigWrite('POST', '/items/site_config', { ...payload, id: 'site-config' })
+    console.log('   ✓  Created site-config row')
+  }
+
+  // Re-enable singleton so the admin UI opens the form directly (no item list)
+  await fetch(`${DIRECTUS_URL}/collections/site_config`, {
+    method: 'PATCH', headers: HEADERS,
+    body: JSON.stringify({ meta: { singleton: true } }),
+  }).catch(() => { /* ignore */ })
+  console.log('   ✓  site_config set back to singleton')
 }
 
 // ── pages ─────────────────────────────────────────────────────────────────────
