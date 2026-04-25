@@ -260,20 +260,12 @@ async function upsertSiteConfig() {
 
   const { default: config } = await import('./seed-data/site-config.json', { with: { type: 'json' } })
 
-  // Try singleton endpoint first (collection is now singleton: true)
-  const singletonRes = await fetch(`${DIRECTUS_URL}/items/site_config`, { method: 'GET', headers: HEADERS })
-
-  if (singletonRes.ok) {
-    // Singleton exists — PATCH without ID
-    const { id: _id, ...updatePayload } = config as Record<string, unknown>
-    void _id
-    await siteConfigWrite('PATCH', '/items/site_config', updatePayload)
-    console.log('   ✓  Updated site-config singleton row')
-  } else {
-    // First run — POST to create it (Directus may require ID on first create)
-    await siteConfigWrite('POST', '/items/site_config', { ...config, id: 'site-config' })
-    console.log('   ✓  Created site-config row (id = "site-config")')
-  }
+  // Singleton collections must always be PATCHed — Directus upserts on first PATCH.
+  // POST doesn't work for singletons, and GET returns 403 when no item exists yet.
+  const { id: _id, ...payload } = config as Record<string, unknown>
+  void _id
+  await siteConfigWrite('PATCH', '/items/site_config', payload)
+  console.log('   ✓  Upserted site-config singleton row')
 }
 
 // ── pages ─────────────────────────────────────────────────────────────────────
