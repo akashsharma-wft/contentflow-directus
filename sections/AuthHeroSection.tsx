@@ -26,10 +26,18 @@ export function AuthHeroSection({ section, translationId, translationRow }: Prop
 
   const tr = translationRow
 
-  const headline  = tr?.auth_hero_headline    ?? section.headline   ?? 'CMS-driven publishing for engineering teams.'
-  const badge     = tr?.auth_hero_badge       ?? section.badge
+  const headline   = tr?.auth_hero_headline    ?? section.headline   ?? 'CMS-driven publishing for engineering teams.'
+  const badge      = tr?.auth_hero_badge       ?? section.badge
   const footerNote = tr?.auth_hero_footer_note ?? section.footerNote ?? 'Powered by Supabase Auth'
-  const features  = section.features ?? []
+  const rawFeatures = section.features ?? []
+
+  // Merge per-feature translation text (if set) over the sections-JSON text
+  const featureTexts: (string | null | undefined)[] = [
+    tr?.auth_hero_feature_1_text,
+    tr?.auth_hero_feature_2_text,
+    tr?.auth_hero_feature_3_text,
+  ]
+  const featureFields = ['auth_hero_feature_1_text', 'auth_hero_feature_2_text', 'auth_hero_feature_3_text']
 
   return (
     <div className="hidden lg:flex lg:w-[45%] flex-col justify-between p-12 border-r border-white/5 sticky top-0 h-screen bg-[#0d0e14]">
@@ -65,13 +73,11 @@ export function AuthHeroSection({ section, translationId, translationRow }: Prop
           {headline}
         </h1>
 
-        {features.length > 0 && (
-          <ul
-            data-directus={pageAttr(translationId, 'sections')}
-            className="space-y-4"
-          >
-            {features.map((f, i) => {
+        {rawFeatures.length > 0 && (
+          <ul className="space-y-4">
+            {rawFeatures.map((f, i) => {
               const IconComp = f.icon ? ICON_MAP[f.icon] : null
+              const text = featureTexts[i] ?? f.text
               return (
                 <li key={f._key ?? i} className="flex items-center gap-4">
                   <div className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
@@ -80,7 +86,12 @@ export function AuthHeroSection({ section, translationId, translationRow }: Prop
                       : <span className="text-white/40 text-sm">✦</span>
                     }
                   </div>
-                  <span className="text-white/55 text-sm font-medium">{f.text}</span>
+                  <span
+                    data-directus={featureFields[i] ? pageAttr(translationId, featureFields[i]) : undefined}
+                    className="text-white/55 text-sm font-medium"
+                  >
+                    {text}
+                  </span>
                 </li>
               )
             })}

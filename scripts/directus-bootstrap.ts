@@ -673,6 +673,7 @@ async function bootstrapPagesTranslations() {
     strField('recent_posts_subheading', 'Recent posts subheading', 'half'),
     strField('recent_posts_view_all',      '"View all" link label', 'half'),
     strField('recent_posts_view_all_href', '"View all" link href', 'half'),
+    strField('recent_posts_load_more',     '"Load more" button label', 'half'),
 
     // ── CTA section ──────────────────────────────────────────────────────────────
     divField('_div_cta', '📢 CTA Section'),
@@ -683,9 +684,12 @@ async function bootstrapPagesTranslations() {
 
     // ── Auth hero ────────────────────────────────────────────────────────────────
     divField('_div_auth_hero', '🔐 Auth Hero Section (login/signup left panel)'),
-    strField('auth_hero_badge',       'Auth hero badge text', 'half'),
-    strField('auth_hero_headline',    'Auth hero headline', 'half'),
-    txtField('auth_hero_footer_note', 'Auth hero footer note'),
+    strField('auth_hero_badge',          'Auth hero badge text', 'half'),
+    strField('auth_hero_headline',       'Auth hero headline', 'half'),
+    txtField('auth_hero_footer_note',    'Auth hero footer note'),
+    strField('auth_hero_feature_1_text', 'Feature 1 text', 'half'),
+    strField('auth_hero_feature_2_text', 'Feature 2 text', 'half'),
+    strField('auth_hero_feature_3_text', 'Feature 3 text', 'half'),
 
     // ── Auth form ────────────────────────────────────────────────────────────────
     divField('_div_auth_form', '📝 Auth Form Section'),

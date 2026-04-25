@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { format } from 'date-fns'
 import type { PostCard } from '@/types/cms'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 const LANG_LABELS: Record<string, string> = { en: 'EN', hi: 'HI', kn: 'KN' }
 const PAGE_SIZE = 6
@@ -18,9 +19,11 @@ interface Props {
   posts: PostCard[]
   lang: string
   viewAllLabel?: string
+  loadMoreLabel?: string
+  translationId?: number
 }
 
-export function PostFilterGrid({ posts, lang, viewAllLabel }: Props) {
+export function PostFilterGrid({ posts, lang, viewAllLabel, loadMoreLabel, translationId }: Props) {
   const [activeTag, setActiveTag] = useState<string>('all')
   const [visible, setVisible] = useState(PAGE_SIZE)
   const ui = UI_STRINGS[lang] ?? UI_STRINGS.en
@@ -152,9 +155,10 @@ export function PostFilterGrid({ posts, lang, viewAllLabel }: Props) {
             {hasMore && (
               <button
                 onClick={() => setVisible((v) => v + PAGE_SIZE)}
+                data-directus={pageAttr(translationId, 'recent_posts_load_more')}
                 className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-white/60 hover:text-white text-sm font-medium rounded-xl transition-colors inline-flex items-center gap-2"
               >
-                {ui.loadMore}
+                {loadMoreLabel ?? ui.loadMore}
                 <svg className="w-4 h-4 opacity-50" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>

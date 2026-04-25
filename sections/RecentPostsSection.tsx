@@ -19,6 +19,7 @@ export async function RecentPostsSection({ section, lang = 'en', translationId, 
   const subheading     = translationRow?.recent_posts_subheading ?? section.subheading
   const viewAllLabel   = translationRow?.recent_posts_view_all   ?? section.viewAllLabel
   const viewAllHref    = translationRow?.recent_posts_view_all_href ?? (lang === 'en' ? '/posts' : `/${lang}/posts`)
+  const loadMoreLabel  = translationRow?.recent_posts_load_more  ?? undefined
 
   // Fetch enough posts to support several Load More clicks
   const posts = (await getRecentPosts(lang, Math.max(count, 30))) as unknown as PostCard[]
@@ -56,7 +57,12 @@ export async function RecentPostsSection({ section, lang = 'en', translationId, 
         )}
       </div>
 
-      <PostFilterGrid posts={posts} lang={lang} />
+      <PostFilterGrid
+        posts={posts}
+        lang={lang}
+        loadMoreLabel={loadMoreLabel}
+        translationId={translationId}
+      />
     </section>
   )
 }

@@ -194,6 +194,7 @@ export function LoginForm({
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
+              data-directus={pageAttrs(translationId, 'auth_email_label', 'auth_email_placeholder')}
               className="bg-[#0d0e14] border-white/10 text-white placeholder:text-white/20 focus-visible:ring-indigo-500/50 focus-visible:border-indigo-500/50 h-11 rounded-xl"
             />
           </div>
@@ -215,6 +216,7 @@ export function LoginForm({
                 required
                 disabled={isLoading}
                 minLength={6}
+                data-directus={pageAttrs(translationId, 'auth_password_label', 'auth_password_placeholder')}
                 className="bg-[#0d0e14] border-white/10 text-white placeholder:text-white/20 focus-visible:ring-indigo-500/50 focus-visible:border-indigo-500/50 h-11 rounded-xl pr-10"
               />
               <button

@@ -244,6 +244,7 @@ export type DirectusPageTranslationRow = {
   recent_posts_subheading?:   string | null
   recent_posts_view_all?:     string | null
   recent_posts_view_all_href?: string | null
+  recent_posts_load_more?:     string | null
 
   // ── CTA ───────────────────────────────────────────────────────────────────
   cta_heading?:       string | null
@@ -252,9 +253,12 @@ export type DirectusPageTranslationRow = {
   cta_primary_href?:  string | null
 
   // ── Auth hero ─────────────────────────────────────────────────────────────
-  auth_hero_badge?:       string | null
-  auth_hero_headline?:    string | null
-  auth_hero_footer_note?: string | null
+  auth_hero_badge?:            string | null
+  auth_hero_headline?:         string | null
+  auth_hero_footer_note?:      string | null
+  auth_hero_feature_1_text?:   string | null
+  auth_hero_feature_2_text?:   string | null
+  auth_hero_feature_3_text?:   string | null
 
   // ── Auth form ─────────────────────────────────────────────────────────────
   auth_heading?:              string | null
