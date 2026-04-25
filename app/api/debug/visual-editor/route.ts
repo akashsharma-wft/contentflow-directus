@@ -30,8 +30,9 @@ export async function GET(request: NextRequest) {
   }
 
   const cookies: Record<string, string> = {}
-  for (const [name, value] of request.cookies) {
-    cookies[name] = value.slice(0, 40) + (value.length > 40 ? '…' : '')
+  for (const cookie of request.cookies.getAll()) {
+    const v = cookie.value
+    cookies[cookie.name] = v.slice(0, 40) + (v.length > 40 ? '…' : '')
   }
 
   return NextResponse.json({
