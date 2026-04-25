@@ -986,15 +986,15 @@ async function bootstrapSiteConfig() {
     '_div_navbar_items', '_div_footer_cols', '_div_sidebar_nav',
     'sidebar_status_text',
     ...[1,2,3,4,5].flatMap(n => [
-      `navbar_item_${n}_label_en`, `navbar_item_${n}_label_hi`, `navbar_item_${n}_label_kn`, `navbar_item_${n}_href`,
-      `sidebar_nav_${n}_label_en`, `sidebar_nav_${n}_label_hi`, `sidebar_nav_${n}_label_kn`, `sidebar_nav_${n}_href`,
+      `navbar_item_${n}_label`, `navbar_item_${n}_label_en`, `navbar_item_${n}_label_hi`, `navbar_item_${n}_label_kn`, `navbar_item_${n}_href`,
+      `sidebar_nav_${n}_label`, `sidebar_nav_${n}_label_en`, `sidebar_nav_${n}_label_hi`, `sidebar_nav_${n}_label_kn`, `sidebar_nav_${n}_href`,
     ]),
-    'footer_tagline_en', 'footer_tagline_hi', 'footer_tagline_kn',
-    'footer_copyright_en', 'footer_copyright_hi', 'footer_copyright_kn',
+    'footer_tagline', 'footer_tagline_en', 'footer_tagline_hi', 'footer_tagline_kn',
+    'footer_copyright', 'footer_copyright_en', 'footer_copyright_hi', 'footer_copyright_kn',
     ...[1,2].flatMap(c => [
-      `footer_col_${c}_heading_en`, `footer_col_${c}_heading_hi`, `footer_col_${c}_heading_kn`,
+      `footer_col_${c}_heading`, `footer_col_${c}_heading_en`, `footer_col_${c}_heading_hi`, `footer_col_${c}_heading_kn`,
       ...[1,2].flatMap(l => [
-        `footer_col_${c}_link_${l}_label_en`, `footer_col_${c}_link_${l}_label_hi`, `footer_col_${c}_link_${l}_label_kn`,
+        `footer_col_${c}_link_${l}_label`, `footer_col_${c}_link_${l}_label_en`, `footer_col_${c}_link_${l}_label_hi`, `footer_col_${c}_link_${l}_label_kn`,
         `footer_col_${c}_link_${l}_href`,
       ]),
     ]),
@@ -1047,7 +1047,6 @@ async function bootstrapSiteConfigTranslations() {
     },
 
     // Navbar items — per-language list
-    divField('_div_sc_navbar_items', '🔗 Navbar Items'),
     {
       field: 'navbar_items',
       payload: {
@@ -1068,7 +1067,6 @@ async function bootstrapSiteConfigTranslations() {
     },
 
     // Sidebar items — per-language list with icon
-    divField('_div_sc_sidebar_items', '📌 Sidebar Items'),
     {
       field: 'sidebar_items',
       payload: {
@@ -1090,7 +1088,6 @@ async function bootstrapSiteConfigTranslations() {
     },
 
     // Footer columns — per-language list with nested links
-    divField('_div_sc_footer_cols', '📋 Footer Columns'),
     {
       field: 'footer_columns',
       payload: {
@@ -1119,7 +1116,6 @@ async function bootstrapSiteConfigTranslations() {
     },
 
     // Mobile nav items — per-language list with icon
-    divField('_div_sc_mobile_nav_items', '📱 Mobile Nav Items'),
     {
       field: 'mobile_nav_items',
       payload: {
@@ -1143,9 +1139,26 @@ async function bootstrapSiteConfigTranslations() {
 
   // Hide removed label fields that may exist from previous bootstrap runs
   const removedTranslationFields = [
+    // Divider aliases for list sections (field label already acts as heading)
+    '_div_sc_navbar_items', '_div_sc_sidebar_items', '_div_sc_footer_cols', '_div_sc_mobile_nav_items',
+    // Removed navbar labels
     '_div_sc_navbar', 'navbar_cta_label', 'navbar_login_label', 'navbar_signup_label', 'navbar_signout_label',
+    // Removed footer labels
     '_div_sc_footer', 'footer_tagline', 'footer_copyright',
+    // Removed sidebar labels
     '_div_sc_sidebar', 'sidebar_brand_name', 'sidebar_status_text',
+    // Old individual per-item label fields (all naming variants)
+    ...[1,2,3,4,5].flatMap(n => [
+      `navbar_item_${n}_label`, `navbar_item_${n}_label_en`, `navbar_item_${n}_label_hi`, `navbar_item_${n}_label_kn`, `navbar_item_${n}_href`,
+      `sidebar_nav_${n}_label`, `sidebar_nav_${n}_label_en`, `sidebar_nav_${n}_label_hi`, `sidebar_nav_${n}_label_kn`, `sidebar_nav_${n}_href`,
+    ]),
+    ...[1,2].flatMap(c => [
+      `footer_col_${c}_heading`, `footer_col_${c}_heading_en`, `footer_col_${c}_heading_hi`, `footer_col_${c}_heading_kn`,
+      ...[1,2].flatMap(l => [
+        `footer_col_${c}_link_${l}_label`, `footer_col_${c}_link_${l}_label_en`, `footer_col_${c}_link_${l}_label_hi`, `footer_col_${c}_link_${l}_label_kn`,
+        `footer_col_${c}_link_${l}_href`,
+      ]),
+    ]),
   ]
   for (const field of removedTranslationFields) {
     if (await fieldExists('site_config_translations', field)) {

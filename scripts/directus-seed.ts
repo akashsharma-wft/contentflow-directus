@@ -758,29 +758,14 @@ type FooterLink = { label: string; href: string }
 type FooterCol  = { heading: string; links: FooterLink[] }
 
 interface SiteConfigTranslation {
-  navbar_cta_label:     string
-  navbar_login_label:   string
-  navbar_signup_label:  string
-  navbar_signout_label: string
-  footer_tagline:       string
-  footer_copyright:     string
-  sidebar_brand_name:   string
-  sidebar_status_text:  string
-  navbar_items:         NavItem[]
-  sidebar_items:        NavItem[]
-  footer_columns:       FooterCol[]
+  navbar_items:      NavItem[]
+  sidebar_items:     NavItem[]
+  mobile_nav_items:  NavItem[]
+  footer_columns:    FooterCol[]
 }
 
 const SITE_CONFIG_TRANSLATIONS: Record<string, SiteConfigTranslation> = {
   en: {
-    navbar_cta_label:     'Get Started',
-    navbar_login_label:   'Login',
-    navbar_signup_label:  'Sign up',
-    navbar_signout_label: 'Sign out',
-    footer_tagline:       'CMS-driven SaaS dashboard.',
-    footer_copyright:     `© ${new Date().getFullYear()} ContentFlow. All rights reserved.`,
-    sidebar_brand_name:   'ContentFlow',
-    sidebar_status_text:  'All systems operational',
     navbar_items: [
       { label: 'Posts',     href: '/posts',     access: 'user'  },
       { label: 'Settings',  href: '/settings',  access: 'user'  },
@@ -795,20 +780,19 @@ const SITE_CONFIG_TRANSLATIONS: Record<string, SiteConfigTranslation> = {
       { label: 'Billing',   href: '/billing',   icon: 'CreditCard', access: 'user'  },
       { label: 'Admin',     href: '/admin',     icon: 'Shield',     access: 'admin' },
     ],
+    mobile_nav_items: [
+      { label: 'Posts',     href: '/posts',     icon: 'FileText',   access: 'user'  },
+      { label: 'Analytics', href: '/analytics', icon: 'BarChart3',  access: 'admin' },
+      { label: 'Settings',  href: '/settings',  icon: 'Settings',   access: 'user'  },
+      { label: 'Billing',   href: '/billing',   icon: 'CreditCard', access: 'user'  },
+      { label: 'Admin',     href: '/admin',     icon: 'Shield',     access: 'admin' },
+    ],
     footer_columns: [
       { heading: 'Product', links: [{ label: 'Features', href: '/#features' }, { label: 'Pricing', href: '/#pricing' }] },
       { heading: 'Account', links: [{ label: 'Log in', href: '/login' }, { label: 'Sign up', href: '/signup' }] },
     ],
   },
   hi: {
-    navbar_cta_label:     'शुरू करें',
-    navbar_login_label:   'लॉगिन',
-    navbar_signup_label:  'साइन अप',
-    navbar_signout_label: 'साइन आउट',
-    footer_tagline:       'CMS-संचालित SaaS डैशबोर्ड।',
-    footer_copyright:     `© ${new Date().getFullYear()} ContentFlow. सर्वाधिकार सुरक्षित।`,
-    sidebar_brand_name:   'ContentFlow',
-    sidebar_status_text:  'सभी सिस्टम चालू हैं',
     navbar_items: [
       { label: 'पोस्ट',    href: '/posts',     access: 'user'  },
       { label: 'सेटिंग्स', href: '/settings',  access: 'user'  },
@@ -823,20 +807,19 @@ const SITE_CONFIG_TRANSLATIONS: Record<string, SiteConfigTranslation> = {
       { label: 'बिलिंग',   href: '/billing',   icon: 'CreditCard', access: 'user'  },
       { label: 'एडमिन',    href: '/admin',     icon: 'Shield',     access: 'admin' },
     ],
+    mobile_nav_items: [
+      { label: 'पोस्ट',    href: '/posts',     icon: 'FileText',   access: 'user'  },
+      { label: 'विश्लेषण', href: '/analytics', icon: 'BarChart3',  access: 'admin' },
+      { label: 'सेटिंग्स', href: '/settings',  icon: 'Settings',   access: 'user'  },
+      { label: 'बिलिंग',   href: '/billing',   icon: 'CreditCard', access: 'user'  },
+      { label: 'एडमिन',    href: '/admin',     icon: 'Shield',     access: 'admin' },
+    ],
     footer_columns: [
       { heading: 'उत्पाद', links: [{ label: 'विशेषताएं', href: '/#features' }, { label: 'मूल्य निर्धारण', href: '/#pricing' }] },
       { heading: 'खाता',   links: [{ label: 'लॉग इन',  href: '/login' }, { label: 'साइन अप', href: '/signup' }] },
     ],
   },
   kn: {
-    navbar_cta_label:     'ಪ್ರಾರಂಭಿಸಿ',
-    navbar_login_label:   'ಲಾಗಿನ್',
-    navbar_signup_label:  'ಸೈನ್ ಅಪ್',
-    navbar_signout_label: 'ಸೈನ್ ಔಟ್',
-    footer_tagline:       'CMS-ಚಾಲಿತ SaaS ಡ್ಯಾಶ್‌ಬೋರ್ಡ್.',
-    footer_copyright:     `© ${new Date().getFullYear()} ContentFlow. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.`,
-    sidebar_brand_name:   'ContentFlow',
-    sidebar_status_text:  'ಎಲ್ಲಾ ಸಿಸ್ಟಮ್‌ಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿವೆ',
     navbar_items: [
       { label: 'ಪೋಸ್ಟ್‌ಗಳು',    href: '/posts',     access: 'user'  },
       { label: 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು', href: '/settings',  access: 'user'  },
@@ -845,6 +828,13 @@ const SITE_CONFIG_TRANSLATIONS: Record<string, SiteConfigTranslation> = {
       { label: 'ಅಡ್ಮಿನ್',       href: '/admin',     access: 'admin' },
     ],
     sidebar_items: [
+      { label: 'ಪೋಸ್ಟ್‌ಗಳು',    href: '/posts',     icon: 'FileText',   access: 'user'  },
+      { label: 'ವಿಶ್ಲೇಷಣೆ',     href: '/analytics', icon: 'BarChart3',  access: 'admin' },
+      { label: 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು', href: '/settings',  icon: 'Settings',   access: 'user'  },
+      { label: 'ಬಿಲ್ಲಿಂಗ್',     href: '/billing',   icon: 'CreditCard', access: 'user'  },
+      { label: 'ಅಡ್ಮಿನ್',       href: '/admin',     icon: 'Shield',     access: 'admin' },
+    ],
+    mobile_nav_items: [
       { label: 'ಪೋಸ್ಟ್‌ಗಳು',    href: '/posts',     icon: 'FileText',   access: 'user'  },
       { label: 'ವಿಶ್ಲೇಷಣೆ',     href: '/analytics', icon: 'BarChart3',  access: 'admin' },
       { label: 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು', href: '/settings',  icon: 'Settings',   access: 'user'  },
