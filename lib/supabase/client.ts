@@ -9,9 +9,16 @@ export function createClient() {
   // this by allowing the cookie to travel in all cross-site contexts.
   const inIframe = typeof window !== 'undefined' && window !== window.top
 
+  if (inIframe) {
+    return createBrowserClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      { cookieOptions: { sameSite: 'None', secure: true } }
+    )
+  }
+
   return createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    inIframe ? { cookieOptions: { sameSite: 'None', secure: true } } : {}
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 }
