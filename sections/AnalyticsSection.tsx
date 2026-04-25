@@ -18,19 +18,27 @@ export function AnalyticsSection({ content = {}, translationId, translationRow }
   // renders the correct CMS strings without knowing about translationRow.
   const mergedConfig: SectionAnalyticsContent = {
     ...content,
-    heading:    translationRow?.analytics_heading    ?? content.heading,
-    subheading: translationRow?.analytics_subheading ?? content.subheading,
-    emptyTitle: translationRow?.analytics_empty_title ?? content.emptyTitle,
-    emptyBody:  translationRow?.analytics_empty_body  ?? content.emptyBody,
+    heading:      translationRow?.analytics_heading      ?? content.heading,
+    subheading:   translationRow?.analytics_subheading   ?? content.subheading,
+    eventsLabel:  translationRow?.analytics_events_label ?? content.eventsLabel,
+    usersLabel:   translationRow?.analytics_users_label  ?? content.usersLabel,
+    emptyTitle:   translationRow?.analytics_empty_title  ?? content.emptyTitle,
+    emptyBody:    translationRow?.analytics_empty_body   ?? content.emptyBody,
+    refreshLabel: translationRow?.analytics_refresh_label ?? content.refreshLabel,
+    prevLabel:    translationRow?.analytics_prev_label   ?? content.prevLabel,
+    nextLabel:    translationRow?.analytics_next_label   ?? content.nextLabel,
   }
 
-  // Attr values for individual field bindings — passed into PostHogEventsClient
-  // so it can apply them to the exact DOM elements that render those strings.
   const attrMap = {
     headingAttr:    pageAttr(translationId, 'analytics_heading'),
     subheadingAttr: pageAttr(translationId, 'analytics_subheading'),
-    emptyTitleAttr: pageAttr(translationId, 'analytics_empty_title'),
-    emptyBodyAttr:  pageAttr(translationId, 'analytics_empty_body'),
+    eventsLabelAttr: pageAttr(translationId, 'analytics_events_label'),
+    usersLabelAttr:  pageAttr(translationId, 'analytics_users_label'),
+    emptyTitleAttr:  pageAttr(translationId, 'analytics_empty_title'),
+    emptyBodyAttr:   pageAttr(translationId, 'analytics_empty_body'),
+    refreshLabelAttr: pageAttr(translationId, 'analytics_refresh_label'),
+    prevLabelAttr:   pageAttr(translationId, 'analytics_prev_label'),
+    nextLabelAttr:   pageAttr(translationId, 'analytics_next_label'),
   }
 
   return (

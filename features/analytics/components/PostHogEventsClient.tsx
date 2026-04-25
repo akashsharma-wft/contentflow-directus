@@ -13,10 +13,15 @@ interface ServerFlags {
 }
 
 interface AttrMap {
-  headingAttr?:    string
-  subheadingAttr?: string
-  emptyTitleAttr?: string
-  emptyBodyAttr?:  string
+  headingAttr?:      string
+  subheadingAttr?:   string
+  eventsLabelAttr?:  string
+  usersLabelAttr?:   string
+  emptyTitleAttr?:   string
+  emptyBodyAttr?:    string
+  refreshLabelAttr?: string
+  prevLabelAttr?:    string
+  nextLabelAttr?:    string
 }
 
 interface PostHogEventsClientProps {
@@ -164,9 +169,9 @@ export function PostHogEventsClient({ config, serverFlags, attrMap = {} }: PostH
   const eventsToday = events.filter(e => new Date(e.timestamp).toDateString() === todayStr).length
 
   const statCards = [
-    { label: config.eventsLabel ?? 'Events Today',  value: isLoading ? '—' : `${eventsToday}+` },
-    { label: config.usersLabel  ?? 'Unique Users',  value: isLoading ? '—' : stats.uniqueUsers.toString() },
-    { label: config.avgSessionLabel ?? 'Avg. Session', value: isLoading ? '—' : stats.avgSession },
+    { label: config.eventsLabel ?? 'Events Today',     value: isLoading ? '—' : `${eventsToday}+`,               attr: attrMap.eventsLabelAttr },
+    { label: config.usersLabel  ?? 'Unique Users',     value: isLoading ? '—' : stats.uniqueUsers.toString(),    attr: attrMap.usersLabelAttr  },
+    { label: config.avgSessionLabel ?? 'Avg. Session', value: isLoading ? '—' : stats.avgSession,                attr: undefined },
   ]
 
   return (
@@ -188,9 +193,14 @@ export function PostHogEventsClient({ config, serverFlags, attrMap = {} }: PostH
 
       {/* Stat cards */}
       <div className="grid grid-cols-3 gap-3">
-        {statCards.map(({ label, value }) => (
+        {statCards.map(({ label, value, attr }) => (
           <div key={label} className="bg-[#13141c] border border-white/5 rounded-xl p-4">
-            <p className="text-white/30 text-[10px] uppercase tracking-widest font-mono mb-2">{label}</p>
+            <p
+              {...(attr ? { 'data-directus': attr } : {})}
+              className="text-white/30 text-[10px] uppercase tracking-widest font-mono mb-2"
+            >
+              {label}
+            </p>
             <p className="text-white text-2xl font-bold tracking-tight">
               {isLoading ? <Loader2 size={20} className="animate-spin text-white/20" /> : value}
             </p>
@@ -217,6 +227,7 @@ export function PostHogEventsClient({ config, serverFlags, attrMap = {} }: PostH
             <button
               onClick={refreshEvents}
               disabled={isRefreshing}
+              {...(attrMap.refreshLabelAttr ? { 'data-directus': attrMap.refreshLabelAttr } : {})}
               className="text-white/30 hover:text-white/60 text-[10px] uppercase tracking-widest font-mono cursor-pointer transition-colors px-2 py-1 rounded border border-white/10 hover:border-white/20"
             >
               {isRefreshing ? 'Refreshing...' : (config.refreshLabel ?? 'Refresh')}
@@ -296,6 +307,7 @@ export function PostHogEventsClient({ config, serverFlags, attrMap = {} }: PostH
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={safePage === 1}
+                    {...(attrMap.prevLabelAttr ? { 'data-directus': attrMap.prevLabelAttr } : {})}
                     className="p-1 rounded text-white/30 hover:text-white/70 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
                     aria-label={prevLabel}
                   >
@@ -320,6 +332,7 @@ export function PostHogEventsClient({ config, serverFlags, attrMap = {} }: PostH
                   <button
                     onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                     disabled={safePage === totalPages}
+                    {...(attrMap.nextLabelAttr ? { 'data-directus': attrMap.nextLabelAttr } : {})}
                     className="p-1 rounded text-white/30 hover:text-white/70 disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer transition-colors"
                     aria-label={nextLabel}
                   >

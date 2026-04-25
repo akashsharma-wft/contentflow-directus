@@ -54,10 +54,9 @@ const PAGE_PARENT_FIELDS = [
   'id', 'slug', 'status', 'access', 'layout', 'og_image',
 ] as never
 
-const PAGE_TR_FIELDS = [
-  'id', 'pages_id', 'languages_code', 'title', 'sections',
-  'seo_title', 'seo_description',
-] as never
+// Fetch all fields so section components receive the full translationRow
+// (billing_*, settings_*, admin_*, analytics_*, posts_* etc.) for visual editing bindings.
+const PAGE_TR_FIELDS = ['*'] as never
 
 // ─── Two-step fetch helpers ───────────────────────────────────────────────────
 

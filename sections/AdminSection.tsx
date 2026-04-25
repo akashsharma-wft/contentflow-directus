@@ -7,6 +7,7 @@ import { AdminUsersTable } from '@/features/admin/components/AdminUsersTable'
 import { AdminInvitePanel } from '@/features/admin/components/AdminInvitePanel'
 import { DirectusCredentialsCard } from '@/features/admin/components/DirectusCredentialsCard'
 import type { DirectusPageTranslationRow } from '@/types/directus'
+import { pageAttrs } from '@/lib/directus/section-binding'
 
 interface Props {
   lang?:    string
@@ -23,7 +24,7 @@ function adminDb() {
   )
 }
 
-export async function AdminSection({ content = {}, translationRow }: Props) {
+export async function AdminSection({ content = {}, translationId, translationRow }: Props) {
   const users = await getAllUsers()
 
   // Merge translationRow fields over the content blob so child components
@@ -49,7 +50,18 @@ export async function AdminSection({ content = {}, translationRow }: Props) {
   }
 
   return (
-    <div className="space-y-8">
+    <div
+      className="space-y-8"
+      data-directus={pageAttrs(translationId,
+        'admin_heading', 'admin_subheading',
+        'admin_total_users_label', 'admin_pro_label', 'admin_free_label',
+        'admin_col_user', 'admin_col_plan', 'admin_col_role', 'admin_col_joined',
+        'admin_empty_label',
+        'admin_invite_heading', 'admin_invite_form_title',
+        'admin_invite_email_label', 'admin_invite_email_placeholder',
+        'admin_invite_message_label', 'admin_invite_send_label',
+      )}
+    >
       {/* Directus dashboard access card — shown at top */}
       <DirectusCredentialsCard />
 

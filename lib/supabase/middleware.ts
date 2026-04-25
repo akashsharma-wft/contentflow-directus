@@ -93,8 +93,9 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  // Admin check still runs even in preview (if user IS logged in, still enforce admin)
-  if (user && ADMIN_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'))) {
+  // Admin-only route guard — skipped in preview so the visual editor iframe can
+  // render admin/analytics pages regardless of the preview user's actual role.
+  if (!isPreview && user && ADMIN_PATHS.some(p => pathname === p || pathname.startsWith(p + '/'))) {
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
