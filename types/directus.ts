@@ -468,12 +468,35 @@ export type DirectusNavPage = {
 
 // ─── Site config translations ─────────────────────────────────────────────────
 
-// Only translatable non-array fields live here.
-// Nav item labels are embedded inline in the JSON arrays as label_en/hi/kn.
+// Per-language nav item shape — single label (already in this language)
+export type TranslationNavItemJSON = {
+  label:  string
+  href:   string
+  icon?:  string
+  access: 'guest' | 'user' | 'admin'
+}
+
+export type TranslationFooterLinkJSON = {
+  label: string
+  href:  string
+}
+
+export type TranslationFooterColumnJSON = {
+  heading: string
+  links:   TranslationFooterLinkJSON[]
+}
+
+// Nav items and footer columns live here (per language).
+// Labels, CTA text, brand names are also per-language strings.
 export type DirectusSiteConfigTranslationRow = {
   id:              number
   site_config_id:  string
   languages_code:  string
+  // Nav items — per-language lists managed in the Translations form
+  navbar_items?:    TranslationNavItemJSON[]   | null
+  sidebar_items?:   TranslationNavItemJSON[]   | null
+  footer_columns?:  TranslationFooterColumnJSON[] | null
+  // String labels
   navbar_cta_label?:     string | null
   navbar_login_label?:   string | null
   navbar_signup_label?:  string | null
@@ -484,52 +507,21 @@ export type DirectusSiteConfigTranslationRow = {
   sidebar_status_text?:  string | null
 }
 
-// ─── Nav item JSON shape (stored in JSON array fields) ────────────────────────
-
-export type NavItemJSON = {
-  label_en: string
-  label_hi?: string
-  label_kn?: string
-  href:      string
-  icon?:     string
-  access:    'guest' | 'user' | 'admin'
-}
-
-export type FooterLinkJSON = {
-  label_en: string
-  label_hi?: string
-  label_kn?: string
-  href:      string
-}
-
-export type FooterColumnJSON = {
-  heading_en: string
-  heading_hi?: string
-  heading_kn?: string
-  links: FooterLinkJSON[]
-}
-
 // ─── Site config ──────────────────────────────────────────────────────────────
 
 export type DirectusSiteConfigRow = {
   id:         string
   site_name:  string
 
-  // Global (non-translated) branding / CTA
-  navbar_brand_name?:  string | null
-  navbar_cta_href?:    string | null
-  footer_brand_name?:  string | null
+  // Global (non-translated) branding / CTA hrefs
+  navbar_brand_name?:      string | null
+  navbar_cta_href?:        string | null
+  footer_brand_name?:      string | null
   sidebar_brand_name?:     string | null
   sidebar_brand_subtitle?: string | null
   sidebar_status_badge?:   string | null
 
-  // Dynamic nav item arrays — editors add/remove items freely
-  navbar_items?:      NavItemJSON[] | null
-  sidebar_nav_items?: NavItemJSON[] | null
-  mobile_nav_items?:  NavItemJSON[] | null
-  footer_columns?:    FooterColumnJSON[] | null
-
-  // Translations relation
+  // Translations relation (includes per-language nav items)
   translations?: DirectusSiteConfigTranslationRow[]
 }
 
@@ -551,25 +543,25 @@ function accessToVisibleFor(access?: string): NavRole[] {
   return ['user']
 }
 
-function parseNavItems(json: NavItemJSON[] | null | undefined): SiteNavItem[] {
+function parseTrNavItems(json: TranslationNavItemJSON[] | null | undefined): SiteNavItem[] {
   if (!Array.isArray(json)) return []
   return json.map((item, i) => ({
     _key:       `nav_${i}`,
-    label:      { en: item.label_en, hi: item.label_hi, kn: item.label_kn },
+    label:      { en: item.label },
     href:       item.href,
     icon:       item.icon,
     visibleFor: accessToVisibleFor(item.access),
   }))
 }
 
-function parseFooterColumns(json: FooterColumnJSON[] | null | undefined): SiteFooterColumn[] {
+function parseTrFooterColumns(json: TranslationFooterColumnJSON[] | null | undefined): SiteFooterColumn[] {
   if (!Array.isArray(json)) return []
   return json.map((col, ci) => ({
     _key:    `col_${ci}`,
-    heading: { en: col.heading_en, hi: col.heading_hi, kn: col.heading_kn },
+    heading: { en: col.heading },
     links:   (col.links ?? []).map((l, li) => ({
       _key:  `col_${ci}_link_${li}`,
-      label: { en: l.label_en, hi: l.label_hi, kn: l.label_kn },
+      label: { en: l.label },
       href:  l.href,
     })),
   }))
@@ -578,10 +570,11 @@ function parseFooterColumns(json: FooterColumnJSON[] | null | undefined): SiteFo
 export function toSiteConfig(row: DirectusSiteConfigRow, lang = 'en'): DirectusSiteConfig {
   const tr = resolveTranslation(row.translations ?? [], lang) as DirectusSiteConfigTranslationRow | null | undefined
 
-  const navbarItems   = parseNavItems(row.navbar_items)
-  const sidebarItems  = parseNavItems(row.sidebar_nav_items)
-  const mobileItems   = parseNavItems(row.mobile_nav_items ?? row.sidebar_nav_items)
-  const footerColumns = parseFooterColumns(row.footer_columns)
+  // Nav items come from the matching translation (per-language lists with single label)
+  const navbarItems   = parseTrNavItems(tr?.navbar_items)
+  const sidebarItems  = parseTrNavItems(tr?.sidebar_items)
+  const mobileItems   = parseTrNavItems(tr?.sidebar_items) // mobile reuses sidebar items
+  const footerColumns = parseTrFooterColumns(tr?.footer_columns)
 
   const navbarConfig: SiteNavbarConfig = {
     brandName: row.navbar_brand_name ?? undefined,

@@ -5,42 +5,9 @@
   "navbar_brand_name": "ContentFlow",
   "navbar_cta_href": "/signup",
 
-  "navbar_items": [
-    { "label_en": "Posts",     "label_hi": "पोस्ट",    "label_kn": "ಪೋಸ್ಟ್‌ಗಳು",   "href": "/posts",     "access": "user" },
-    { "label_en": "Settings",  "label_hi": "सेटिंग्स", "label_kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", "href": "/settings",  "access": "user" },
-    { "label_en": "Billing",   "label_hi": "बिलिंग",   "label_kn": "ಬಿಲ್ಲಿಂಗ್",    "href": "/billing",   "access": "user" },
-    { "label_en": "Analytics", "label_hi": "विश्लेषण", "label_kn": "ವಿಶ್ಲೇಷಣೆ",    "href": "/analytics", "access": "admin" },
-    { "label_en": "Admin",     "label_hi": "एडमिन",    "label_kn": "ಅಡ್ಮಿನ್",      "href": "/admin",     "access": "admin" }
-  ],
-
   "footer_brand_name": "ContentFlow",
-
-  "footer_columns": [
-    {
-      "heading_en": "Product", "heading_hi": "उत्पाद", "heading_kn": "ಉತ್ಪನ್ನ",
-      "links": [
-        { "label_en": "Features", "label_hi": "विशेषताएं",       "label_kn": "ವೈಶಿಷ್ಟ್ಯಗಳು", "href": "/#features" },
-        { "label_en": "Pricing",  "label_hi": "मूल्य निर्धारण", "label_kn": "ಬೆಲೆ ನಿಗದಿ",   "href": "/#pricing"  }
-      ]
-    },
-    {
-      "heading_en": "Account", "heading_hi": "खाता", "heading_kn": "ಖಾತೆ",
-      "links": [
-        { "label_en": "Log in",  "label_hi": "लॉग इन",  "label_kn": "ಲಾಗ್ ಇನ್",  "href": "/login"  },
-        { "label_en": "Sign up", "label_hi": "साइन अप", "label_kn": "ಸೈನ್ ಅಪ್",  "href": "/signup" }
-      ]
-    }
-  ],
 
   "sidebar_brand_name":     "ContentFlow",
   "sidebar_brand_subtitle": "Dashboard",
-  "sidebar_status_badge":   "System Status: Nominal",
-
-  "sidebar_nav_items": [
-    { "label_en": "Posts",     "label_hi": "पोस्ट",    "label_kn": "ಪೋಸ್ಟ್‌ಗಳು",   "href": "/posts",     "icon": "FileText",   "access": "user"  },
-    { "label_en": "Analytics", "label_hi": "विश्लेषण", "label_kn": "ವಿಶ್ಲೇಷಣೆ",    "href": "/analytics", "icon": "BarChart3",  "access": "admin" },
-    { "label_en": "Settings",  "label_hi": "सेटिंग्स", "label_kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", "href": "/settings",  "icon": "Settings",   "access": "user"  },
-    { "label_en": "Billing",   "label_hi": "बिलिंग",   "label_kn": "ಬಿಲ್ಲಿಂಗ್",    "href": "/billing",   "icon": "CreditCard", "access": "user"  },
-    { "label_en": "Admin",     "label_hi": "एडमिन",    "label_kn": "ಅಡ್ಮಿನ್",      "href": "/admin",     "icon": "Shield",     "access": "admin" }
-  ]
+  "sidebar_status_badge":   "System Status: Nominal"
 }

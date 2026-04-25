@@ -904,6 +904,14 @@ async function bootstrapPagesTranslations() {
   }
 }
 
+// ── Shared dropdown choices ───────────────────────────────────────────────────
+
+const ACCESS_CHOICES = [
+  { text: 'Logged-in users',  value: 'user'  },
+  { text: 'Admins only',      value: 'admin' },
+  { text: 'Everyone (guest)', value: 'guest' },
+]
+
 // ── site_config ───────────────────────────────────────────────────────────────
 
 async function bootstrapSiteConfig() {
@@ -912,7 +920,7 @@ async function bootstrapSiteConfig() {
   if (!(await collectionExists('site_config'))) {
     await api('POST', '/collections', {
       collection: 'site_config',
-      meta: { icon: 'settings', display_template: '{{site_name}}' },
+      meta: { icon: 'settings', display_template: '{{site_name}}', singleton: true },
       schema: {},
       fields: [
         {
@@ -923,22 +931,15 @@ async function bootstrapSiteConfig() {
         },
       ],
     })
-    console.log(`  ${TAG} collection created (regular, string PK)`)
+    console.log(`  ${TAG} collection created (singleton)`)
   } else {
     console.log(`  ${TAG} already exists — checking fields…`)
-    const meta = (await api('GET', `/collections/site_config`)) as { data?: { meta?: { singleton?: boolean } } }
-    if (meta?.data?.meta?.singleton === true) {
-      await api('PATCH', '/collections/site_config', { meta: { singleton: false } })
-      console.log(`  ${TAG} ⚠  singleton flag removed (required for readItem by ID)`)
+    const colRes = (await api('GET', `/collections/site_config`)) as { data?: { meta?: { singleton?: boolean } } }
+    if (colRes?.data?.meta?.singleton !== true) {
+      await api('PATCH', '/collections/site_config', { meta: { singleton: true } })
+      console.log(`  ${TAG} ✓  singleton flag set`)
     }
   }
-
-  // Shared access choices for nav item repeaters
-  const ACCESS_CHOICES = [
-    { text: 'Logged-in users', value: 'user'  },
-    { text: 'Admins only',     value: 'admin' },
-    { text: 'Everyone (guest)', value: 'guest' },
-  ]
 
   await ensureFields('site_config', [
     {
@@ -955,100 +956,23 @@ async function bootstrapSiteConfig() {
     strField('navbar_brand_name', 'Brand name', 'half'),
     strField('navbar_cta_href',   'CTA button href', 'half'),
 
-    // Navbar nav items — repeater list
-    {
-      field: 'navbar_items',
-      payload: {
-        field: 'navbar_items', type: 'json',
-        meta: {
-          interface: 'list', width: 'full',
-          options: {
-            template: '{{label_en}} → {{href}}',
-            fields: [
-              { field: 'label_en', name: 'Label (EN)', type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'label_hi', name: 'Label (HI)', type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'label_kn', name: 'Label (KN)', type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'href',     name: 'Href',       type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'access',   name: 'Visible to', type: 'string', meta: { interface: 'select-dropdown', width: 'half', options: { choices: ACCESS_CHOICES } } },
-            ],
-          },
-        },
-        schema: { is_nullable: true },
-      },
-    },
-
     // ── Footer ────────────────────────────────────────────────────────────────
     divField('_div_footer', '🦶 Footer'),
     strField('footer_brand_name', 'Brand name', 'half'),
 
-    // Footer columns — nested repeater (columns → links)
-    {
-      field: 'footer_columns',
-      payload: {
-        field: 'footer_columns', type: 'json',
-        meta: {
-          interface: 'list', width: 'full',
-          options: {
-            template: '{{heading_en}}',
-            fields: [
-              { field: 'heading_en', name: 'Heading (EN)', type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'heading_hi', name: 'Heading (HI)', type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'heading_kn', name: 'Heading (KN)', type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'links', name: 'Links', type: 'json', meta: {
-                interface: 'list', width: 'full',
-                options: {
-                  template: '{{label_en}} → {{href}}',
-                  fields: [
-                    { field: 'label_en', name: 'Label (EN)', type: 'string', meta: { interface: 'input', width: 'half' } },
-                    { field: 'label_hi', name: 'Label (HI)', type: 'string', meta: { interface: 'input', width: 'half' } },
-                    { field: 'label_kn', name: 'Label (KN)', type: 'string', meta: { interface: 'input', width: 'half' } },
-                    { field: 'href',     name: 'Href',       type: 'string', meta: { interface: 'input', width: 'half' } },
-                  ],
-                },
-              }},
-            ],
-          },
-        },
-        schema: { is_nullable: true },
-      },
-    },
-
     // ── Sidebar ───────────────────────────────────────────────────────────────
     divField('_div_sidebar', '📌 Sidebar'),
-    strField('sidebar_brand_name',     'Brand name (override per-lang in Translations)', 'half'),
+    strField('sidebar_brand_name',     'Brand name', 'half'),
     strField('sidebar_brand_subtitle', 'Brand subtitle', 'half'),
     strField('sidebar_status_badge',   'Status badge', 'half'),
-
-    // Sidebar nav items — repeater list
-    {
-      field: 'sidebar_nav_items',
-      payload: {
-        field: 'sidebar_nav_items', type: 'json',
-        meta: {
-          interface: 'list', width: 'full',
-          options: {
-            template: '{{label_en}} → {{href}}',
-            fields: [
-              { field: 'label_en', name: 'Label (EN)', type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'label_hi', name: 'Label (HI)', type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'label_kn', name: 'Label (KN)', type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'href',     name: 'Href',       type: 'string', meta: { interface: 'input', width: 'half' } },
-              { field: 'icon',     name: 'Icon',       type: 'string', meta: { interface: 'input', width: 'half', note: 'Lucide name: FileText, Settings, CreditCard, BarChart3, Shield' } },
-              { field: 'access',   name: 'Visible to', type: 'string', meta: { interface: 'select-dropdown', width: 'half', options: { choices: ACCESS_CHOICES } } },
-            ],
-          },
-        },
-        schema: { is_nullable: true },
-      },
-    },
   ])
 
   // Hide all legacy/unnecessary fields
   const toHide = [
     // old JSON blob configs
     'navbar_config', 'footer_config', 'sidebar_config', 'mobile_nav_config',
-    // mobile nav (reuses sidebar items; no separate field needed)
-    'mobile_nav_items',
+    // JSON list fields — nav items now live in translations as per-language lists
+    'navbar_items', 'sidebar_nav_items', 'mobile_nav_items', 'footer_columns',
     // old per-lang flat label fields
     'navbar_cta_label_en', 'navbar_cta_label_hi', 'navbar_cta_label_kn',
     'navbar_login_label_en', 'navbar_login_label_hi', 'navbar_login_label_kn',
@@ -1119,18 +1043,92 @@ async function bootstrapSiteConfigTranslations() {
       field: 'languages_code',
       payload: { field: 'languages_code', type: 'string', meta: { interface: 'input', hidden: true }, schema: { is_nullable: false } },
     },
-    // Navbar labels (translatable strings only; nav item labels live inline in navbar_items JSON)
+    // Navbar labels
     divField('_div_sc_navbar', '🔝 Navbar Labels'),
     strField('navbar_cta_label',     'CTA button label', 'half'),
     strField('navbar_login_label',   'Login label',      'half'),
     strField('navbar_signup_label',  'Sign up label',    'half'),
     strField('navbar_signout_label', 'Sign out label',   'half'),
+
+    // Navbar items — per-language list (label already in this language)
+    divField('_div_sc_navbar_items', '🔗 Navbar Items'),
+    {
+      field: 'navbar_items',
+      payload: {
+        field: 'navbar_items', type: 'json',
+        meta: {
+          interface: 'list', width: 'full',
+          options: {
+            template: '{{label}} → {{href}}',
+            fields: [
+              { field: 'label',  name: 'Label',      type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'href',   name: 'Href',        type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'access', name: 'Visible to',  type: 'string', meta: { interface: 'select-dropdown', width: 'full', options: { choices: ACCESS_CHOICES } } },
+            ],
+          },
+        },
+        schema: { is_nullable: true },
+      },
+    },
+
+    // Sidebar items — per-language list with icon
+    divField('_div_sc_sidebar_items', '📌 Sidebar Items'),
+    {
+      field: 'sidebar_items',
+      payload: {
+        field: 'sidebar_items', type: 'json',
+        meta: {
+          interface: 'list', width: 'full',
+          options: {
+            template: '{{label}} → {{href}}',
+            fields: [
+              { field: 'label',  name: 'Label',       type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'href',   name: 'Href',         type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'icon',   name: 'Icon',         type: 'string', meta: { interface: 'input', width: 'half', note: 'Lucide: FileText, Settings, CreditCard, BarChart3, Shield' } },
+              { field: 'access', name: 'Visible to',   type: 'string', meta: { interface: 'select-dropdown', width: 'half', options: { choices: ACCESS_CHOICES } } },
+            ],
+          },
+        },
+        schema: { is_nullable: true },
+      },
+    },
+
     // Footer labels
     divField('_div_sc_footer', '🦶 Footer Labels'),
     strField('footer_tagline',   'Tagline',        'full'),
     strField('footer_copyright', 'Copyright text', 'full'),
+
+    // Footer columns — per-language list with nested links
+    divField('_div_sc_footer_cols', '📋 Footer Columns'),
+    {
+      field: 'footer_columns',
+      payload: {
+        field: 'footer_columns', type: 'json',
+        meta: {
+          interface: 'list', width: 'full',
+          options: {
+            template: '{{heading}}',
+            fields: [
+              { field: 'heading', name: 'Heading', type: 'string', meta: { interface: 'input', width: 'full' } },
+              { field: 'links', name: 'Links', type: 'json', meta: {
+                interface: 'list', width: 'full',
+                options: {
+                  template: '{{label}} → {{href}}',
+                  fields: [
+                    { field: 'label', name: 'Label', type: 'string', meta: { interface: 'input', width: 'half' } },
+                    { field: 'href',  name: 'Href',  type: 'string', meta: { interface: 'input', width: 'half' } },
+                  ],
+                },
+              }},
+            ],
+          },
+        },
+        schema: { is_nullable: true },
+      },
+    },
+
     // Sidebar labels
-    divField('_div_sc_sidebar', '📌 Sidebar Labels'),
+    divField('_div_sc_sidebar', '⚙️ Sidebar Labels'),
     strField('sidebar_brand_name',  'Sidebar brand name (override)', 'half'),
     strField('sidebar_status_text', 'Status text',                   'half'),
   ])

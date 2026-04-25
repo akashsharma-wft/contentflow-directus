@@ -260,14 +260,17 @@ async function upsertSiteConfig() {
 
   const { default: config } = await import('./seed-data/site-config.json', { with: { type: 'json' } })
 
-  const existing = await reqItem('/items/site_config/site-config?fields[]=id')
+  // Try singleton endpoint first (collection is now singleton: true)
+  const singletonRes = await fetch(`${DIRECTUS_URL}/items/site_config`, { method: 'GET', headers: HEADERS })
 
-  if (existing?.data) {
+  if (singletonRes.ok) {
+    // Singleton exists — PATCH without ID
     const { id: _id, ...updatePayload } = config as Record<string, unknown>
     void _id
-    await siteConfigWrite('PATCH', '/items/site_config/site-config', updatePayload)
-    console.log('   ✓  Updated site-config row')
+    await siteConfigWrite('PATCH', '/items/site_config', updatePayload)
+    console.log('   ✓  Updated site-config singleton row')
   } else {
+    // First run — POST to create it (Directus may require ID on first create)
     await siteConfigWrite('POST', '/items/site_config', { ...config, id: 'site-config' })
     console.log('   ✓  Created site-config row (id = "site-config")')
   }
@@ -754,7 +757,25 @@ async function ensurePublicTokenPermissions() {
 
 // ── site_config_translations ──────────────────────────────────────────────────
 
-const SITE_CONFIG_TRANSLATIONS: Record<string, Record<string, string>> = {
+type NavItem    = { label: string; href: string; icon?: string; access: 'user' | 'admin' | 'guest' }
+type FooterLink = { label: string; href: string }
+type FooterCol  = { heading: string; links: FooterLink[] }
+
+interface SiteConfigTranslation {
+  navbar_cta_label:     string
+  navbar_login_label:   string
+  navbar_signup_label:  string
+  navbar_signout_label: string
+  footer_tagline:       string
+  footer_copyright:     string
+  sidebar_brand_name:   string
+  sidebar_status_text:  string
+  navbar_items:         NavItem[]
+  sidebar_items:        NavItem[]
+  footer_columns:       FooterCol[]
+}
+
+const SITE_CONFIG_TRANSLATIONS: Record<string, SiteConfigTranslation> = {
   en: {
     navbar_cta_label:     'Get Started',
     navbar_login_label:   'Login',
@@ -764,6 +785,24 @@ const SITE_CONFIG_TRANSLATIONS: Record<string, Record<string, string>> = {
     footer_copyright:     `© ${new Date().getFullYear()} ContentFlow. All rights reserved.`,
     sidebar_brand_name:   'ContentFlow',
     sidebar_status_text:  'All systems operational',
+    navbar_items: [
+      { label: 'Posts',     href: '/posts',     access: 'user'  },
+      { label: 'Settings',  href: '/settings',  access: 'user'  },
+      { label: 'Billing',   href: '/billing',   access: 'user'  },
+      { label: 'Analytics', href: '/analytics', access: 'admin' },
+      { label: 'Admin',     href: '/admin',     access: 'admin' },
+    ],
+    sidebar_items: [
+      { label: 'Posts',     href: '/posts',     icon: 'FileText',   access: 'user'  },
+      { label: 'Analytics', href: '/analytics', icon: 'BarChart3',  access: 'admin' },
+      { label: 'Settings',  href: '/settings',  icon: 'Settings',   access: 'user'  },
+      { label: 'Billing',   href: '/billing',   icon: 'CreditCard', access: 'user'  },
+      { label: 'Admin',     href: '/admin',     icon: 'Shield',     access: 'admin' },
+    ],
+    footer_columns: [
+      { heading: 'Product', links: [{ label: 'Features', href: '/#features' }, { label: 'Pricing', href: '/#pricing' }] },
+      { heading: 'Account', links: [{ label: 'Log in', href: '/login' }, { label: 'Sign up', href: '/signup' }] },
+    ],
   },
   hi: {
     navbar_cta_label:     'शुरू करें',
@@ -774,6 +813,24 @@ const SITE_CONFIG_TRANSLATIONS: Record<string, Record<string, string>> = {
     footer_copyright:     `© ${new Date().getFullYear()} ContentFlow. सर्वाधिकार सुरक्षित।`,
     sidebar_brand_name:   'ContentFlow',
     sidebar_status_text:  'सभी सिस्टम चालू हैं',
+    navbar_items: [
+      { label: 'पोस्ट',    href: '/posts',     access: 'user'  },
+      { label: 'सेटिंग्स', href: '/settings',  access: 'user'  },
+      { label: 'बिलिंग',   href: '/billing',   access: 'user'  },
+      { label: 'विश्लेषण', href: '/analytics', access: 'admin' },
+      { label: 'एडमिन',    href: '/admin',     access: 'admin' },
+    ],
+    sidebar_items: [
+      { label: 'पोस्ट',    href: '/posts',     icon: 'FileText',   access: 'user'  },
+      { label: 'विश्लेषण', href: '/analytics', icon: 'BarChart3',  access: 'admin' },
+      { label: 'सेटिंग्स', href: '/settings',  icon: 'Settings',   access: 'user'  },
+      { label: 'बिलिंग',   href: '/billing',   icon: 'CreditCard', access: 'user'  },
+      { label: 'एडमिन',    href: '/admin',     icon: 'Shield',     access: 'admin' },
+    ],
+    footer_columns: [
+      { heading: 'उत्पाद', links: [{ label: 'विशेषताएं', href: '/#features' }, { label: 'मूल्य निर्धारण', href: '/#pricing' }] },
+      { heading: 'खाता',   links: [{ label: 'लॉग इन',  href: '/login' }, { label: 'साइन अप', href: '/signup' }] },
+    ],
   },
   kn: {
     navbar_cta_label:     'ಪ್ರಾರಂಭಿಸಿ',
@@ -784,6 +841,24 @@ const SITE_CONFIG_TRANSLATIONS: Record<string, Record<string, string>> = {
     footer_copyright:     `© ${new Date().getFullYear()} ContentFlow. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.`,
     sidebar_brand_name:   'ContentFlow',
     sidebar_status_text:  'ಎಲ್ಲಾ ಸಿಸ್ಟಮ್‌ಗಳು ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತಿವೆ',
+    navbar_items: [
+      { label: 'ಪೋಸ್ಟ್‌ಗಳು',    href: '/posts',     access: 'user'  },
+      { label: 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು', href: '/settings',  access: 'user'  },
+      { label: 'ಬಿಲ್ಲಿಂಗ್',     href: '/billing',   access: 'user'  },
+      { label: 'ವಿಶ್ಲೇಷಣೆ',     href: '/analytics', access: 'admin' },
+      { label: 'ಅಡ್ಮಿನ್',       href: '/admin',     access: 'admin' },
+    ],
+    sidebar_items: [
+      { label: 'ಪೋಸ್ಟ್‌ಗಳು',    href: '/posts',     icon: 'FileText',   access: 'user'  },
+      { label: 'ವಿಶ್ಲೇಷಣೆ',     href: '/analytics', icon: 'BarChart3',  access: 'admin' },
+      { label: 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು', href: '/settings',  icon: 'Settings',   access: 'user'  },
+      { label: 'ಬಿಲ್ಲಿಂಗ್',     href: '/billing',   icon: 'CreditCard', access: 'user'  },
+      { label: 'ಅಡ್ಮಿನ್',       href: '/admin',     icon: 'Shield',     access: 'admin' },
+    ],
+    footer_columns: [
+      { heading: 'ಉತ್ಪನ್ನ', links: [{ label: 'ವೈಶಿಷ್ಟ್ಯಗಳು', href: '/#features' }, { label: 'ಬೆಲೆ ನಿಗದಿ', href: '/#pricing' }] },
+      { heading: 'ಖಾತೆ',    links: [{ label: 'ಲಾಗ್ ಇನ್', href: '/login' }, { label: 'ಸೈನ್ ಅಪ್', href: '/signup' }] },
+    ],
   },
 }
 
