@@ -13,7 +13,7 @@ export function createClient() {
     return createBrowserClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      { cookieOptions: { sameSite: 'None', secure: true } }
+      { cookieOptions: { sameSite: 'none', secure: true } }
     )
   }
 
