@@ -8,7 +8,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { ICON_MAP, filterByVisibility, getNavItemLabel, getNavRole, localizeHref } from '@/lib/navigation'
 import { useUser } from '@/hooks/useUser'
@@ -25,13 +25,11 @@ interface MobileBottomNavProps {
 
 export function MobileBottomNav({ navItems = [], lang = 'en', showLabels = true }: MobileBottomNavProps) {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const { user, profile } = useUser()
   const [overflowOpen, setOverflowOpen] = useState(false)
 
-  const isVisualEditor = searchParams.get('visual-editing') === 'true'
   const role     = getNavRole(user?.id, profile?.role)
-  const allItems = isVisualEditor ? navItems : filterByVisibility(navItems, role)
+  const allItems = filterByVisibility(navItems, role)
 
   // Split into primary (visible in bar) and overflow
   const hasOverflow    = allItems.length > PRIMARY_LIMIT
