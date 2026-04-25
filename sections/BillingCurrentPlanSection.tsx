@@ -82,10 +82,6 @@ export function BillingCurrentPlanSection({ content, translationId, translationR
   const freeTierBadgeLabel    = translationRow?.billing_free_badge            ?? content.freeTierBadgeLabel
   const cancellingNote        = translationRow?.billing_cancelling_note       ?? content.cancellingNote
 
-  if (isLoading) {
-    return <div className="mb-5"><Skeleton className="h-24 w-full rounded-2xl bg-white/5" /></div>
-  }
-
   return (
     <div
       className="mb-5"
@@ -95,22 +91,26 @@ export function BillingCurrentPlanSection({ content, translationId, translationR
         'billing_reactivate_label', 'billing_upgrade_label', 'billing_cancelling_note'
       )}
     >
-      <CurrentPlanCard
-        tier={currentTier}
-        isCancelling={isCancelling}
-        cancelAt={cancelAt}
-        onUpgrade={handleUpgrade}
-        isLoading={isCheckoutLoading}
-        currentPlanLabel={currentPlanLabel}
-        manageLabel={manageLabel}
-        cancelLabel={cancelLabel}
-        reactivateLabel={reactivateLabel}
-        upgradeLabel={upgradeLabel}
-        activeBadgeLabel={activeBadgeLabel}
-        cancellingBadgeLabel={cancellingBadgeLabel}
-        freeTierBadgeLabel={freeTierBadgeLabel}
-        cancellingNote={cancellingNote}
-      />
+      {isLoading ? (
+        <Skeleton className="h-24 w-full rounded-2xl bg-white/5" />
+      ) : (
+        <CurrentPlanCard
+          tier={currentTier}
+          isCancelling={isCancelling}
+          cancelAt={cancelAt}
+          onUpgrade={handleUpgrade}
+          isLoading={isCheckoutLoading}
+          currentPlanLabel={currentPlanLabel}
+          manageLabel={manageLabel}
+          cancelLabel={cancelLabel}
+          reactivateLabel={reactivateLabel}
+          upgradeLabel={upgradeLabel}
+          activeBadgeLabel={activeBadgeLabel}
+          cancellingBadgeLabel={cancellingBadgeLabel}
+          freeTierBadgeLabel={freeTierBadgeLabel}
+          cancellingNote={cancellingNote}
+        />
+      )}
     </div>
   )
 }

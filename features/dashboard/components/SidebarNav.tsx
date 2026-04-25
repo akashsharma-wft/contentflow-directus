@@ -4,7 +4,8 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { useUser } from '@/hooks/useUser'
 import { ICON_MAP, filterByVisibility, getNavItemLabel, getNavRole, localizeHref } from '@/lib/navigation'
@@ -22,9 +23,16 @@ function isPathActive(pathname: string, localizedHref: string): boolean {
 
 export function SidebarNav({ collapsed, navItems = [], lang = 'en' }: SidebarNavProps) {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const { user, profile } = useUser()
 
-  const role  = getNavRole(user?.id, profile?.role)
+  // In the visual editor, show ALL nav items so editors can see the full
+  // navigation structure and navigate to admin/analytics pages.
+  const [isInIframe, setIsInIframe] = useState(false)
+  useEffect(() => { setIsInIframe(window !== window.top) }, [])
+  const isPreviewMode = searchParams.get('visual-editing') === 'true' || isInIframe
+
+  const role  = isPreviewMode ? 'admin' : getNavRole(user?.id, profile?.role)
   const items = filterByVisibility(navItems, role)
 
   return (

@@ -7,12 +7,14 @@ import { Shield, Crown, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Database } from '@/types/supabase'
 import type { SectionAdminContent } from '@/types/cms'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 type Profile = Database['public']['Tables']['profiles']['Row']
 
 interface AdminUsersTableProps {
   users: Profile[]
   config: SectionAdminContent
+  translationId?: number
 }
 
 /** Avatar with graceful fallback when the image URL is missing or broken. */
@@ -32,7 +34,7 @@ function UserAvatar({ avatarUrl, displayName }: { avatarUrl: string | null; disp
   return <User size={12} className="text-indigo-300" />
 }
 
-export function AdminUsersTable({ users, config }: AdminUsersTableProps) {
+export function AdminUsersTable({ users, config, translationId }: AdminUsersTableProps) {
   const proCount  = users.filter((u) => u.subscription_tier === 'pro').length
   const freeCount = users.filter((u) => u.subscription_tier === 'free').length
 
@@ -42,34 +44,59 @@ export function AdminUsersTable({ users, config }: AdminUsersTableProps) {
         <div>
           <div className="flex items-center gap-3">
             <Shield size={20} className="text-indigo-400" />
-            <h1 className="text-white text-2xl font-bold tracking-tight">
+            <h1
+              data-directus={pageAttr(translationId, 'admin_heading')}
+              className="text-white text-2xl font-bold tracking-tight"
+            >
               {config.heading ?? 'Admin Panel'}
             </h1>
           </div>
-          <p className="text-white/35 text-sm mt-1">
+          <p
+            data-directus={pageAttr(translationId, 'admin_subheading')}
+            className="text-white/35 text-sm mt-1"
+          >
             {config.subheading ?? 'All users and their subscription tiers — admin access only.'}
           </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="px-3 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-lg">
-            <span className="text-indigo-300 text-xs font-mono">
+            <span
+              data-directus={pageAttr(translationId, 'admin_total_users_label')}
+              className="text-indigo-300 text-xs font-mono"
+            >
               {users.length} {config.totalUsersLabel ?? 'total users'}
             </span>
           </div>
           <div className="px-3 py-1.5 bg-purple-500/10 border border-purple-500/20 rounded-lg">
-            <span className="text-purple-300 text-xs font-mono">{proCount} {config.proLabel ?? 'pro'}</span>
+            <span
+              data-directus={pageAttr(translationId, 'admin_pro_label')}
+              className="text-purple-300 text-xs font-mono"
+            >{proCount} {config.proLabel ?? 'pro'}</span>
           </div>
           <div className="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg">
-            <span className="text-white/40 text-xs font-mono">{freeCount} {config.freeLabel ?? 'free'}</span>
+            <span
+              data-directus={pageAttr(translationId, 'admin_free_label')}
+              className="text-white/40 text-xs font-mono"
+            >{freeCount} {config.freeLabel ?? 'free'}</span>
           </div>
         </div>
       </div>
 
       <div className="bg-[#13141c] border border-white/5 rounded-2xl overflow-hidden">
         <div className="grid grid-cols-[32px_1fr_120px_80px_140px] px-5 py-3 border-b border-white/5">
-          {['', config.colUser ?? 'User', config.colPlan ?? 'Plan', config.colRole ?? 'Role', config.colJoined ?? 'Joined'].map((col) => (
-            <span key={col} className="text-white/25 text-[10px] uppercase tracking-widest font-medium">
-              {col}
+          {[
+            { key: '',          label: '',                          attr: undefined },
+            { key: 'user',      label: config.colUser   ?? 'User',   attr: pageAttr(translationId, 'admin_col_user') },
+            { key: 'plan',      label: config.colPlan   ?? 'Plan',   attr: pageAttr(translationId, 'admin_col_plan') },
+            { key: 'role',      label: config.colRole   ?? 'Role',   attr: pageAttr(translationId, 'admin_col_role') },
+            { key: 'joined',    label: config.colJoined ?? 'Joined', attr: pageAttr(translationId, 'admin_col_joined') },
+          ].map(({ key, label, attr }) => (
+            <span
+              key={key}
+              {...(attr ? { 'data-directus': attr } : {})}
+              className="text-white/25 text-[10px] uppercase tracking-widest font-medium"
+            >
+              {label}
             </span>
           ))}
         </div>

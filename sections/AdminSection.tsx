@@ -66,10 +66,10 @@ export async function AdminSection({ content = {}, translationId, translationRow
       <DirectusCredentialsCard />
 
       {/* Users table */}
-      <AdminUsersTable users={users} config={resolvedContent} />
+      <AdminUsersTable users={users} config={resolvedContent} translationId={translationId} />
 
       {/* Invite panel — only the invite form, no pending/requests sections */}
-      <AdminInvitePanel config={resolvedContent} />
+      <AdminInvitePanel config={resolvedContent} translationId={translationId} />
     </div>
   )
 }

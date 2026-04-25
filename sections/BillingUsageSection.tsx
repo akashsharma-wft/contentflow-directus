@@ -64,10 +64,6 @@ export function BillingUsageSection({ content, translationId, translationRow }: 
     { label: seatsUsageLabel,   current: 1, max: isPro ? 5 : 1 },
   ]
 
-  if (isLoading) {
-    return <div className="mb-5"><Skeleton className="h-48 w-full rounded-2xl bg-white/5" /></div>
-  }
-
   return (
     <div
       className="mb-5"
@@ -76,10 +72,11 @@ export function BillingUsageSection({ content, translationId, translationRow }: 
         'billing_storage_label', 'billing_seats_label'
       )}
     >
-      <UsageCard
-        items={usageItems}
-        heading={usageHeading}
-      />
+      {isLoading ? (
+        <Skeleton className="h-48 w-full rounded-2xl bg-white/5" />
+      ) : (
+        <UsageCard items={usageItems} heading={usageHeading} />
+      )}
     </div>
   )
 }

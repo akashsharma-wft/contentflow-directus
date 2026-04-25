@@ -122,7 +122,14 @@ export function SettingsFormSection({ content, translationId, translationRow }: 
   }
 
   if (isAuthLoading || isLoading) {
-    return <div className="mb-5"><Skeleton className="h-64 w-full rounded-2xl bg-white/5" /></div>
+    return (
+      <div
+        className="mb-5"
+        data-directus={pageAttr(translationId, 'settings_display_name_label')}
+      >
+        <Skeleton className="h-64 w-full rounded-2xl bg-white/5" />
+      </div>
+    )
   }
 
   const bioValue         = form.watch('bio') ?? ''

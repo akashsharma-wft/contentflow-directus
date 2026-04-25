@@ -8,12 +8,14 @@ import { UserPlus, Loader2, Check, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import type { SectionAdminContent } from '@/types/cms'
+import { pageAttr } from '@/lib/directus/section-binding'
 
 interface AdminInvitePanelProps {
   config: SectionAdminContent
+  translationId?: number
 }
 
-export function AdminInvitePanel({ config }: AdminInvitePanelProps) {
+export function AdminInvitePanel({ config, translationId }: AdminInvitePanelProps) {
   const [inviteEmail,   setInviteEmail]   = useState('')
   const [inviteMessage, setInviteMessage] = useState('')
   const [inviteStatus,  setInviteStatus]  = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
@@ -78,18 +80,31 @@ export function AdminInvitePanel({ config }: AdminInvitePanelProps) {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <UserPlus size={16} className="text-indigo-400" />
-        <h2 className="text-white text-lg font-bold tracking-tight">{c.sectionHeading}</h2>
+        <h2
+          data-directus={pageAttr(translationId, 'admin_invite_heading')}
+          className="text-white text-lg font-bold tracking-tight"
+        >
+          {c.sectionHeading}
+        </h2>
       </div>
 
       <div className="bg-[#13141c] border border-white/5 rounded-2xl p-5">
-        <p className="text-white/60 text-sm font-semibold mb-1">{c.formTitle}</p>
+        <p
+          data-directus={pageAttr(translationId, 'admin_invite_form_title')}
+          className="text-white/60 text-sm font-semibold mb-1"
+        >
+          {c.formTitle}
+        </p>
         <p className="text-white/30 text-xs mb-4">
           The user must already have a ContentFlow account. They will also receive a Directus invite.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1 space-y-2">
-            <label className="text-white/30 text-[10px] uppercase tracking-widest font-mono block">
+            <label
+              data-directus={pageAttr(translationId, 'admin_invite_email_label')}
+              className="text-white/30 text-[10px] uppercase tracking-widest font-mono block"
+            >
               {c.emailLabel}
             </label>
             <input
@@ -102,7 +117,10 @@ export function AdminInvitePanel({ config }: AdminInvitePanelProps) {
             />
           </div>
           <div className="flex-1 space-y-2">
-            <label className="text-white/30 text-[10px] uppercase tracking-widest font-mono block">
+            <label
+              data-directus={pageAttr(translationId, 'admin_invite_message_label')}
+              className="text-white/30 text-[10px] uppercase tracking-widest font-mono block"
+            >
               {c.messageLabel}
             </label>
             <input
@@ -123,6 +141,7 @@ export function AdminInvitePanel({ config }: AdminInvitePanelProps) {
           <button
             onClick={handleSendInvite}
             disabled={!inviteEmail.trim() || inviteStatus === 'loading'}
+            data-directus={pageAttr(translationId, 'admin_invite_send_label')}
             className={cn(
               'flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold font-mono uppercase tracking-widest transition-colors cursor-pointer',
               inviteStatus === 'success'

@@ -38,7 +38,10 @@ export function SettingsDangerSection({ content, translationId, translationRow }
 
   if (isAuthLoading || isProfileLoading) {
     return (
-      <div className="mt-5 bg-[#13141c] border border-red-500/10 rounded-2xl p-5 space-y-3 animate-pulse">
+      <div
+        data-directus={pageAttr(translationId, 'settings_danger_heading')}
+        className="mt-5 bg-[#13141c] border border-red-500/10 rounded-2xl p-5 space-y-3 animate-pulse"
+      >
         <Skeleton className="h-4 w-24 rounded bg-red-500/10" />
         <Skeleton className="h-3 w-full rounded bg-white/5" />
         <Skeleton className="h-3 w-3/4 rounded bg-white/5" />

@@ -96,10 +96,6 @@ export function BillingPlansGridSection({ content, lang = 'en', translationId, t
     currentPlanBtn:     translationRow?.billing_current_plan_btn ?? content.currentPlanBtn,
   }
 
-  if (isLoading) {
-    return <div className="mb-5"><Skeleton className="h-64 w-full rounded-2xl bg-white/5" /></div>
-  }
-
   return (
     <div
       className="mb-5"
@@ -110,15 +106,19 @@ export function BillingPlansGridSection({ content, lang = 'en', translationId, t
         'billing_upgrade_cta', 'billing_downgrade_cta', 'billing_current_plan_btn'
       )}
     >
-      <PlansGrid
-        currentTier={currentTier}
-        proPriceId={PRO_PRICE_ID}
-        onUpgrade={handleUpgrade}
-        onDowngrade={handleDowngrade}
-        isLoading={isCheckoutLoading}
-        isCancelling={isCancelling}
-        config={resolvedContent}
-      />
+      {isLoading ? (
+        <Skeleton className="h-64 w-full rounded-2xl bg-white/5" />
+      ) : (
+        <PlansGrid
+          currentTier={currentTier}
+          proPriceId={PRO_PRICE_ID}
+          onUpgrade={handleUpgrade}
+          onDowngrade={handleDowngrade}
+          isLoading={isCheckoutLoading}
+          isCancelling={isCancelling}
+          config={resolvedContent}
+        />
+      )}
     </div>
   )
 }
