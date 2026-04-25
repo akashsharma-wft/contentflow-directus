@@ -943,134 +943,85 @@ async function bootstrapSiteConfig() {
       },
     },
 
-    // Legacy JSON fields — kept hidden for backward compat / fallback
-    {
-      field: 'navbar_config',
-      payload: {
-        field: 'navbar_config', type: 'json',
-        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full', hidden: true, note: '[migrated — use flat fields below]' },
-        schema: { is_nullable: true },
-      },
-    },
-    {
-      field: 'footer_config',
-      payload: {
-        field: 'footer_config', type: 'json',
-        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full', hidden: true, note: '[migrated — use flat fields below]' },
-        schema: { is_nullable: true },
-      },
-    },
-    {
-      field: 'sidebar_config',
-      payload: {
-        field: 'sidebar_config', type: 'json',
-        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full', hidden: true, note: '[migrated — use flat fields below]' },
-        schema: { is_nullable: true },
-      },
-    },
-    {
-      field: 'mobile_nav_config',
-      payload: {
-        field: 'mobile_nav_config', type: 'json',
-        meta: { interface: 'input-code', options: { language: 'json' }, width: 'full', hidden: true, note: '[migrated — use flat fields below]' },
-        schema: { is_nullable: true },
-      },
-    },
-
-    // ── Navbar flat fields ────────────────────────────────────────────────────
+    // ── Navbar ────────────────────────────────────────────────────────────────
     divField('_div_navbar', '🔝 Navbar'),
-    strField('navbar_brand_name',       'Brand / logo name', 'half'),
-    strField('navbar_cta_label_en',     'CTA button label (English)', 'half'),
-    strField('navbar_cta_label_hi',     'CTA button label (Hindi)', 'half'),
-    strField('navbar_cta_label_kn',     'CTA button label (Kannada)', 'half'),
-    strField('navbar_cta_href',         'CTA button href', 'half'),
-    strField('navbar_login_label_en',   'Login label (English)', 'half'),
-    strField('navbar_login_label_hi',   'Login label (Hindi)', 'half'),
-    strField('navbar_login_label_kn',   'Login label (Kannada)', 'half'),
-    strField('navbar_signup_label_en',  'Sign up label (English)', 'half'),
-    strField('navbar_signup_label_hi',  'Sign up label (Hindi)', 'half'),
-    strField('navbar_signup_label_kn',  'Sign up label (Kannada)', 'half'),
-    strField('navbar_signout_label_en', 'Sign out label (English)', 'half'),
-    strField('navbar_signout_label_hi', 'Sign out label (Hindi)', 'half'),
-    strField('navbar_signout_label_kn', 'Sign out label (Kannada)', 'half'),
+    strField('navbar_brand_name', 'Brand / logo name', 'half'),
+    strField('navbar_cta_href',   'CTA button href',   'half'),
 
-    // ── Navbar nav items (up to 5) ────────────────────────────────────────────
-    divField('_div_navbar_items', '🔗 Navbar Nav Items'),
-    strField('navbar_item_1_label_en', 'Item 1 label (EN)', 'half'), strField('navbar_item_1_href', 'Item 1 href', 'half'),
-    strField('navbar_item_1_label_hi', 'Item 1 label (HI)', 'half'), strField('navbar_item_1_label_kn', 'Item 1 label (KN)', 'half'),
-    strField('navbar_item_2_label_en', 'Item 2 label (EN)', 'half'), strField('navbar_item_2_href', 'Item 2 href', 'half'),
-    strField('navbar_item_2_label_hi', 'Item 2 label (HI)', 'half'), strField('navbar_item_2_label_kn', 'Item 2 label (KN)', 'half'),
-    strField('navbar_item_3_label_en', 'Item 3 label (EN)', 'half'), strField('navbar_item_3_href', 'Item 3 href', 'half'),
-    strField('navbar_item_3_label_hi', 'Item 3 label (HI)', 'half'), strField('navbar_item_3_label_kn', 'Item 3 label (KN)', 'half'),
-    strField('navbar_item_4_label_en', 'Item 4 label (EN)', 'half'), strField('navbar_item_4_href', 'Item 4 href', 'half'),
-    strField('navbar_item_4_label_hi', 'Item 4 label (HI)', 'half'), strField('navbar_item_4_label_kn', 'Item 4 label (KN)', 'half'),
-    strField('navbar_item_5_label_en', 'Item 5 label (EN)', 'half'), strField('navbar_item_5_href', 'Item 5 href', 'half'),
-    strField('navbar_item_5_label_hi', 'Item 5 label (HI)', 'half'), strField('navbar_item_5_label_kn', 'Item 5 label (KN)', 'half'),
+    // navbar_items — dynamic JSON array; editors add/remove items freely
+    {
+      field: 'navbar_items',
+      payload: {
+        field: 'navbar_items', type: 'json',
+        meta: {
+          interface: 'input-code', options: { language: 'json' }, width: 'full',
+          note: 'Array of { label_en, label_hi, label_kn, href, access: "guest"|"user"|"admin" }',
+        },
+        schema: { is_nullable: true },
+      },
+    },
 
-    // ── Footer flat fields ────────────────────────────────────────────────────
+    // ── Footer ────────────────────────────────────────────────────────────────
     divField('_div_footer', '🦶 Footer'),
-    strField('footer_brand_name',      'Footer brand name', 'half'),
-    strField('footer_tagline_en',      'Tagline (English)', 'half'),
-    strField('footer_tagline_hi',      'Tagline (Hindi)', 'half'),
-    strField('footer_tagline_kn',      'Tagline (Kannada)', 'half'),
-    strField('footer_copyright_en',    'Copyright text (English)', 'half'),
-    strField('footer_copyright_hi',    'Copyright text (Hindi)', 'half'),
-    strField('footer_copyright_kn',    'Copyright text (Kannada)', 'half'),
+    strField('footer_brand_name', 'Footer brand name', 'half'),
 
-    // ── Footer columns (2 cols × 2 links) ────────────────────────────────────
-    divField('_div_footer_cols', '📋 Footer Columns'),
-    strField('footer_col_1_heading_en', 'Col 1 heading (EN)', 'half'), strField('footer_col_1_heading_hi', 'Col 1 heading (HI)', 'half'),
-    strField('footer_col_1_heading_kn', 'Col 1 heading (KN)', 'half'),
-    strField('footer_col_1_link_1_label_en', 'Col 1 Link 1 label (EN)', 'half'), strField('footer_col_1_link_1_href', 'Col 1 Link 1 href', 'half'),
-    strField('footer_col_1_link_1_label_hi', 'Col 1 Link 1 label (HI)', 'half'), strField('footer_col_1_link_1_label_kn', 'Col 1 Link 1 label (KN)', 'half'),
-    strField('footer_col_1_link_2_label_en', 'Col 1 Link 2 label (EN)', 'half'), strField('footer_col_1_link_2_href', 'Col 1 Link 2 href', 'half'),
-    strField('footer_col_1_link_2_label_hi', 'Col 1 Link 2 label (HI)', 'half'), strField('footer_col_1_link_2_label_kn', 'Col 1 Link 2 label (KN)', 'half'),
-    strField('footer_col_2_heading_en', 'Col 2 heading (EN)', 'half'), strField('footer_col_2_heading_hi', 'Col 2 heading (HI)', 'half'),
-    strField('footer_col_2_heading_kn', 'Col 2 heading (KN)', 'half'),
-    strField('footer_col_2_link_1_label_en', 'Col 2 Link 1 label (EN)', 'half'), strField('footer_col_2_link_1_href', 'Col 2 Link 1 href', 'half'),
-    strField('footer_col_2_link_1_label_hi', 'Col 2 Link 1 label (HI)', 'half'), strField('footer_col_2_link_1_label_kn', 'Col 2 Link 1 label (KN)', 'half'),
-    strField('footer_col_2_link_2_label_en', 'Col 2 Link 2 label (EN)', 'half'), strField('footer_col_2_link_2_href', 'Col 2 Link 2 href', 'half'),
-    strField('footer_col_2_link_2_label_hi', 'Col 2 Link 2 label (HI)', 'half'), strField('footer_col_2_link_2_label_kn', 'Col 2 Link 2 label (KN)', 'half'),
+    // footer_columns — dynamic JSON array
+    {
+      field: 'footer_columns',
+      payload: {
+        field: 'footer_columns', type: 'json',
+        meta: {
+          interface: 'input-code', options: { language: 'json' }, width: 'full',
+          note: 'Array of { heading_en, heading_hi, heading_kn, links: [{ label_en, label_hi, label_kn, href }] }',
+        },
+        schema: { is_nullable: true },
+      },
+    },
 
-    // ── Sidebar flat fields ───────────────────────────────────────────────────
+    // ── Sidebar ───────────────────────────────────────────────────────────────
     divField('_div_sidebar', '📌 Sidebar'),
-    strField('sidebar_brand_name',     'Sidebar brand name', 'half'),
-    strField('sidebar_brand_subtitle', 'Sidebar brand subtitle', 'half'),
-    strField('sidebar_status_text',    'Status text (e.g. "All systems operational")', 'half'),
-    strField('sidebar_status_badge',   'Status badge (e.g. "Live")', 'half'),
+    strField('sidebar_brand_name',     'Brand name (override per-lang in Translations)', 'half'),
+    strField('sidebar_brand_subtitle', 'Brand subtitle', 'half'),
+    strField('sidebar_status_badge',   'Status badge (e.g. "System Status: Nominal")', 'half'),
 
-    // ── Sidebar nav items (up to 5) ───────────────────────────────────────────
-    divField('_div_sidebar_nav', '🔗 Sidebar Nav Items'),
-    strField('sidebar_nav_1_label_en', 'Item 1 label (EN)', 'half'), strField('sidebar_nav_1_href', 'Item 1 href', 'half'),
-    strField('sidebar_nav_1_label_hi', 'Item 1 label (HI)', 'half'), strField('sidebar_nav_1_label_kn', 'Item 1 label (KN)', 'half'),
-    strField('sidebar_nav_2_label_en', 'Item 2 label (EN)', 'half'), strField('sidebar_nav_2_href', 'Item 2 href', 'half'),
-    strField('sidebar_nav_2_label_hi', 'Item 2 label (HI)', 'half'), strField('sidebar_nav_2_label_kn', 'Item 2 label (KN)', 'half'),
-    strField('sidebar_nav_3_label_en', 'Item 3 label (EN)', 'half'), strField('sidebar_nav_3_href', 'Item 3 href', 'half'),
-    strField('sidebar_nav_3_label_hi', 'Item 3 label (HI)', 'half'), strField('sidebar_nav_3_label_kn', 'Item 3 label (KN)', 'half'),
-    strField('sidebar_nav_4_label_en', 'Item 4 label (EN)', 'half'), strField('sidebar_nav_4_href', 'Item 4 href', 'half'),
-    strField('sidebar_nav_4_label_hi', 'Item 4 label (HI)', 'half'), strField('sidebar_nav_4_label_kn', 'Item 4 label (KN)', 'half'),
-    strField('sidebar_nav_5_label_en', 'Item 5 label (EN)', 'half'), strField('sidebar_nav_5_href', 'Item 5 href', 'half'),
-    strField('sidebar_nav_5_label_hi', 'Item 5 label (HI)', 'half'), strField('sidebar_nav_5_label_kn', 'Item 5 label (KN)', 'half'),
+    // sidebar_nav_items — dynamic JSON array
+    {
+      field: 'sidebar_nav_items',
+      payload: {
+        field: 'sidebar_nav_items', type: 'json',
+        meta: {
+          interface: 'input-code', options: { language: 'json' }, width: 'full',
+          note: 'Array of { label_en, label_hi, label_kn, href, icon, access: "guest"|"user"|"admin" }',
+        },
+        schema: { is_nullable: true },
+      },
+    },
+
+    // mobile_nav_items — dynamic JSON array (falls back to sidebar_nav_items if null)
+    {
+      field: 'mobile_nav_items',
+      payload: {
+        field: 'mobile_nav_items', type: 'json',
+        meta: {
+          interface: 'input-code', options: { language: 'json' }, width: 'full',
+          note: 'Leave empty to reuse sidebar_nav_items. Array of { label_en, label_hi, label_kn, href, icon, access }',
+        },
+        schema: { is_nullable: true },
+      },
+    },
   ])
 
-  // Hide old JSON config fields if they exist as visible
-  const toHide = ['navbar_config', 'footer_config', 'sidebar_config', 'mobile_nav_config']
-  for (const field of toHide) {
-    if (await fieldExists('site_config', field)) {
-      await api('PATCH', `/fields/site_config/${field}`, {
-        meta: { hidden: true, note: '[migrated — use flat fields above]' },
-      })
-    }
-  }
-
-  // Hide per-language duplicate flat fields — editors use site_config_translations instead
-  const langFields = [
+  // Hide legacy JSON blob fields and all old numbered flat fields
+  const legacyFields = [
+    'navbar_config', 'footer_config', 'sidebar_config', 'mobile_nav_config',
     'navbar_cta_label_en', 'navbar_cta_label_hi', 'navbar_cta_label_kn',
     'navbar_login_label_en', 'navbar_login_label_hi', 'navbar_login_label_kn',
     'navbar_signup_label_en', 'navbar_signup_label_hi', 'navbar_signup_label_kn',
     'navbar_signout_label_en', 'navbar_signout_label_hi', 'navbar_signout_label_kn',
+    'sidebar_status_text',
     ...[1,2,3,4,5].flatMap(n => [
-      `navbar_item_${n}_label_en`, `navbar_item_${n}_label_hi`, `navbar_item_${n}_label_kn`,
+      `navbar_item_${n}_label_en`, `navbar_item_${n}_label_hi`, `navbar_item_${n}_label_kn`, `navbar_item_${n}_href`,
+      `sidebar_nav_${n}_label_en`, `sidebar_nav_${n}_label_hi`, `sidebar_nav_${n}_label_kn`, `sidebar_nav_${n}_href`,
     ]),
     'footer_tagline_en', 'footer_tagline_hi', 'footer_tagline_kn',
     'footer_copyright_en', 'footer_copyright_hi', 'footer_copyright_kn',
@@ -1078,18 +1029,16 @@ async function bootstrapSiteConfig() {
       `footer_col_${c}_heading_en`, `footer_col_${c}_heading_hi`, `footer_col_${c}_heading_kn`,
       ...[1,2].flatMap(l => [
         `footer_col_${c}_link_${l}_label_en`, `footer_col_${c}_link_${l}_label_hi`, `footer_col_${c}_link_${l}_label_kn`,
+        `footer_col_${c}_link_${l}_href`,
       ]),
     ]),
-    ...[1,2,3,4,5].flatMap(n => [
-      `sidebar_nav_${n}_label_en`, `sidebar_nav_${n}_label_hi`, `sidebar_nav_${n}_label_kn`,
-    ]),
   ]
-  for (const field of langFields) {
+  for (const field of legacyFields) {
     if (await fieldExists('site_config', field)) {
       await api('PATCH', `/fields/site_config/${field}`, { meta: { hidden: true } })
     }
   }
-  console.log(`  ${TAG} per-language duplicate fields hidden`)
+  console.log(`  ${TAG} legacy flat fields hidden`)
 }
 
 // ── site_config_translations ──────────────────────────────────────────────────
@@ -1130,38 +1079,20 @@ async function bootstrapSiteConfigTranslations() {
       field: 'languages_code',
       payload: { field: 'languages_code', type: 'string', meta: { interface: 'input', hidden: true }, schema: { is_nullable: false } },
     },
-    // Navbar labels
+    // Navbar labels (translatable strings only; nav item labels live inline in navbar_items JSON)
     divField('_div_sc_navbar', '🔝 Navbar Labels'),
     strField('navbar_cta_label',     'CTA button label', 'half'),
     strField('navbar_login_label',   'Login label',      'half'),
     strField('navbar_signup_label',  'Sign up label',    'half'),
     strField('navbar_signout_label', 'Sign out label',   'half'),
-    // Nav item labels
-    divField('_div_sc_nav_items', '🔗 Navbar Items'),
-    strField('navbar_item_1_label', 'Item 1 label', 'half'),
-    strField('navbar_item_2_label', 'Item 2 label', 'half'),
-    strField('navbar_item_3_label', 'Item 3 label', 'half'),
-    strField('navbar_item_4_label', 'Item 4 label', 'half'),
-    strField('navbar_item_5_label', 'Item 5 label', 'half'),
     // Footer labels
     divField('_div_sc_footer', '🦶 Footer Labels'),
-    strField('footer_tagline',    'Tagline',         'full'),
-    strField('footer_copyright',  'Copyright text',  'full'),
-    strField('footer_col_1_heading',      'Column 1 heading',   'half'),
-    strField('footer_col_1_link_1_label', 'Col 1 Link 1 label', 'half'),
-    strField('footer_col_1_link_2_label', 'Col 1 Link 2 label', 'half'),
-    strField('footer_col_2_heading',      'Column 2 heading',   'half'),
-    strField('footer_col_2_link_1_label', 'Col 2 Link 1 label', 'half'),
-    strField('footer_col_2_link_2_label', 'Col 2 Link 2 label', 'half'),
+    strField('footer_tagline',   'Tagline',        'full'),
+    strField('footer_copyright', 'Copyright text', 'full'),
     // Sidebar labels
     divField('_div_sc_sidebar', '📌 Sidebar Labels'),
-    strField('sidebar_brand_name',  'Sidebar brand name', 'half'),
-    strField('sidebar_status_text', 'Status text',        'half'),
-    strField('sidebar_nav_1_label', 'Nav 1 label', 'half'),
-    strField('sidebar_nav_2_label', 'Nav 2 label', 'half'),
-    strField('sidebar_nav_3_label', 'Nav 3 label', 'half'),
-    strField('sidebar_nav_4_label', 'Nav 4 label', 'half'),
-    strField('sidebar_nav_5_label', 'Nav 5 label', 'half'),
+    strField('sidebar_brand_name',  'Sidebar brand name (override)', 'half'),
+    strField('sidebar_status_text', 'Status text',                   'half'),
   ])
 
   // FK: site_config_id → site_config

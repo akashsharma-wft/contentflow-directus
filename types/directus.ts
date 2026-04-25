@@ -111,6 +111,9 @@ export type {
 
 import type {
   CmsSection,
+  NavRole,
+  SiteNavItem,
+  SiteFooterColumn,
   SiteNavbarConfig,
   SiteFooterConfig,
   SiteSidebarConfig,
@@ -465,104 +468,68 @@ export type DirectusNavPage = {
 
 // ─── Site config translations ─────────────────────────────────────────────────
 
+// Only translatable non-array fields live here.
+// Nav item labels are embedded inline in the JSON arrays as label_en/hi/kn.
 export type DirectusSiteConfigTranslationRow = {
   id:              number
   site_config_id:  string
   languages_code:  string
-  // Navbar
   navbar_cta_label?:     string | null
   navbar_login_label?:   string | null
   navbar_signup_label?:  string | null
   navbar_signout_label?: string | null
-  navbar_item_1_label?:  string | null
-  navbar_item_2_label?:  string | null
-  navbar_item_3_label?:  string | null
-  navbar_item_4_label?:  string | null
-  navbar_item_5_label?:  string | null
-  // Footer
-  footer_tagline?:            string | null
-  footer_copyright?:          string | null
-  footer_col_1_heading?:      string | null
-  footer_col_1_link_1_label?: string | null
-  footer_col_1_link_2_label?: string | null
-  footer_col_2_heading?:      string | null
-  footer_col_2_link_1_label?: string | null
-  footer_col_2_link_2_label?: string | null
-  // Sidebar
-  sidebar_brand_name?:  string | null
-  sidebar_status_text?: string | null
-  sidebar_nav_1_label?: string | null
-  sidebar_nav_2_label?: string | null
-  sidebar_nav_3_label?: string | null
-  sidebar_nav_4_label?: string | null
-  sidebar_nav_5_label?: string | null
+  footer_tagline?:       string | null
+  footer_copyright?:     string | null
+  sidebar_brand_name?:   string | null
+  sidebar_status_text?:  string | null
+}
+
+// ─── Nav item JSON shape (stored in JSON array fields) ────────────────────────
+
+export type NavItemJSON = {
+  label_en: string
+  label_hi?: string
+  label_kn?: string
+  href:      string
+  icon?:     string
+  access:    'guest' | 'user' | 'admin'
+}
+
+export type FooterLinkJSON = {
+  label_en: string
+  label_hi?: string
+  label_kn?: string
+  href:      string
+}
+
+export type FooterColumnJSON = {
+  heading_en: string
+  heading_hi?: string
+  heading_kn?: string
+  links: FooterLinkJSON[]
 }
 
 // ─── Site config ──────────────────────────────────────────────────────────────
 
-/** Full field-based site_config row. */
 export type DirectusSiteConfigRow = {
-  id:                string
-  site_name:         string
-  // Legacy JSON fields (hidden in UI, kept for backward compat)
-  navbar_config?:     SiteNavbarConfig | null
-  footer_config?:     SiteFooterConfig | null
-  sidebar_config?:    SiteSidebarConfig | null
-  mobile_nav_config?: SiteMobileNavConfig | null
+  id:         string
+  site_name:  string
 
-  // ── Navbar flat fields ────────────────────────────────────────────────────
-  navbar_brand_name?:       string | null
-  navbar_cta_label_en?:     string | null
-  navbar_cta_label_hi?:     string | null
-  navbar_cta_label_kn?:     string | null
-  navbar_cta_href?:         string | null
-  navbar_login_label_en?:   string | null
-  navbar_login_label_hi?:   string | null
-  navbar_login_label_kn?:   string | null
-  navbar_signup_label_en?:  string | null
-  navbar_signup_label_hi?:  string | null
-  navbar_signup_label_kn?:  string | null
-  navbar_signout_label_en?: string | null
-  navbar_signout_label_hi?: string | null
-  navbar_signout_label_kn?: string | null
-
-  // ── Footer flat fields ────────────────────────────────────────────────────
-  footer_brand_name?:    string | null
-  footer_tagline_en?:    string | null
-  footer_tagline_hi?:    string | null
-  footer_tagline_kn?:    string | null
-  footer_copyright_en?:  string | null
-  footer_copyright_hi?:  string | null
-  footer_copyright_kn?:  string | null
-
-  // ── Sidebar flat fields ───────────────────────────────────────────────────
+  // Global (non-translated) branding / CTA
+  navbar_brand_name?:  string | null
+  navbar_cta_href?:    string | null
+  footer_brand_name?:  string | null
   sidebar_brand_name?:     string | null
   sidebar_brand_subtitle?: string | null
-  sidebar_status_text?:    string | null
   sidebar_status_badge?:   string | null
 
-  // ── Navbar nav items (up to 5) ────────────────────────────────────────────
-  navbar_item_1_label_en?: string | null; navbar_item_1_label_hi?: string | null; navbar_item_1_label_kn?: string | null; navbar_item_1_href?: string | null
-  navbar_item_2_label_en?: string | null; navbar_item_2_label_hi?: string | null; navbar_item_2_label_kn?: string | null; navbar_item_2_href?: string | null
-  navbar_item_3_label_en?: string | null; navbar_item_3_label_hi?: string | null; navbar_item_3_label_kn?: string | null; navbar_item_3_href?: string | null
-  navbar_item_4_label_en?: string | null; navbar_item_4_label_hi?: string | null; navbar_item_4_label_kn?: string | null; navbar_item_4_href?: string | null
-  navbar_item_5_label_en?: string | null; navbar_item_5_label_hi?: string | null; navbar_item_5_label_kn?: string | null; navbar_item_5_href?: string | null
+  // Dynamic nav item arrays — editors add/remove items freely
+  navbar_items?:      NavItemJSON[] | null
+  sidebar_nav_items?: NavItemJSON[] | null
+  mobile_nav_items?:  NavItemJSON[] | null
+  footer_columns?:    FooterColumnJSON[] | null
 
-  // ── Sidebar nav items (up to 5) ───────────────────────────────────────────
-  sidebar_nav_1_label_en?: string | null; sidebar_nav_1_label_hi?: string | null; sidebar_nav_1_label_kn?: string | null; sidebar_nav_1_href?: string | null
-  sidebar_nav_2_label_en?: string | null; sidebar_nav_2_label_hi?: string | null; sidebar_nav_2_label_kn?: string | null; sidebar_nav_2_href?: string | null
-  sidebar_nav_3_label_en?: string | null; sidebar_nav_3_label_hi?: string | null; sidebar_nav_3_label_kn?: string | null; sidebar_nav_3_href?: string | null
-  sidebar_nav_4_label_en?: string | null; sidebar_nav_4_label_hi?: string | null; sidebar_nav_4_label_kn?: string | null; sidebar_nav_4_href?: string | null
-  sidebar_nav_5_label_en?: string | null; sidebar_nav_5_label_hi?: string | null; sidebar_nav_5_label_kn?: string | null; sidebar_nav_5_href?: string | null
-
-  // ── Footer columns (2 columns × 2 links) ─────────────────────────────────
-  footer_col_1_heading_en?: string | null; footer_col_1_heading_hi?: string | null; footer_col_1_heading_kn?: string | null
-  footer_col_1_link_1_label_en?: string | null; footer_col_1_link_1_label_hi?: string | null; footer_col_1_link_1_label_kn?: string | null; footer_col_1_link_1_href?: string | null
-  footer_col_1_link_2_label_en?: string | null; footer_col_1_link_2_label_hi?: string | null; footer_col_1_link_2_label_kn?: string | null; footer_col_1_link_2_href?: string | null
-  footer_col_2_heading_en?: string | null; footer_col_2_heading_hi?: string | null; footer_col_2_heading_kn?: string | null
-  footer_col_2_link_1_label_en?: string | null; footer_col_2_link_1_label_hi?: string | null; footer_col_2_link_1_label_kn?: string | null; footer_col_2_link_1_href?: string | null
-  footer_col_2_link_2_label_en?: string | null; footer_col_2_link_2_label_hi?: string | null; footer_col_2_link_2_label_kn?: string | null; footer_col_2_link_2_href?: string | null
-  // Translations
+  // Translations relation
   translations?: DirectusSiteConfigTranslationRow[]
 }
 
@@ -575,191 +542,74 @@ export type DirectusSiteConfig = {
   footerConfig?:    SiteFooterConfig
   sidebarConfig?:   SiteSidebarConfig
   mobileNavConfig?: SiteMobileNavConfig
-  // Flat fields for visual editing bindings
-  navbarBrandName?:      string
-  navbarCtaLabelEn?:     string
-  navbarCtaLabelHi?:     string
-  navbarCtaLabelKn?:     string
-  navbarCtaHref?:        string
-  navbarLoginLabelEn?:   string
-  navbarLoginLabelHi?:   string
-  navbarLoginLabelKn?:   string
-  navbarSignupLabelEn?:  string
-  navbarSignupLabelHi?:  string
-  navbarSignupLabelKn?:  string
-  navbarSignoutLabelEn?: string
-  navbarSignoutLabelHi?: string
-  navbarSignoutLabelKn?: string
-  footerBrandName?:      string
-  footerTaglineEn?:      string
-  footerTaglineHi?:      string
-  footerTaglineKn?:      string
-  footerCopyrightEn?:    string
-  footerCopyrightHi?:    string
-  footerCopyrightKn?:    string
-  sidebarBrandName?:     string
-  sidebarBrandSubtitle?: string
-  sidebarStatusText?:    string
-  sidebarStatusBadge?:   string
-  // Nav item flat fields (for visual editing bindings in components)
-  navbarItems?: Array<{ labelEn: string; labelHi?: string; labelKn?: string; href: string }>
-  sidebarNavItems?: Array<{ labelEn: string; labelHi?: string; labelKn?: string; href: string }>
-  footerColumns?: Array<{
-    headingEn: string; headingHi?: string; headingKn?: string
-    links: Array<{ labelEn: string; labelHi?: string; labelKn?: string; href: string }>
-  }>
   siteConfigTranslationId?: number
 }
 
-export function toSiteConfig(row: DirectusSiteConfigRow, lang = 'en'): DirectusSiteConfig {
-  // Resolve translation row for this language
-  const tr = resolveTranslation(row.translations ?? [], lang) as DirectusSiteConfigTranslationRow | null | undefined
+function accessToVisibleFor(access?: string): NavRole[] {
+  if (access === 'admin') return ['admin']
+  if (access === 'guest') return ['guest']
+  return ['user']
+}
 
-  // Cast row to a loose dict for dynamic field access (translations field is excluded by using unknown first)
-  const r = row as unknown as Record<string, string | null | undefined>
-
-  // Build nav items from flat fields (up to 5 each), preferring translation labels
-  function buildNavItemsWithTranslation(prefix: string) {
-    const items = []
-    for (let n = 1; n <= 5; n++) {
-      const labelEn = (tr as Record<string,string|null|undefined> | null | undefined)?.[`${prefix.replace('navbar_item', 'navbar_item_').replace('sidebar_nav_', 'sidebar_nav_')}${n}_label`]
-        ?? r[`${prefix}_${n}_label_en`]
-      const href    = r[`${prefix}_${n}_href`]
-      if (!labelEn && !href) continue
-      items.push({
-        _key: `${prefix}_${n}`,
-        label: {
-          en: labelEn ?? '',
-          hi: r[`${prefix}_${n}_label_hi`] ?? undefined,
-          kn: r[`${prefix}_${n}_label_kn`] ?? undefined,
-        },
-        href: href ?? '',
-      })
-    }
-    return items
-  }
-
-  // Build nav items from flat fields (up to 5 each)
-  function buildNavItems(prefix: string) {
-    const items = []
-    for (let n = 1; n <= 5; n++) {
-      const labelEn = r[`${prefix}_${n}_label_en`]
-      const href    = r[`${prefix}_${n}_href`]
-      if (!labelEn && !href) continue
-      items.push({
-        _key: `${prefix}_${n}`,
-        label: {
-          en: labelEn ?? '',
-          hi: r[`${prefix}_${n}_label_hi`] ?? undefined,
-          kn: r[`${prefix}_${n}_label_kn`] ?? undefined,
-        },
-        href: href ?? '',
-      })
-    }
-    return items
-  }
-
-  const flatNavItems     = buildNavItems('navbar_item')
-  const flatSidebarItems = buildNavItems('sidebar_nav')
-
-  // Build footer columns from flat fields
-  function buildFooterColumns() {
-    const cols = []
-    for (let c = 1; c <= 2; c++) {
-      const headingEn = r[`footer_col_${c}_heading_en`]
-      if (!headingEn) continue
-      const links = []
-      for (let l = 1; l <= 2; l++) {
-        const llEn = r[`footer_col_${c}_link_${l}_label_en`]
-        const lh   = r[`footer_col_${c}_link_${l}_href`]
-        if (!llEn && !lh) continue
-        links.push({
-          _key: `footer_col_${c}_link_${l}`,
-          label: llEn ?? '',
-          href:  lh   ?? '#',
-        })
-      }
-      cols.push({
-        _key: `footer_col_${c}`,
-        heading: headingEn ?? '',
-        links,
-      })
-    }
-    return cols
-  }
-
-  const flatFooterColumns = buildFooterColumns()
-
-  // Build navbarConfig — prefer translation fields, then flat fields, fall back to legacy JSON
-  const legacyNavbar = row.navbar_config ?? undefined
-  const navbarConfig: SiteNavbarConfig = {
-    ...legacyNavbar,
-    brandName: row.navbar_brand_name ?? legacyNavbar?.brandName,
-    items: flatNavItems.length > 0 ? flatNavItems : legacyNavbar?.items,
-    ctaButton: {
-      label: {
-        en: tr?.navbar_cta_label ?? row.navbar_cta_label_en ?? (typeof legacyNavbar?.ctaButton?.label === 'object' ? (legacyNavbar.ctaButton.label as Record<string,string>).en : legacyNavbar?.ctaButton?.label as string) ?? 'Get Started',
-        hi: row.navbar_cta_label_hi ?? (typeof legacyNavbar?.ctaButton?.label === 'object' ? (legacyNavbar.ctaButton.label as Record<string,string>).hi : undefined) ?? undefined,
-        kn: row.navbar_cta_label_kn ?? (typeof legacyNavbar?.ctaButton?.label === 'object' ? (legacyNavbar.ctaButton.label as Record<string,string>).kn : undefined) ?? undefined,
-      },
-      href: row.navbar_cta_href ?? legacyNavbar?.ctaButton?.href,
-    },
-    loginLabel:   { en: tr?.navbar_login_label   ?? row.navbar_login_label_en   ?? 'Login',    hi: row.navbar_login_label_hi   ?? undefined, kn: row.navbar_login_label_kn   ?? undefined },
-    signupLabel:  { en: tr?.navbar_signup_label  ?? row.navbar_signup_label_en  ?? 'Sign up',  hi: row.navbar_signup_label_hi  ?? undefined, kn: row.navbar_signup_label_kn  ?? undefined },
-    signoutLabel: { en: tr?.navbar_signout_label ?? row.navbar_signout_label_en ?? 'Sign out', hi: row.navbar_signout_label_hi ?? undefined, kn: row.navbar_signout_label_kn ?? undefined },
-  }
-
-  const legacyFooter = row.footer_config ?? undefined
-  const footerConfig: SiteFooterConfig = {
-    ...legacyFooter,
-    brandName: row.footer_brand_name ?? legacyFooter?.brandName,
-    columns:   flatFooterColumns.length > 0 ? flatFooterColumns : legacyFooter?.columns,
-    tagline: {
-      en: tr?.footer_tagline ?? row.footer_tagline_en ?? (typeof legacyFooter?.tagline === 'string' ? legacyFooter.tagline : (legacyFooter?.tagline as Record<string,string>)?.en) ?? '',
-      hi: row.footer_tagline_hi ?? (typeof legacyFooter?.tagline === 'object' ? (legacyFooter.tagline as Record<string,string>)?.hi : undefined) ?? undefined,
-      kn: row.footer_tagline_kn ?? (typeof legacyFooter?.tagline === 'object' ? (legacyFooter.tagline as Record<string,string>)?.kn : undefined) ?? undefined,
-    },
-    copyright: {
-      en: tr?.footer_copyright ?? row.footer_copyright_en ?? (typeof legacyFooter?.copyright === 'string' ? legacyFooter.copyright : (legacyFooter?.copyright as Record<string,string>)?.en) ?? '',
-      hi: row.footer_copyright_hi ?? (typeof legacyFooter?.copyright === 'object' ? (legacyFooter.copyright as Record<string,string>)?.hi : undefined) ?? undefined,
-      kn: row.footer_copyright_kn ?? (typeof legacyFooter?.copyright === 'object' ? (legacyFooter.copyright as Record<string,string>)?.kn : undefined) ?? undefined,
-    },
-  }
-
-  const legacySidebar = row.sidebar_config ?? undefined
-  const sidebarConfig: SiteSidebarConfig = {
-    ...legacySidebar,
-    brandName:     row.sidebar_brand_name     ?? legacySidebar?.brandName,
-    brandSubtitle: row.sidebar_brand_subtitle ?? legacySidebar?.brandSubtitle,
-    navItems:      flatSidebarItems.length > 0 ? flatSidebarItems : legacySidebar?.navItems,
-    statusText:    row.sidebar_status_text    ?? legacySidebar?.statusText,
-    statusBadge:   row.sidebar_status_badge   ?? legacySidebar?.statusBadge,
-  }
-
-  // Flat nav/sidebar/footer items for position-based visual editing bindings
-  const navbarItems = [1,2,3,4,5].map(n => ({
-    labelEn: r[`navbar_item_${n}_label_en`] ?? '',
-    labelHi: r[`navbar_item_${n}_label_hi`] ?? undefined,
-    labelKn: r[`navbar_item_${n}_label_kn`] ?? undefined,
-    href:    r[`navbar_item_${n}_href`]     ?? '',
+function parseNavItems(json: NavItemJSON[] | null | undefined): SiteNavItem[] {
+  if (!Array.isArray(json)) return []
+  return json.map((item, i) => ({
+    _key:       `nav_${i}`,
+    label:      { en: item.label_en, hi: item.label_hi, kn: item.label_kn },
+    href:       item.href,
+    icon:       item.icon,
+    visibleFor: accessToVisibleFor(item.access),
   }))
-  const sidebarNavItems = [1,2,3,4,5].map(n => ({
-    labelEn: r[`sidebar_nav_${n}_label_en`] ?? '',
-    labelHi: r[`sidebar_nav_${n}_label_hi`] ?? undefined,
-    labelKn: r[`sidebar_nav_${n}_label_kn`] ?? undefined,
-    href:    r[`sidebar_nav_${n}_href`]     ?? '',
-  }))
-  const footerColumns = [1,2].map(c => ({
-    headingEn: r[`footer_col_${c}_heading_en`] ?? '',
-    headingHi: r[`footer_col_${c}_heading_hi`] ?? undefined,
-    headingKn: r[`footer_col_${c}_heading_kn`] ?? undefined,
-    links: [1,2].map(l => ({
-      labelEn: r[`footer_col_${c}_link_${l}_label_en`] ?? '',
-      labelHi: r[`footer_col_${c}_link_${l}_label_hi`] ?? undefined,
-      labelKn: r[`footer_col_${c}_link_${l}_label_kn`] ?? undefined,
-      href:    r[`footer_col_${c}_link_${l}_href`]     ?? '',
+}
+
+function parseFooterColumns(json: FooterColumnJSON[] | null | undefined): SiteFooterColumn[] {
+  if (!Array.isArray(json)) return []
+  return json.map((col, ci) => ({
+    _key:    `col_${ci}`,
+    heading: { en: col.heading_en, hi: col.heading_hi, kn: col.heading_kn },
+    links:   (col.links ?? []).map((l, li) => ({
+      _key:  `col_${ci}_link_${li}`,
+      label: { en: l.label_en, hi: l.label_hi, kn: l.label_kn },
+      href:  l.href,
     })),
   }))
+}
+
+export function toSiteConfig(row: DirectusSiteConfigRow, lang = 'en'): DirectusSiteConfig {
+  const tr = resolveTranslation(row.translations ?? [], lang) as DirectusSiteConfigTranslationRow | null | undefined
+
+  const navbarItems   = parseNavItems(row.navbar_items)
+  const sidebarItems  = parseNavItems(row.sidebar_nav_items)
+  const mobileItems   = parseNavItems(row.mobile_nav_items ?? row.sidebar_nav_items)
+  const footerColumns = parseFooterColumns(row.footer_columns)
+
+  const navbarConfig: SiteNavbarConfig = {
+    brandName: row.navbar_brand_name ?? undefined,
+    items:     navbarItems,
+    ctaButton: { href: row.navbar_cta_href ?? undefined, label: { en: tr?.navbar_cta_label ?? 'Get Started' } },
+    loginLabel:   { en: tr?.navbar_login_label   ?? 'Login' },
+    signupLabel:  { en: tr?.navbar_signup_label  ?? 'Sign up' },
+    signoutLabel: { en: tr?.navbar_signout_label ?? 'Sign out' },
+  }
+
+  const footerConfig: SiteFooterConfig = {
+    brandName: row.footer_brand_name ?? undefined,
+    columns:   footerColumns,
+    tagline:   { en: tr?.footer_tagline  ?? '' },
+    copyright: { en: tr?.footer_copyright ?? '' },
+  }
+
+  const sidebarConfig: SiteSidebarConfig = {
+    brandName:     tr?.sidebar_brand_name ?? row.sidebar_brand_name ?? undefined,
+    brandSubtitle: row.sidebar_brand_subtitle ?? undefined,
+    navItems:      sidebarItems,
+    statusText:    tr?.sidebar_status_text ?? undefined,
+    statusBadge:   row.sidebar_status_badge ?? undefined,
+  }
+
+  const mobileNavConfig: SiteMobileNavConfig = {
+    items: mobileItems,
+  }
 
   return {
     _id:             row.id,
@@ -769,36 +619,7 @@ export function toSiteConfig(row: DirectusSiteConfigRow, lang = 'en'): DirectusS
     navbarConfig,
     footerConfig,
     sidebarConfig,
-    mobileNavConfig: row.mobile_nav_config ?? undefined,
-    // Flat fields passed through for visual editing bindings in components
-    navbarBrandName:      row.navbar_brand_name      ?? undefined,
-    navbarCtaLabelEn:     row.navbar_cta_label_en    ?? undefined,
-    navbarCtaLabelHi:     row.navbar_cta_label_hi    ?? undefined,
-    navbarCtaLabelKn:     row.navbar_cta_label_kn    ?? undefined,
-    navbarCtaHref:        row.navbar_cta_href         ?? undefined,
-    navbarLoginLabelEn:   row.navbar_login_label_en   ?? undefined,
-    navbarLoginLabelHi:   row.navbar_login_label_hi   ?? undefined,
-    navbarLoginLabelKn:   row.navbar_login_label_kn   ?? undefined,
-    navbarSignupLabelEn:  row.navbar_signup_label_en  ?? undefined,
-    navbarSignupLabelHi:  row.navbar_signup_label_hi  ?? undefined,
-    navbarSignupLabelKn:  row.navbar_signup_label_kn  ?? undefined,
-    navbarSignoutLabelEn: row.navbar_signout_label_en ?? undefined,
-    navbarSignoutLabelHi: row.navbar_signout_label_hi ?? undefined,
-    navbarSignoutLabelKn: row.navbar_signout_label_kn ?? undefined,
-    footerBrandName:      row.footer_brand_name       ?? undefined,
-    footerTaglineEn:      row.footer_tagline_en        ?? undefined,
-    footerTaglineHi:      row.footer_tagline_hi        ?? undefined,
-    footerTaglineKn:      row.footer_tagline_kn        ?? undefined,
-    footerCopyrightEn:    row.footer_copyright_en      ?? undefined,
-    footerCopyrightHi:    row.footer_copyright_hi      ?? undefined,
-    footerCopyrightKn:    row.footer_copyright_kn      ?? undefined,
-    sidebarBrandName:     row.sidebar_brand_name        ?? undefined,
-    sidebarBrandSubtitle: row.sidebar_brand_subtitle    ?? undefined,
-    sidebarStatusText:    row.sidebar_status_text        ?? undefined,
-    sidebarStatusBadge:   row.sidebar_status_badge       ?? undefined,
-    navbarItems,
-    sidebarNavItems,
-    footerColumns,
+    mobileNavConfig,
     siteConfigTranslationId: tr?.id,
   }
 }

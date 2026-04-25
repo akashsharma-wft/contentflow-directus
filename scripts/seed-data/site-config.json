@@ -1,153 +1,46 @@
 {
   "id": "site-config",
   "site_name": "ContentFlow",
-  "navbar_config": {
-    "brandName": "ContentFlow",
-    "showLanguageSwitcher": true,
-    "ctaButton": {
-      "label": { "en": "Get Started", "hi": "शुरू करें", "kn": "ಪ್ರಾರಂಭಿಸಿ" },
-      "href": "/signup"
+
+  "navbar_brand_name": "ContentFlow",
+  "navbar_cta_href": "/signup",
+
+  "navbar_items": [
+    { "label_en": "Posts",     "label_hi": "पोस्ट",    "label_kn": "ಪೋಸ್ಟ್‌ಗಳು",   "href": "/posts",     "access": "user" },
+    { "label_en": "Settings",  "label_hi": "सेटिंग्स", "label_kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", "href": "/settings",  "access": "user" },
+    { "label_en": "Billing",   "label_hi": "बिलिंग",   "label_kn": "ಬಿಲ್ಲಿಂಗ್",    "href": "/billing",   "access": "user" },
+    { "label_en": "Analytics", "label_hi": "विश्लेषण", "label_kn": "ವಿಶ್ಲೇಷಣೆ",    "href": "/analytics", "access": "admin" },
+    { "label_en": "Admin",     "label_hi": "एडमिन",    "label_kn": "ಅಡ್ಮಿನ್",      "href": "/admin",     "access": "admin" }
+  ],
+
+  "footer_brand_name": "ContentFlow",
+
+  "footer_columns": [
+    {
+      "heading_en": "Product", "heading_hi": "उत्पाद", "heading_kn": "ಉತ್ಪನ್ನ",
+      "links": [
+        { "label_en": "Features", "label_hi": "विशेषताएं",       "label_kn": "ವೈಶಿಷ್ಟ್ಯಗಳು", "href": "/#features" },
+        { "label_en": "Pricing",  "label_hi": "मूल्य निर्धारण", "label_kn": "ಬೆಲೆ ನಿಗದಿ",   "href": "/#pricing"  }
+      ]
     },
-    "loginLabel":          { "en": "Login",    "hi": "लॉगिन",     "kn": "ಲಾಗಿನ್"       },
-    "signupLabel":         { "en": "Sign up",  "hi": "साइन अप",   "kn": "ಸೈನ್ ಅಪ್"     },
-    "signoutLabel":        { "en": "Sign out", "hi": "साइन आउट",  "kn": "ಸೈನ್ ಔಟ್"     },
-    "mobileLanguageLabel": { "en": "Language", "hi": "भाषा",      "kn": "ಭಾಷೆ"          },
-    "items": [
-      {
-        "_key": "nav-posts",
-        "label": { "en": "Posts", "hi": "पोस्ट", "kn": "ಪೋಸ್ಟ್‌ಗಳು" },
-        "href": "/posts",
-        "visibleFor": ["guest", "user", "admin"]
-      },
-      {
-        "_key": "nav-settings",
-        "label": { "en": "Settings", "hi": "सेटिंग्स", "kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು" },
-        "href": "/settings",
-        "visibleFor": ["user", "admin"]
-      },
-      {
-        "_key": "nav-billing",
-        "label": { "en": "Billing", "hi": "बिलिंग", "kn": "ಬಿಲ್ಲಿಂಗ್" },
-        "href": "/billing",
-        "visibleFor": ["user", "admin"]
-      },
-      {
-        "_key": "nav-analytics",
-        "label": { "en": "Analytics", "hi": "विश्लेषण", "kn": "ವಿಶ್ಲೇಷಣೆ" },
-        "href": "/analytics",
-        "visibleFor": ["admin"]
-      },
-      {
-        "_key": "nav-admin",
-        "label": { "en": "Admin", "hi": "एडमिन", "kn": "ಅಡ್ಮಿನ್" },
-        "href": "/admin",
-        "visibleFor": ["admin"]
-      }
-    ]
-  },
-  "footer_config": {
-    "brandName": "ContentFlow",
-    "showBrandLogo": true,
-    "tagline": {
-      "en": "CMS-driven SaaS dashboard.",
-      "hi": "CMS-संचालित SaaS डैशबोर्ड।",
-      "kn": "CMS-ಚಾಲಿತ SaaS ಡ್ಯಾಶ್‌ಬೋರ್ಡ್."
-    },
-    "copyright": {
-      "en": "© 2025 ContentFlow. All rights reserved.",
-      "hi": "© 2025 ContentFlow. सर्वाधिकार सुरक्षित।",
-      "kn": "© 2025 ContentFlow. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ."
-    },
-    "socialLinks": [],
-    "columns": [
-      {
-        "_key": "col-product",
-        "heading": { "en": "Product", "hi": "उत्पाद", "kn": "ಉತ್ಪನ್ನ" },
-        "links": [
-          { "_key": "l1", "label": { "en": "Features", "hi": "विशेषताएं", "kn": "ವೈಶಿಷ್ಟ್ಯಗಳು" }, "href": "/#features" },
-          { "_key": "l2", "label": { "en": "Pricing",  "hi": "मूल्य निर्धारण", "kn": "ಬೆಲೆ ನಿಗದಿ" }, "href": "/#pricing"  }
-        ]
-      },
-      {
-        "_key": "col-account",
-        "heading": { "en": "Account", "hi": "खाता", "kn": "ಖಾತೆ" },
-        "links": [
-          { "_key": "l3", "label": { "en": "Log in",  "hi": "लॉग इन",  "kn": "ಲಾಗ್ ಇನ್"  }, "href": "/login"  },
-          { "_key": "l4", "label": { "en": "Sign up", "hi": "साइन अप", "kn": "ಸೈನ್ ಅಪ್"  }, "href": "/signup" }
-        ]
-      }
-    ],
-    "bottomLinks": []
-  },
-  "sidebar_config": {
-    "brandName": "ContentFlow",
-    "brandSubtitle": "Dashboard",
-    "navItems": [
-      { "_key": "s1", "label": { "en": "Posts",     "hi": "पोस्ट",    "kn": "ಪೋಸ್ಟ್‌ಗಳು"   }, "href": "/posts",     "icon": "FileText",   "visibleFor": ["user", "admin"] },
-      { "_key": "s2", "label": { "en": "Analytics", "hi": "विश्लेषण", "kn": "ವಿಶ್ಲೇಷಣೆ"    }, "href": "/analytics", "icon": "BarChart2",  "visibleFor": ["admin"] },
-      { "_key": "s3", "label": { "en": "Settings",  "hi": "सेटिंग्स", "kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು" }, "href": "/settings",  "icon": "Settings",   "visibleFor": ["user", "admin"] },
-      { "_key": "s4", "label": { "en": "Billing",   "hi": "बिलिंग",   "kn": "ಬಿಲ್ಲಿಂಗ್"    }, "href": "/billing",   "icon": "CreditCard", "visibleFor": ["user", "admin"] },
-      { "_key": "s5", "label": { "en": "Admin",     "hi": "एडमिन",    "kn": "ಅಡ್ಮಿನ್"      }, "href": "/admin",     "icon": "Shield",     "visibleFor": ["admin"] }
-    ],
-    "footerLinks": [],
-    "statusText": "All systems operational",
-    "statusBadge": "Live"
-  },
-  "mobile_nav_config": {
-    "showLabels": true,
-    "items": [
-      { "_key": "m1", "label": { "en": "Posts",     "hi": "पोस्ट",    "kn": "ಪೋಸ್ಟ್‌ಗಳು"   }, "href": "/posts",     "icon": "FileText",   "visibleFor": ["user", "admin"] },
-      { "_key": "m2", "label": { "en": "Analytics", "hi": "विश्लेषण", "kn": "ವಿಶ್ಲೇಷಣೆ"    }, "href": "/analytics", "icon": "BarChart2",  "visibleFor": ["admin"] },
-      { "_key": "m3", "label": { "en": "Settings",  "hi": "सेटिंग्स", "kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು" }, "href": "/settings",  "icon": "Settings",   "visibleFor": ["user", "admin"] },
-      { "_key": "m4", "label": { "en": "Billing",   "hi": "बिलिंग",   "kn": "ಬಿಲ್ಲಿಂಗ್"    }, "href": "/billing",   "icon": "CreditCard", "visibleFor": ["user", "admin"] },
-      { "_key": "m5", "label": { "en": "Admin",     "hi": "एडमिन",    "kn": "ಅಡ್ಮಿನ್"      }, "href": "/admin",     "icon": "Shield",     "visibleFor": ["admin"] }
-    ]
-  },
-
-  "navbar_brand_name":       "ContentFlow",
-  "navbar_cta_label_en":     "Get Started",
-  "navbar_cta_label_hi":     "शुरू करें",
-  "navbar_cta_label_kn":     "ಪ್ರಾರಂಭಿಸಿ",
-  "navbar_cta_href":         "/signup",
-  "navbar_login_label_en":   "Login",
-  "navbar_login_label_hi":   "लॉगिन",
-  "navbar_login_label_kn":   "ಲಾಗಿನ್",
-  "navbar_signup_label_en":  "Sign up",
-  "navbar_signup_label_hi":  "साइन अप",
-  "navbar_signup_label_kn":  "ಸೈನ್ ಅಪ್",
-  "navbar_signout_label_en": "Sign out",
-  "navbar_signout_label_hi": "साइन आउट",
-  "navbar_signout_label_kn": "ಸೈನ್ ಔಟ್",
-
-  "navbar_item_1_label_en": "Posts",     "navbar_item_1_label_hi": "पोस्ट",    "navbar_item_1_label_kn": "ಪೋಸ್ಟ್‌ಗಳು",   "navbar_item_1_href": "/posts",
-  "navbar_item_2_label_en": "Settings",  "navbar_item_2_label_hi": "सेटिंग्स", "navbar_item_2_label_kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", "navbar_item_2_href": "/settings",
-  "navbar_item_3_label_en": "Billing",   "navbar_item_3_label_hi": "बिलिंग",   "navbar_item_3_label_kn": "ಬಿಲ್ಲಿಂಗ್",    "navbar_item_3_href": "/billing",
-  "navbar_item_4_label_en": "Analytics", "navbar_item_4_label_hi": "विश्लेषण", "navbar_item_4_label_kn": "ವಿಶ್ಲೇಷಣೆ",    "navbar_item_4_href": "/analytics",
-  "navbar_item_5_label_en": "Admin",     "navbar_item_5_label_hi": "एडमिन",    "navbar_item_5_label_kn": "ಅಡ್ಮಿನ್",      "navbar_item_5_href": "/admin",
-
-  "footer_brand_name":    "ContentFlow",
-  "footer_tagline_en":    "CMS-driven SaaS dashboard.",
-  "footer_tagline_hi":    "CMS-संचालित SaaS डैशबोर्ड।",
-  "footer_tagline_kn":    "CMS-ಚಾಲಿತ SaaS ಡ್ಯಾಶ್‌ಬೋರ್ಡ್.",
-  "footer_copyright_en":  "© 2025 ContentFlow. All rights reserved.",
-  "footer_copyright_hi":  "© 2025 ContentFlow. सर्वाधिकार सुरक्षित।",
-  "footer_copyright_kn":  "© 2025 ContentFlow. ಎಲ್ಲ ಹಕ್ಕುಗಳನ್ನು ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ.",
-
-  "footer_col_1_heading_en":       "Product",   "footer_col_1_heading_hi":       "उत्पाद",           "footer_col_1_heading_kn":       "ಉತ್ಪನ್ನ",
-  "footer_col_1_link_1_label_en":  "Features",  "footer_col_1_link_1_label_hi":  "विशेषताएं",        "footer_col_1_link_1_label_kn":  "ವೈಶಿಷ್ಟ್ಯಗಳು", "footer_col_1_link_1_href": "/#features",
-  "footer_col_1_link_2_label_en":  "Pricing",   "footer_col_1_link_2_label_hi":  "मूल्य निर्धारण",  "footer_col_1_link_2_label_kn":  "ಬೆಲೆ ನಿಗದಿ",   "footer_col_1_link_2_href": "/#pricing",
-  "footer_col_2_heading_en":       "Account",   "footer_col_2_heading_hi":       "खाता",             "footer_col_2_heading_kn":       "ಖಾತೆ",
-  "footer_col_2_link_1_label_en":  "Log in",    "footer_col_2_link_1_label_hi":  "लॉग इन",          "footer_col_2_link_1_label_kn":  "ಲಾಗ್ ಇನ್",  "footer_col_2_link_1_href": "/login",
-  "footer_col_2_link_2_label_en":  "Sign up",   "footer_col_2_link_2_label_hi":  "साइन अप",         "footer_col_2_link_2_label_kn":  "ಸೈನ್ ಅಪ್", "footer_col_2_link_2_href": "/signup",
+    {
+      "heading_en": "Account", "heading_hi": "खाता", "heading_kn": "ಖಾತೆ",
+      "links": [
+        { "label_en": "Log in",  "label_hi": "लॉग इन",  "label_kn": "ಲಾಗ್ ಇನ್",  "href": "/login"  },
+        { "label_en": "Sign up", "label_hi": "साइन अप", "label_kn": "ಸೈನ್ ಅಪ್",  "href": "/signup" }
+      ]
+    }
+  ],
 
   "sidebar_brand_name":     "ContentFlow",
   "sidebar_brand_subtitle": "Dashboard",
-  "sidebar_status_text":    "All systems operational",
-  "sidebar_status_badge":   "Live",
+  "sidebar_status_badge":   "System Status: Nominal",
 
-  "sidebar_nav_1_label_en": "Posts",     "sidebar_nav_1_label_hi": "पोस्ट",    "sidebar_nav_1_label_kn": "ಪೋಸ್ಟ್‌ಗಳು",   "sidebar_nav_1_href": "/posts",
-  "sidebar_nav_2_label_en": "Analytics", "sidebar_nav_2_label_hi": "विश्लेषण", "sidebar_nav_2_label_kn": "ವಿಶ್ಲೇಷಣೆ",    "sidebar_nav_2_href": "/analytics",
-  "sidebar_nav_3_label_en": "Settings",  "sidebar_nav_3_label_hi": "सेटिंग्स", "sidebar_nav_3_label_kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", "sidebar_nav_3_href": "/settings",
-  "sidebar_nav_4_label_en": "Billing",   "sidebar_nav_4_label_hi": "बिलिंग",   "sidebar_nav_4_label_kn": "ಬಿಲ್ಲಿಂಗ್",    "sidebar_nav_4_href": "/billing",
-  "sidebar_nav_5_label_en": "Admin",     "sidebar_nav_5_label_hi": "एडमिन",    "sidebar_nav_5_label_kn": "ಅಡ್ಮಿನ್",      "sidebar_nav_5_href": "/admin"
+  "sidebar_nav_items": [
+    { "label_en": "Posts",     "label_hi": "पोस्ट",    "label_kn": "ಪೋಸ್ಟ್‌ಗಳು",   "href": "/posts",     "icon": "FileText",   "access": "user"  },
+    { "label_en": "Analytics", "label_hi": "विश्लेषण", "label_kn": "ವಿಶ್ಲೇಷಣೆ",    "href": "/analytics", "icon": "BarChart3",  "access": "admin" },
+    { "label_en": "Settings",  "label_hi": "सेटिंग्स", "label_kn": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು", "href": "/settings",  "icon": "Settings",   "access": "user"  },
+    { "label_en": "Billing",   "label_hi": "बिलिंग",   "label_kn": "ಬಿಲ್ಲಿಂಗ್",    "href": "/billing",   "icon": "CreditCard", "access": "user"  },
+    { "label_en": "Admin",     "label_hi": "एडमिन",    "label_kn": "ಅಡ್ಮಿನ್",      "href": "/admin",     "icon": "Shield",     "access": "admin" }
+  ]
 }
