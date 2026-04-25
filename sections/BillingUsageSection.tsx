@@ -7,7 +7,7 @@ import { UsageCard } from '@/features/billing/components/UsageCard'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { SectionBillingUsageContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
-import { pageAttr } from '@/lib/directus/section-binding'
+import { pageAttrs } from '@/lib/directus/section-binding'
 
 interface Props {
   content: SectionBillingUsageContent
@@ -71,7 +71,10 @@ export function BillingUsageSection({ content, translationId, translationRow }: 
   return (
     <div
       className="mb-5"
-      data-directus={pageAttr(translationId, 'billing_usage_heading')}
+      data-directus={pageAttrs(translationId,
+        'billing_usage_heading', 'billing_posts_label', 'billing_api_label',
+        'billing_storage_label', 'billing_seats_label'
+      )}
     >
       <UsageCard
         items={usageItems}

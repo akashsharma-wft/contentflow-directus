@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import { usePostHog } from 'posthog-js/react'
 import type { SectionBillingPlansGridContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
-import { pageAttr } from '@/lib/directus/section-binding'
+import { pageAttrs } from '@/lib/directus/section-binding'
 
 const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!
 
@@ -103,7 +103,12 @@ export function BillingPlansGridSection({ content, lang = 'en', translationId, t
   return (
     <div
       className="mb-5"
-      data-directus={pageAttr(translationId, 'billing_plans_heading')}
+      data-directus={pageAttrs(translationId,
+        'billing_plans_heading',
+        'billing_free_name', 'billing_free_tagline', 'billing_free_price',
+        'billing_pro_name', 'billing_pro_tagline', 'billing_pro_badge',
+        'billing_upgrade_cta', 'billing_downgrade_cta', 'billing_current_plan_btn'
+      )}
     >
       <PlansGrid
         currentTier={currentTier}

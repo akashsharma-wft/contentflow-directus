@@ -2,6 +2,7 @@
 
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { useUIStore } from '@/stores/uiStore'
+import { useSearchParams } from 'next/navigation'
 import { SidebarLogo } from './SidebarLogo'
 import { SidebarNav } from './SidebarNav'
 import { SidebarFooter } from './SidebarFooter'
@@ -36,41 +37,49 @@ interface SidebarProps {
 export function Sidebar({ navItems, lang = 'en', sidebarConfig }: SidebarProps) {
   const sidebarOpen = useUIStore((state) => state.sidebarOpen)
   const toggleSidebar = useUIStore((state) => state.toggleSidebar)
+  const searchParams = useSearchParams()
+  // In the Directus visual editor the sidebar must stay expanded so all nav
+  // labels are visible and editors can see the full navigation structure.
+  const isVisualEditor = searchParams.get('visual-editing') === 'true'
+  const effectiveOpen = isVisualEditor ? true : sidebarOpen
 
   return (
     <aside
       className={cn(
         'hidden lg:flex flex-col h-full shrink-0 bg-[#0d0e14] border-r border-white/5',
         'transition-all duration-200 overflow-hidden',
-        sidebarOpen ? 'w-55' : 'w-14'
+        effectiveOpen ? 'w-55' : 'w-14'
       )}
     >
       {/* Logo + collapse toggle */}
       <div className={cn(
         'flex items-center py-4 px-3 shrink-0',
-        sidebarOpen ? 'justify-between' : 'justify-center'
+        effectiveOpen ? 'justify-between' : 'justify-center'
       )}>
-        {sidebarOpen && (
+        {effectiveOpen && (
           <SidebarLogo
             lang={lang}
             brandName={sidebarConfig?.brandName}
             brandSubtitle={sidebarConfig?.brandSubtitle}
           />
         )}
-        <button
-          onClick={toggleSidebar}
-          className="text-white/30 hover:text-white/70 hover:bg-white/5 p-1.5 rounded-lg transition-all cursor-pointer shrink-0"
-          aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-        >
-          {sidebarOpen ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />}
-        </button>
+        {/* Hide the collapse toggle in visual editor so editors can't accidentally collapse */}
+        {!isVisualEditor && (
+          <button
+            onClick={toggleSidebar}
+            className="text-white/30 hover:text-white/70 hover:bg-white/5 p-1.5 rounded-lg transition-all cursor-pointer shrink-0"
+            aria-label={effectiveOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+          >
+            {effectiveOpen ? <PanelLeftClose size={15} /> : <PanelLeftOpen size={15} />}
+          </button>
+        )}
       </div>
 
       {/* Nav items */}
-      <SidebarNav collapsed={!sidebarOpen} navItems={navItems} lang={lang} />
+      <SidebarNav collapsed={!effectiveOpen} navItems={navItems} lang={lang} />
 
       {/* Language switcher — only shown when expanded */}
-      {sidebarOpen && (
+      {effectiveOpen && (
         <div className="px-4 py-2.5 border-t border-white/5 flex items-center justify-between">
           <span className="text-white/20 text-[9px] uppercase tracking-widest font-mono">Language</span>
           <LanguageSwitcher />
@@ -78,7 +87,7 @@ export function Sidebar({ navItems, lang = 'en', sidebarConfig }: SidebarProps) 
       )}
 
       {/* Footer */}
-      {sidebarOpen ? (
+      {effectiveOpen ? (
         <>
           <SidebarFooter
             ctaButton={sidebarConfig?.ctaButton}

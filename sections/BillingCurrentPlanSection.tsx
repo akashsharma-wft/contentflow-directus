@@ -11,7 +11,7 @@ import { toast } from 'sonner'
 import { usePostHog } from 'posthog-js/react'
 import type { SectionBillingCurrentPlanContent } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
-import { pageAttr } from '@/lib/directus/section-binding'
+import { pageAttrs } from '@/lib/directus/section-binding'
 
 const PRO_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID!
 
@@ -89,8 +89,11 @@ export function BillingCurrentPlanSection({ content, translationId, translationR
   return (
     <div
       className="mb-5"
-      // Wrap the whole card so hovering shows the binding overlay for the plan labels
-      data-directus={pageAttr(translationId, 'billing_current_plan_label')}
+      data-directus={pageAttrs(translationId,
+        'billing_current_plan_label', 'billing_active_badge', 'billing_cancelling_badge',
+        'billing_free_badge', 'billing_manage_label', 'billing_cancel_label',
+        'billing_reactivate_label', 'billing_upgrade_label', 'billing_cancelling_note'
+      )}
     >
       <CurrentPlanCard
         tier={currentTier}
