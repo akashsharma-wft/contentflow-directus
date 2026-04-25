@@ -18,7 +18,6 @@ import 'server-only'
 import {
   readItems,
   readItem,
-  readSingleton,
   aggregate,
 } from '@directus/sdk'
 import { directusClient, directusAdminClient } from './client'
@@ -430,14 +429,15 @@ export async function getNavPages(lang: string): Promise<DirectusNavPage[]> {
 
 // ─── Site config ──────────────────────────────────────────────────────────────
 
-/** Fetch the site-wide config singleton.
- *  Translations are fetched separately to avoid the alias SQL bug on hosted Directus.
+/** Fetch the site-wide config (id = 'site-config').
+ *  Uses readItem by ID — avoids the alias-field SQL bug that breaks GET /items/site_config
+ *  (singleton endpoint) on Directus Cloud. Translations are fetched separately.
  */
 export async function getSiteConfig(lang = 'en'): Promise<DirectusSiteConfig | null> {
   try {
     const [row, trs] = await Promise.all([
       directusClient.request(
-        readSingleton('site_config' as never, { fields: ['*'] as never })
+        readItem('site_config', 'site-config', { fields: ['*'] as never })
       ) as Promise<DirectusSiteConfigRow>,
       directusAdminClient.request(
         readItems('site_config_translations', {

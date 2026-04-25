@@ -920,7 +920,7 @@ async function bootstrapSiteConfig() {
   if (!(await collectionExists('site_config'))) {
     await api('POST', '/collections', {
       collection: 'site_config',
-      meta: { icon: 'settings', display_template: '{{site_name}}', singleton: true },
+      meta: { icon: 'settings', display_template: '{{site_name}}' },
       schema: {},
       fields: [
         {
@@ -931,13 +931,15 @@ async function bootstrapSiteConfig() {
         },
       ],
     })
-    console.log(`  ${TAG} collection created (singleton)`)
+    console.log(`  ${TAG} collection created`)
   } else {
     console.log(`  ${TAG} already exists — checking fields…`)
+    // Ensure singleton is OFF — the translations alias field causes 403 on Directus Cloud
+    // when singleton=true tries to expand alias fields in GET /items/site_config.
     const colRes = (await api('GET', `/collections/site_config`)) as { data?: { meta?: { singleton?: boolean } } }
-    if (colRes?.data?.meta?.singleton !== true) {
-      await api('PATCH', '/collections/site_config', { meta: { singleton: true } })
-      console.log(`  ${TAG} ✓  singleton flag set`)
+    if (colRes?.data?.meta?.singleton === true) {
+      await api('PATCH', '/collections/site_config', { meta: { singleton: false } })
+      console.log(`  ${TAG} singleton disabled (alias field conflict on Cloud)`)
     }
   }
 
