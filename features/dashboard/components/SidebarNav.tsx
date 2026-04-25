@@ -4,7 +4,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useUser } from '@/hooks/useUser'
 import { ICON_MAP, filterByVisibility, getNavItemLabel, getNavRole, localizeHref } from '@/lib/navigation'
@@ -22,10 +22,12 @@ function isPathActive(pathname: string, localizedHref: string): boolean {
 
 export function SidebarNav({ collapsed, navItems = [], lang = 'en' }: SidebarNavProps) {
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const { user, profile } = useUser()
 
+  const isVisualEditor = searchParams.get('visual-editing') === 'true'
   const role  = getNavRole(user?.id, profile?.role)
-  const items = filterByVisibility(navItems, role)
+  const items = isVisualEditor ? navItems : filterByVisibility(navItems, role)
 
   return (
     <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
