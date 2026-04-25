@@ -39,5 +39,43 @@ export function VisualEditingBridge() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramEnabled])
 
+  // ── Navigation interceptor (only active inside the visual editor iframe) ────
+  // Cookies set inside a cross-site iframe are blocked by modern Chrome's
+  // third-party cookie policy, so we can't use a ve_session cookie to carry
+  // the ?visual-editing=true bypass across navigations. Instead we intercept
+  // every internal link click and force a full-page reload with the param in
+  // the URL. The server middleware already honours ?visual-editing=true to skip
+  // auth redirects, so protected pages render as guest/preview state.
+  useEffect(() => {
+    const inIframe = typeof window !== 'undefined' && window !== window.top
+    // When the URL already has the param, no interception needed — navigations
+    // will carry it forward via history.pushState naturally.
+    if (!inIframe || paramEnabled) return
+
+    function handleClick(e: MouseEvent) {
+      const link = (e.target as Element).closest('a[href]') as HTMLAnchorElement | null
+      if (!link) return
+
+      const href = link.getAttribute('href') ?? ''
+      // Skip external links, anchors, tel:, mailto:, etc.
+      if (!href || href.startsWith('http') || href.startsWith('//') || href.startsWith('#') || href.includes(':')) return
+
+      e.preventDefault()
+      e.stopPropagation()
+
+      try {
+        const url = new URL(href, window.location.origin)
+        url.searchParams.set('visual-editing', 'true')
+        window.location.href = url.toString()
+      } catch {
+        window.location.href = href
+      }
+    }
+
+    // useCapture=true so we fire before Next.js's own click handler
+    document.addEventListener('click', handleClick, true)
+    return () => document.removeEventListener('click', handleClick, true)
+  }, [paramEnabled])
+
   return null
 }

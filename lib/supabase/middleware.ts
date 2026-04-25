@@ -42,13 +42,13 @@ export async function updateSession(request: NextRequest) {
 
   if (isInitialIframeLoad && !request.cookies.get('ve_session')) {
     supabaseResponse = NextResponse.next({ request })
-    supabaseResponse.cookies.set('ve_session', '1', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',  // must be none so it's sent inside the cross-site iframe
-      maxAge: 1800,      // 30 minutes — enough for an editing session
-      path: '/',
-    })
+    // Use a raw Set-Cookie header so we can include the `Partitioned` attribute
+    // (CHIPS) required by Chrome 120+ to allow SameSite=None cookies in
+    // cross-site iframes when third-party cookie blocking is active.
+    supabaseResponse.headers.append(
+      'Set-Cookie',
+      've_session=1; Path=/; HttpOnly; Secure; SameSite=None; Partitioned; Max-Age=1800'
+    )
     return supabaseResponse
   }
 
