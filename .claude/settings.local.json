@@ -33,7 +33,11 @@
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('data',{}\\).get\\('collection'\\), d.get\\('data',{}\\).get\\('field'\\)\\) if 'data' in d else print\\('ERROR:', d\\)\")",
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('OK:', d.get\\('data',{}\\).get\\('field'\\)\\) if 'data' in d else print\\('ERROR:', d.get\\('errors',''\\)\\)\")",
       "Bash(mkdir -p \"c:\\\\Users\\\\Akash Sharma\\\\Desktop\\\\Coding\\\\Development\\\\Web Development\\\\CMS\\\\directus\\\\contentflow-directus\\\\app\\\\api\\\\directus-preview\\\\page-translation\\\\[id]\")",
-      "Bash(mkdir -p \"c:\\\\Users\\\\Akash Sharma\\\\Desktop\\\\Coding\\\\Development\\\\Web Development\\\\CMS\\\\directus\\\\contentflow-directus\\\\app\\\\api\\\\directus-preview\\\\post-translation\\\\[id]\")"
+      "Bash(mkdir -p \"c:\\\\Users\\\\Akash Sharma\\\\Desktop\\\\Coding\\\\Development\\\\Web Development\\\\CMS\\\\directus\\\\contentflow-directus\\\\app\\\\api\\\\directus-preview\\\\post-translation\\\\[id]\")",
+      "WebFetch(domain:docs.directus.io)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }

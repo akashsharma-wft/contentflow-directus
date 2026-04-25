@@ -24,7 +24,33 @@ export async function updateSession(request: NextRequest) {
   // We skip auth redirects so protected pages can render in the iframe.
   // The page content is read-only in the iframe — Directus handles auth for editing
   // via postMessage, not via your app's session cookie.
-  const isPreview = searchParams.get('visual-editing') === 'true'
+  const isPreview =
+    searchParams.get('visual-editing') === 'true' ||
+    // The ve_session cookie is set below when we detect the first load inside the
+    // Directus Visual Editor iframe. It persists so that navigations within the
+    // iframe (e.g. clicking to /settings) also bypass the auth redirect.
+    request.cookies.get('ve_session')?.value === '1'
+
+  // ── Directus Visual Editor iframe detection ──────────────────────────────────
+  // When the Directus admin opens our site in its full-page visual editor,
+  // the browser sends Sec-Fetch-Dest: iframe + Sec-Fetch-Site: cross-site on
+  // the initial load. We use this to plant a short-lived SameSite=None cookie
+  // so that subsequent navigations within the iframe also skip auth redirects.
+  const fetchDest = request.headers.get('sec-fetch-dest')
+  const fetchSite = request.headers.get('sec-fetch-site')
+  const isInitialIframeLoad = fetchDest === 'iframe' && fetchSite === 'cross-site'
+
+  if (isInitialIframeLoad && !request.cookies.get('ve_session')) {
+    supabaseResponse = NextResponse.next({ request })
+    supabaseResponse.cookies.set('ve_session', '1', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',  // must be none so it's sent inside the cross-site iframe
+      maxAge: 1800,      // 30 minutes — enough for an editing session
+      path: '/',
+    })
+    return supabaseResponse
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
