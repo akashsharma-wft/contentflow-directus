@@ -933,6 +933,13 @@ async function bootstrapSiteConfig() {
     }
   }
 
+  // Shared access choices for nav item repeaters
+  const ACCESS_CHOICES = [
+    { text: 'Logged-in users', value: 'user'  },
+    { text: 'Admins only',     value: 'admin' },
+    { text: 'Everyone (guest)', value: 'guest' },
+  ]
+
   await ensureFields('site_config', [
     {
       field: 'site_name',
@@ -945,17 +952,26 @@ async function bootstrapSiteConfig() {
 
     // ── Navbar ────────────────────────────────────────────────────────────────
     divField('_div_navbar', '🔝 Navbar'),
-    strField('navbar_brand_name', 'Brand / logo name', 'half'),
-    strField('navbar_cta_href',   'CTA button href',   'half'),
+    strField('navbar_brand_name', 'Brand name', 'half'),
+    strField('navbar_cta_href',   'CTA button href', 'half'),
 
-    // navbar_items — dynamic JSON array; editors add/remove items freely
+    // Navbar nav items — repeater list
     {
       field: 'navbar_items',
       payload: {
         field: 'navbar_items', type: 'json',
         meta: {
-          interface: 'input-code', options: { language: 'json' }, width: 'full',
-          note: 'Array of { label_en, label_hi, label_kn, href, access: "guest"|"user"|"admin" }',
+          interface: 'list', width: 'full',
+          options: {
+            template: '{{label_en}} → {{href}}',
+            fields: [
+              { field: 'label_en', name: 'Label (EN)', type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'label_hi', name: 'Label (HI)', type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'label_kn', name: 'Label (KN)', type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'href',     name: 'Href',       type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'access',   name: 'Visible to', type: 'string', meta: { interface: 'select-dropdown', width: 'half', options: { choices: ACCESS_CHOICES } } },
+            ],
+          },
         },
         schema: { is_nullable: true },
       },
@@ -963,16 +979,35 @@ async function bootstrapSiteConfig() {
 
     // ── Footer ────────────────────────────────────────────────────────────────
     divField('_div_footer', '🦶 Footer'),
-    strField('footer_brand_name', 'Footer brand name', 'half'),
+    strField('footer_brand_name', 'Brand name', 'half'),
 
-    // footer_columns — dynamic JSON array
+    // Footer columns — nested repeater (columns → links)
     {
       field: 'footer_columns',
       payload: {
         field: 'footer_columns', type: 'json',
         meta: {
-          interface: 'input-code', options: { language: 'json' }, width: 'full',
-          note: 'Array of { heading_en, heading_hi, heading_kn, links: [{ label_en, label_hi, label_kn, href }] }',
+          interface: 'list', width: 'full',
+          options: {
+            template: '{{heading_en}}',
+            fields: [
+              { field: 'heading_en', name: 'Heading (EN)', type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'heading_hi', name: 'Heading (HI)', type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'heading_kn', name: 'Heading (KN)', type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'links', name: 'Links', type: 'json', meta: {
+                interface: 'list', width: 'full',
+                options: {
+                  template: '{{label_en}} → {{href}}',
+                  fields: [
+                    { field: 'label_en', name: 'Label (EN)', type: 'string', meta: { interface: 'input', width: 'half' } },
+                    { field: 'label_hi', name: 'Label (HI)', type: 'string', meta: { interface: 'input', width: 'half' } },
+                    { field: 'label_kn', name: 'Label (KN)', type: 'string', meta: { interface: 'input', width: 'half' } },
+                    { field: 'href',     name: 'Href',       type: 'string', meta: { interface: 'input', width: 'half' } },
+                  ],
+                },
+              }},
+            ],
+          },
         },
         schema: { is_nullable: true },
       },
@@ -982,42 +1017,47 @@ async function bootstrapSiteConfig() {
     divField('_div_sidebar', '📌 Sidebar'),
     strField('sidebar_brand_name',     'Brand name (override per-lang in Translations)', 'half'),
     strField('sidebar_brand_subtitle', 'Brand subtitle', 'half'),
-    strField('sidebar_status_badge',   'Status badge (e.g. "System Status: Nominal")', 'half'),
+    strField('sidebar_status_badge',   'Status badge', 'half'),
 
-    // sidebar_nav_items — dynamic JSON array
+    // Sidebar nav items — repeater list
     {
       field: 'sidebar_nav_items',
       payload: {
         field: 'sidebar_nav_items', type: 'json',
         meta: {
-          interface: 'input-code', options: { language: 'json' }, width: 'full',
-          note: 'Array of { label_en, label_hi, label_kn, href, icon, access: "guest"|"user"|"admin" }',
-        },
-        schema: { is_nullable: true },
-      },
-    },
-
-    // mobile_nav_items — dynamic JSON array (falls back to sidebar_nav_items if null)
-    {
-      field: 'mobile_nav_items',
-      payload: {
-        field: 'mobile_nav_items', type: 'json',
-        meta: {
-          interface: 'input-code', options: { language: 'json' }, width: 'full',
-          note: 'Leave empty to reuse sidebar_nav_items. Array of { label_en, label_hi, label_kn, href, icon, access }',
+          interface: 'list', width: 'full',
+          options: {
+            template: '{{label_en}} → {{href}}',
+            fields: [
+              { field: 'label_en', name: 'Label (EN)', type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'label_hi', name: 'Label (HI)', type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'label_kn', name: 'Label (KN)', type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'href',     name: 'Href',       type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'icon',     name: 'Icon',       type: 'string', meta: { interface: 'input', width: 'half', note: 'Lucide name: FileText, Settings, CreditCard, BarChart3, Shield' } },
+              { field: 'access',   name: 'Visible to', type: 'string', meta: { interface: 'select-dropdown', width: 'half', options: { choices: ACCESS_CHOICES } } },
+            ],
+          },
         },
         schema: { is_nullable: true },
       },
     },
   ])
 
-  // Hide legacy JSON blob fields and all old numbered flat fields
-  const legacyFields = [
+  // Hide all legacy/unnecessary fields
+  const toHide = [
+    // old JSON blob configs
     'navbar_config', 'footer_config', 'sidebar_config', 'mobile_nav_config',
+    // mobile nav (reuses sidebar items; no separate field needed)
+    'mobile_nav_items',
+    // old per-lang flat label fields
     'navbar_cta_label_en', 'navbar_cta_label_hi', 'navbar_cta_label_kn',
     'navbar_login_label_en', 'navbar_login_label_hi', 'navbar_login_label_kn',
     'navbar_signup_label_en', 'navbar_signup_label_hi', 'navbar_signup_label_kn',
     'navbar_signout_label_en', 'navbar_signout_label_hi', 'navbar_signout_label_kn',
+    // extra href fields not needed
+    'navbar_signout_href', 'footer_privacy_href', 'footer_terms_href',
+    // old divider aliases that shouldn't be visible
+    '_div_navbar_items', '_div_footer_cols', '_div_sidebar_nav',
     'sidebar_status_text',
     ...[1,2,3,4,5].flatMap(n => [
       `navbar_item_${n}_label_en`, `navbar_item_${n}_label_hi`, `navbar_item_${n}_label_kn`, `navbar_item_${n}_href`,
@@ -1033,12 +1073,12 @@ async function bootstrapSiteConfig() {
       ]),
     ]),
   ]
-  for (const field of legacyFields) {
+  for (const field of toHide) {
     if (await fieldExists('site_config', field)) {
       await api('PATCH', `/fields/site_config/${field}`, { meta: { hidden: true } })
     }
   }
-  console.log(`  ${TAG} legacy flat fields hidden`)
+  console.log(`  ${TAG} legacy fields hidden`)
 }
 
 // ── site_config_translations ──────────────────────────────────────────────────
