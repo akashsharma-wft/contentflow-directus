@@ -1045,14 +1045,8 @@ async function bootstrapSiteConfigTranslations() {
       field: 'languages_code',
       payload: { field: 'languages_code', type: 'string', meta: { interface: 'input', hidden: true }, schema: { is_nullable: false } },
     },
-    // Navbar labels
-    divField('_div_sc_navbar', '🔝 Navbar Labels'),
-    strField('navbar_cta_label',     'CTA button label', 'half'),
-    strField('navbar_login_label',   'Login label',      'half'),
-    strField('navbar_signup_label',  'Sign up label',    'half'),
-    strField('navbar_signout_label', 'Sign out label',   'half'),
 
-    // Navbar items — per-language list (label already in this language)
+    // Navbar items — per-language list
     divField('_div_sc_navbar_items', '🔗 Navbar Items'),
     {
       field: 'navbar_items',
@@ -1095,11 +1089,6 @@ async function bootstrapSiteConfigTranslations() {
       },
     },
 
-    // Footer labels
-    divField('_div_sc_footer', '🦶 Footer Labels'),
-    strField('footer_tagline',   'Tagline',        'full'),
-    strField('footer_copyright', 'Copyright text', 'full'),
-
     // Footer columns — per-language list with nested links
     divField('_div_sc_footer_cols', '📋 Footer Columns'),
     {
@@ -1129,11 +1118,41 @@ async function bootstrapSiteConfigTranslations() {
       },
     },
 
-    // Sidebar labels
-    divField('_div_sc_sidebar', '⚙️ Sidebar Labels'),
-    strField('sidebar_brand_name',  'Sidebar brand name (override)', 'half'),
-    strField('sidebar_status_text', 'Status text',                   'half'),
+    // Mobile nav items — per-language list with icon
+    divField('_div_sc_mobile_nav_items', '📱 Mobile Nav Items'),
+    {
+      field: 'mobile_nav_items',
+      payload: {
+        field: 'mobile_nav_items', type: 'json',
+        meta: {
+          interface: 'list', width: 'full',
+          options: {
+            template: '{{label}} → {{href}}',
+            fields: [
+              { field: 'label',  name: 'Label',       type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'href',   name: 'Href',         type: 'string', meta: { interface: 'input', width: 'half' } },
+              { field: 'icon',   name: 'Icon',         type: 'string', meta: { interface: 'input', width: 'half', note: 'Lucide: FileText, Settings, CreditCard, BarChart3, Shield' } },
+              { field: 'access', name: 'Visible to',   type: 'string', meta: { interface: 'select-dropdown', width: 'half', options: { choices: ACCESS_CHOICES } } },
+            ],
+          },
+        },
+        schema: { is_nullable: true },
+      },
+    },
   ])
+
+  // Hide removed label fields that may exist from previous bootstrap runs
+  const removedTranslationFields = [
+    '_div_sc_navbar', 'navbar_cta_label', 'navbar_login_label', 'navbar_signup_label', 'navbar_signout_label',
+    '_div_sc_footer', 'footer_tagline', 'footer_copyright',
+    '_div_sc_sidebar', 'sidebar_brand_name', 'sidebar_status_text',
+  ]
+  for (const field of removedTranslationFields) {
+    if (await fieldExists('site_config_translations', field)) {
+      await api('PATCH', `/fields/site_config_translations/${field}`, { meta: { hidden: true } })
+      console.log(`  [site_config_translations] hidden: ${field}`)
+    }
+  }
 
   // FK: site_config_id → site_config
   // Delete then recreate so we can set one_field = 'translations' (PATCH doesn't work on Directus Cloud)

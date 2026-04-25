@@ -12,15 +12,15 @@
 // toggles _visibility_ — actual access enforcement lives in the server.
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { localizeHref, filterByVisibility, getNavItemLabel, getNavRole, resolveLabel } from '@/lib/navigation'
 import { useUser } from '@/hooks/useUser'
 import { createClient } from '@/lib/supabase/client'
 import type { SiteConfig, NavPage } from '@/types/cms'
-import { siteAttr, siteTranslationAttr, siteTranslationAttrs } from '@/lib/directus/section-binding'
+import { siteAttr, siteTranslationAttrs } from '@/lib/directus/section-binding'
 // NavPage kept for prop backward compat — not used in center nav
 
 const LANG_CODES = ['en', 'hi', 'kn'] as const
@@ -44,10 +44,14 @@ interface Props {
 }
 
 export function Navbar({ siteConfig }: Props) {
-  const pathname  = usePathname()
-  const router    = useRouter()
+  const pathname     = usePathname()
+  const router       = useRouter()
+  const searchParams = useSearchParams()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isInIframe, setIsInIframe] = useState(false)
   const { user, profile, isLoading } = useUser()
+
+  useEffect(() => { setIsInIframe(window !== window.top) }, [])
 
   // Don't render on login / signup routes
   if (SUPPRESS_ROUTES.some((route) => pathname.startsWith(route))) return null
@@ -67,11 +71,10 @@ export function Navbar({ siteConfig }: Props) {
   const signoutLabel         = resolveLabel(cfg?.signoutLabel, currentLang, 'Sign out')
   const mobileLanguageLabel  = resolveLabel(cfg?.mobileLanguageLabel, currentLang, 'Language')
 
-  // Nav items from siteConfig, filtered by the visitor's current role.
-  // Role resolves immediately from user object — no need to wait for profile for
-  // basic user/guest distinction; admin items appear once profile hydrates.
-  const role       = getNavRole(user?.id, profile?.role)
-  const navItems   = filterByVisibility(cfg?.items ?? [], role)
+  // In visual editor preview, show all nav items regardless of actual role.
+  const isPreviewMode = searchParams.get('visual-editing') === 'true' || isInIframe
+  const role          = isPreviewMode ? 'admin' : getNavRole(user?.id, profile?.role)
+  const navItems      = filterByVisibility(cfg?.items ?? [], role)
 
   // isAuthenticated flips as soon as user is known — does NOT wait for profile.
   const isAuthenticated = user !== null
@@ -133,7 +136,7 @@ export function Navbar({ siteConfig }: Props) {
                   <Link
                     key={item._key}
                     href={href}
-                    data-directus={siteTranslationAttrs(siteConfig?.siteConfigTranslationId, `navbar_item_${i + 1}_label`)}
+                    data-directus={siteTranslationAttrs(siteConfig?.siteConfigTranslationId, 'navbar_items')}
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                       isActive ? 'text-white bg-white/8' : 'text-white/50 hover:text-white hover:bg-white/5'
                     }`}
@@ -164,7 +167,6 @@ export function Navbar({ siteConfig }: Props) {
               <>
                 <Link
                   href={localizeHref('/login', currentLang)}
-                  data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, 'navbar_login_label')}
                   className="px-3 py-1.5 text-sm text-white/60 hover:text-white transition-colors"
                 >
                   {loginLabel}
@@ -172,7 +174,6 @@ export function Navbar({ siteConfig }: Props) {
                 {ctaButton?.label && ctaButton?.href ? (
                   <Link
                     href={localizeHref(ctaButton.href, currentLang)}
-                    data-directus={siteTranslationAttrs(siteConfig?.siteConfigTranslationId, 'navbar_cta_label')}
                     className="hidden sm:inline-flex px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg transition-colors"
                   >
                     {resolveLabel(ctaButton.label, currentLang)}
@@ -180,7 +181,6 @@ export function Navbar({ siteConfig }: Props) {
                 ) : (
                   <Link
                     href={localizeHref('/signup', currentLang)}
-                    data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, 'navbar_signup_label')}
                     className="hidden sm:inline-flex px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg transition-colors"
                   >
                     {signupLabel}
@@ -245,7 +245,7 @@ export function Navbar({ siteConfig }: Props) {
                     key={item._key}
                     href={href}
                     onClick={closeMobile}
-                    data-directus={siteTranslationAttrs(siteConfig?.siteConfigTranslationId, `navbar_item_${i + 1}_label`)}
+                    data-directus={siteTranslationAttrs(siteConfig?.siteConfigTranslationId, 'navbar_items')}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${
                       isActive ? 'text-white bg-white/8' : 'text-white/50 hover:text-white hover:bg-white/5'
                     }`}
@@ -261,7 +261,6 @@ export function Navbar({ siteConfig }: Props) {
                   <Link
                     href={localizeHref('/login', currentLang)}
                     onClick={closeMobile}
-                    data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, 'navbar_login_label')}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors"
                   >
                     {loginLabel}
@@ -269,7 +268,6 @@ export function Navbar({ siteConfig }: Props) {
                   <Link
                     href={localizeHref('/signup', currentLang)}
                     onClick={closeMobile}
-                    data-directus={siteTranslationAttr(siteConfig?.siteConfigTranslationId, 'navbar_signup_label')}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-colors"
                   >
                     {signupLabel}

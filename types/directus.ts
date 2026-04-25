@@ -493,18 +493,10 @@ export type DirectusSiteConfigTranslationRow = {
   site_config_id:  string
   languages_code:  string
   // Nav items — per-language lists managed in the Translations form
-  navbar_items?:    TranslationNavItemJSON[]   | null
-  sidebar_items?:   TranslationNavItemJSON[]   | null
-  footer_columns?:  TranslationFooterColumnJSON[] | null
-  // String labels
-  navbar_cta_label?:     string | null
-  navbar_login_label?:   string | null
-  navbar_signup_label?:  string | null
-  navbar_signout_label?: string | null
-  footer_tagline?:       string | null
-  footer_copyright?:     string | null
-  sidebar_brand_name?:   string | null
-  sidebar_status_text?:  string | null
+  navbar_items?:      TranslationNavItemJSON[]      | null
+  sidebar_items?:     TranslationNavItemJSON[]      | null
+  mobile_nav_items?:  TranslationNavItemJSON[]      | null
+  footer_columns?:    TranslationFooterColumnJSON[] | null
 }
 
 // ─── Site config ──────────────────────────────────────────────────────────────
@@ -573,30 +565,30 @@ export function toSiteConfig(row: DirectusSiteConfigRow, lang = 'en'): DirectusS
   // Nav items come from the matching translation (per-language lists with single label)
   const navbarItems   = parseTrNavItems(tr?.navbar_items)
   const sidebarItems  = parseTrNavItems(tr?.sidebar_items)
-  const mobileItems   = parseTrNavItems(tr?.sidebar_items) // mobile reuses sidebar items
+  const mobileItems   = parseTrNavItems(tr?.mobile_nav_items)
   const footerColumns = parseTrFooterColumns(tr?.footer_columns)
 
   const navbarConfig: SiteNavbarConfig = {
-    brandName: row.navbar_brand_name ?? undefined,
-    items:     navbarItems,
-    ctaButton: { href: row.navbar_cta_href ?? undefined, label: { en: tr?.navbar_cta_label ?? 'Get Started' } },
-    loginLabel:   { en: tr?.navbar_login_label   ?? 'Login' },
-    signupLabel:  { en: tr?.navbar_signup_label  ?? 'Sign up' },
-    signoutLabel: { en: tr?.navbar_signout_label ?? 'Sign out' },
+    brandName:    row.navbar_brand_name ?? undefined,
+    items:        navbarItems,
+    ctaButton:    { href: row.navbar_cta_href ?? undefined, label: { en: 'Get Started' } },
+    loginLabel:   { en: 'Login' },
+    signupLabel:  { en: 'Sign up' },
+    signoutLabel: { en: 'Sign out' },
   }
 
   const footerConfig: SiteFooterConfig = {
     brandName: row.footer_brand_name ?? undefined,
     columns:   footerColumns,
-    tagline:   { en: tr?.footer_tagline  ?? '' },
-    copyright: { en: tr?.footer_copyright ?? '' },
+    tagline:   { en: '' },
+    copyright: { en: '' },
   }
 
   const sidebarConfig: SiteSidebarConfig = {
-    brandName:     tr?.sidebar_brand_name ?? row.sidebar_brand_name ?? undefined,
+    brandName:     row.sidebar_brand_name ?? undefined,
     brandSubtitle: row.sidebar_brand_subtitle ?? undefined,
     navItems:      sidebarItems,
-    statusText:    tr?.sidebar_status_text ?? undefined,
+    statusText:    undefined,
     statusBadge:   row.sidebar_status_badge ?? undefined,
   }
 
