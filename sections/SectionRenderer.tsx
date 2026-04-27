@@ -1,47 +1,18 @@
 // sections/SectionRenderer.tsx
 //
 // Registry: maps CMS section types → React components.
-// Now passes translationId + translationRow to every section so each can
-// add granular data-directus bindings on individual text elements.
 
 import type { CmsSection } from '@/types/cms'
 import type { DirectusPageTranslationRow } from '@/types/directus'
-import { ComponentRenderer }  from '@/components/custom/ComponentRenderer'
 
 // ── Public sections ────────────────────────────────────────────────────────────
 import { HeroSection }           from './HeroSection'
 import { CtaSection }            from './CtaSection'
 import { FeaturedPostsSection }  from './FeaturedPostsSection'
 import { RecentPostsSection }    from './RecentPostsSection'
-import { RichTextSection }       from './RichTextSection'
-import { StatsSection }          from './StatsSection'
-import { FormSection }           from './FormSection'
-import { GridSection }           from './GridSection'
-import { ImageSection }          from './ImageSection'
-import { GallerySection }        from './GallerySection'
-import { VideoSection }          from './VideoSection'
-import { TabsSection }           from './TabsSection'
-import { CarouselSection }       from './CarouselSection'
-import { TableSection }          from './TableSection'
 import { AuthHeroSection }       from './AuthHeroSection'
-import {
-  HeadingSection,
-  FeatureListSection,
-  TestimonialsSection,
-  FaqSection,
-  PricingSection,
-  BannerSection,
-  ColumnsSection,
-  SpacerSection,
-  DividerSection,
-  NewsletterSection,
-  NotFoundSection,
-} from './newSections'
-import { TimelineSection, TeamSection, LogoBarSection } from './TimelineTeamLogoBar'
 
 // ── Auth sections ─────────────────────────────────────────────────────────────
-import { LoginSection }          from './LoginSection'
-import { SignupSection }         from './SignupSection'
 import { AuthFormSection }       from './AuthFormSection'
 
 // ── Post detail ───────────────────────────────────────────────────────────────
@@ -52,16 +23,16 @@ import { PostDetailBodySection }      from './PostDetailBodySection'
 import { PostDetailTagsSection }      from './PostDetailTagsSection'
 import { PostDetailBackLinkSection }  from './PostDetailBackLinkSection'
 
-// ── App page sections ─────────────────────────────────────────────────────────
-import { PostsPageSection }          from './PostsPageSection'
-import { PostsHeaderSection }        from './PostsHeaderSection'
-import { PostsStatsSection }         from './PostsStatsSection'
-import { PostsActionsSection }       from './PostsActionsSection'
-import { PostsSearchSection }        from './PostsSearchSection'
-import { PostsTableSection }         from './PostsTableSection'
+// ── Posts page sections ───────────────────────────────────────────────────────
+import { PostsPageSection }     from './PostsPageSection'
+import { PostsHeaderSection }   from './PostsHeaderSection'
+import { PostsStatsSection }    from './PostsStatsSection'
+import { PostsActionsSection }  from './PostsActionsSection'
+import { PostsSearchSection }   from './PostsSearchSection'
+import { PostsTableSection }    from './PostsTableSection'
+
+// ── App sections ──────────────────────────────────────────────────────────────
 import { AnalyticsSection }          from './AnalyticsSection'
-import { SettingsSection }           from './SettingsSection'
-import { BillingSection }            from './BillingSection'
 import { AdminSection }              from './AdminSection'
 import { BillingHeaderSection }      from './BillingHeaderSection'
 import { BillingCurrentPlanSection } from './BillingCurrentPlanSection'
@@ -80,9 +51,7 @@ import { SettingsDangerSection }     from './SettingsDangerSection'
 interface SectionRendererProps {
   sections:       CmsSection[]
   lang?:          string
-  /** ID of the matched pages_translations row — passed to every section for data-directus bindings */
   translationId?: number
-  /** Full translation row — passed to every section so they can read individual fields */
   translationRow?: DirectusPageTranslationRow
 }
 
@@ -107,10 +76,6 @@ export async function SectionRenderer({
             : `section-${i}`
         const s = section as AnySection
 
-        if (s._type === 'component') {
-          return <ComponentRenderer key={key} component={s} lang={lang} />
-        }
-
         if (s._type === 'section') {
           switch (s.sectionType as string) {
             case 'hero':
@@ -125,8 +90,6 @@ export async function SectionRenderer({
               return <AuthHeroSection key={key} section={s.authHero ?? {}} translationId={translationId} translationRow={translationRow} />
             case 'authForm':
               return <AuthFormSection key={key} section={s.authForm ?? {}} translationId={translationId} translationRow={translationRow} />
-            case 'features':
-              return <FeatureListSection key={key} section={s.features ?? {}} />
             case 'postsList':
               return <PostsPageSection key={key} lang={lang} />
             case 'postDetail':
@@ -175,10 +138,6 @@ export async function SectionRenderer({
               return <SettingsFormSection key={key} content={s.settingsForm ?? {}} translationId={translationId} translationRow={translationRow} />
             case 'settingsDanger':
               return <SettingsDangerSection key={key} content={s.settingsDanger ?? {}} translationId={translationId} translationRow={translationRow} />
-            case 'settings':
-              return <SettingsSection key={key} lang={lang} />
-            case 'billing':
-              return <BillingSection key={key} lang={lang} />
             case 'admin':
               return <AdminSection key={key} lang={lang} content={s.admin ?? {}} translationId={translationId} translationRow={translationRow} />
             default:
@@ -189,12 +148,10 @@ export async function SectionRenderer({
           }
         }
 
-        // Legacy inline section objects
+        // Legacy inline section objects (pre-migration format)
         switch (s._type as string) {
           case 'heroSection':
             return <HeroSection key={key} section={s} translationId={translationId} translationRow={translationRow} />
-          case 'featuresSection':
-            return <FeatureListSection key={key} section={s} />
           case 'ctaSection':
             return <CtaSection key={key} section={s} translationId={translationId} translationRow={translationRow} />
           case 'featuredPostsSection':
@@ -209,48 +166,18 @@ export async function SectionRenderer({
             return <AuthHeroSection key={key} section={s} translationId={translationId} translationRow={translationRow} />
           case 'analyticsSection':
             return <AnalyticsSection key={key} lang={lang} content={{}} translationId={translationId} translationRow={translationRow} />
-          case 'navbarSection':
-          case 'footerSection':
-            return null
-          case 'richTextSection':      return <RichTextSection       key={key} section={s} translationId={translationId} />
-          case 'statsSection':         return <StatsSection          key={key} section={s} translationId={translationId} />
-          case 'formSection':          return <FormSection           key={key} section={s} translationId={translationId} />
-          case 'gridSection':          return <GridSection           key={key} section={s} translationId={translationId} />
-          case 'columnsSection':       return <ColumnsSection        key={key} section={s} />
-          case 'spacerSection':        return <SpacerSection         key={key} section={s} />
-          case 'dividerSection':       return <DividerSection        key={key} section={s} />
-          case 'headingSection':       return <HeadingSection        key={key} section={s} translationId={translationId} />
-          case 'featureListSection':   return <FeatureListSection    key={key} section={s} translationId={translationId} />
-          case 'testimonialsSection':  return <TestimonialsSection   key={key} section={s} translationId={translationId} />
-          case 'faqSection':           return <FaqSection            key={key} section={s} translationId={translationId} />
-          case 'pricingSection':       return <PricingSection        key={key} section={s} translationId={translationId} />
-          case 'teamSection':          return <TeamSection           key={key} section={s} translationId={translationId} />
-          case 'logoBarSection':       return <LogoBarSection        key={key} section={s} translationId={translationId} />
-          case 'carouselSection':      return <CarouselSection       key={key} section={s} translationId={translationId} />
-          case 'tableSection':         return <TableSection          key={key} section={s} translationId={translationId} />
-          case 'timelineSection':      return <TimelineSection       key={key} section={s} translationId={translationId} />
-          case 'bannerSection':        return <BannerSection         key={key} section={s} translationId={translationId} />
-          case 'tabsSection':          return <TabsSection           key={key} section={s} translationId={translationId} />
-          case 'imageSection':         return <ImageSection          key={key} section={s} translationId={translationId} />
-          case 'gallerySection':       return <GallerySection        key={key} section={s} translationId={translationId} />
-          case 'videoSection':         return <VideoSection          key={key} section={s} translationId={translationId} />
-          case 'newsletterSection':    return <NewsletterSection     key={key} section={s} translationId={translationId} />
-          case 'notFoundSection':      return <NotFoundSection       key={key} section={s} />
-          case 'contactSection':       return null
-          case 'loginSection':
-          case 'loginPageSection':
-            return <LoginSection key={key} section={s} lang={lang} translationId={translationId} translationRow={translationRow} />
-          case 'signupSection':
-          case 'signupPageSection':
-            return <SignupSection key={key} section={s} lang={lang} translationId={translationId} translationRow={translationRow} />
-          case 'postDetailPageSection':  return <PostDetailPageSection key={key} section={s} />
-          case 'postsPageSection':       return <PostsPageSection      key={key} lang={lang} />
+          case 'postDetailPageSection':
+            return <PostDetailPageSection key={key} section={s} />
+          case 'postsPageSection':
+            return <PostsPageSection key={key} lang={lang} />
           case 'analyticsPageSection':
             return <AnalyticsSection key={key} lang={lang} content={{}} translationId={translationId} translationRow={translationRow} />
-          case 'settingsPageSection':    return <SettingsSection       key={key} lang={lang} />
-          case 'billingPageSection':     return <BillingSection        key={key} lang={lang} />
           case 'adminPageSection':
             return <AdminSection key={key} lang={lang} content={{}} translationId={translationId} translationRow={translationRow} />
+          case 'navbarSection':
+          case 'footerSection':
+          case 'contactSection':
+            return null
           default:
             if (process.env.NODE_ENV === 'development') {
               console.warn(`[SectionRenderer] Unknown section type: "${s._type}"`)
