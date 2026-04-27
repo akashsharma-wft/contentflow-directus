@@ -303,6 +303,9 @@ export type DirectusPageTranslationRow = {
   posts_delete_dialog_body?:  string | null
   posts_delete_confirm?:      string | null
   posts_delete_cancel?:       string | null
+  posts_featured_label?:      string | null
+  posts_featured_of_label?:   string | null
+  posts_featured_read_label?: string | null
 
   // ── Billing ───────────────────────────────────────────────────────────────
   billing_heading?:            string | null

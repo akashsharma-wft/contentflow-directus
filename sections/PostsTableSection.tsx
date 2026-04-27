@@ -82,16 +82,23 @@ export function PostsTableSection({ content, lang = 'en', translationId, transla
   const emptyCtaLabel = translationRow?.posts_empty_cta  ?? content.emptyCtaLabel
   const loadMoreLabel = translationRow?.posts_load_more  ?? content.loadMoreLabel
 
+  const featuredLabel     = translationRow?.posts_featured_label      ?? content.featuredLabel
+  const featuredOfLabel   = translationRow?.posts_featured_of_label   ?? content.featuredOfLabel
+  const featuredReadLabel = translationRow?.posts_featured_read_label ?? content.featuredReadLabel
+
   return (
     <div>
       {featuredPosts.length > 0 && (
         <div className="mb-4">
           <FeaturedBanner
             posts={featuredPosts}
-            featuredLabel={content.featuredLabel}
-            featuredOfLabel={content.featuredOfLabel}
-            featuredReadLabel={content.featuredReadLabel}
+            featuredLabel={featuredLabel}
+            featuredOfLabel={featuredOfLabel}
+            featuredReadLabel={featuredReadLabel}
             bannerIcon={content.featuredBannerIcon}
+            featuredLabelAttr={pageAttr(translationId, 'posts_featured_label')}
+            featuredOfLabelAttr={pageAttr(translationId, 'posts_featured_of_label')}
+            featuredReadLabelAttr={pageAttr(translationId, 'posts_featured_read_label')}
           />
         </div>
       )}

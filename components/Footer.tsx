@@ -16,7 +16,6 @@ import { siteAttr, siteTranslationAttrs } from '@/lib/directus/section-binding'
 
 interface Props {
   siteConfig: SiteConfig | null
-  /** Optional — accepted for backwards compat but not used (lang is derived from pathname). */
   lang?: string
 }
 

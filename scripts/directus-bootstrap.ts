@@ -733,6 +733,9 @@ async function bootstrapPagesTranslations() {
     txtField('posts_delete_dialog_body',  'Delete dialog body'),
     strField('posts_delete_confirm',      'Delete confirm button', 'half'),
     strField('posts_delete_cancel',       'Delete cancel button', 'half'),
+    strField('posts_featured_label',      'Featured banner: badge label (e.g. "Featured")', 'half'),
+    strField('posts_featured_of_label',   'Featured banner: counter word (e.g. "of" in "1 of 3")', 'half'),
+    strField('posts_featured_read_label', 'Featured banner: read button label (e.g. "Read now")', 'half'),
 
     // ── Billing page ─────────────────────────────────────────────────────────────
     divField('_div_billing', '💳 Billing Page'),

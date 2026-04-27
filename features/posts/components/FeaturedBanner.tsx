@@ -42,6 +42,9 @@ interface FeaturedBannerProps {
    * Defaults to "Star".
    */
   bannerIcon?: string
+  featuredLabelAttr?:     string
+  featuredOfLabelAttr?:   string
+  featuredReadLabelAttr?: string
 }
 
 export function FeaturedBanner({
@@ -50,6 +53,9 @@ export function FeaturedBanner({
   featuredOfLabel   = 'of',
   featuredReadLabel = 'Read now',
   bannerIcon,
+  featuredLabelAttr,
+  featuredOfLabelAttr: _featuredOfLabelAttr,
+  featuredReadLabelAttr,
 }: FeaturedBannerProps) {
   const posthog = usePostHog()
   const [show, setShow] = useState(false)
@@ -88,7 +94,10 @@ export function FeaturedBanner({
             <IconComponent size={14} className="text-indigo-400 fill-indigo-400" />
           </div>
           <div className="min-w-0">
-            <p className="text-indigo-300 text-[10px] uppercase tracking-widest font-medium mb-0.5">
+            <p
+              {...(featuredLabelAttr ? { 'data-directus': featuredLabelAttr } : {})}
+              className="text-indigo-300 text-[10px] uppercase tracking-widest font-medium mb-0.5"
+            >
               {featuredLabel}{counterSuffix}
             </p>
             <p className="text-white text-sm font-semibold truncate">{post.title}</p>
@@ -117,6 +126,7 @@ export function FeaturedBanner({
           )}
           <Link
             href={`/${post.slug}`}
+            {...(featuredReadLabelAttr ? { 'data-directus': featuredReadLabelAttr } : {})}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
           >
             {featuredReadLabel}
